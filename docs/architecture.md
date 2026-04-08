@@ -13,7 +13,7 @@ The system is designed around one insight: Claude Code is not just a coding assi
 Key properties:
 - **Always on.** Three-layer persistence (tmux → systemd → watchdog cron) keeps it running through crashes, reboots, and SSH disconnects.
 - **Telegram-native.** Two-way real-time messaging via the official Telegram channel plugin running on Bun.
-- **Skill-equipped.** 155+ portable skill modules that Claude auto-selects based on task description.
+- **Skill-equipped.** 160 portable skill modules that Claude auto-selects based on task description.
 - **Sub-agent capable.** Specialized agents (researcher, coder, reviewer, etc.) handle parallel delegated work.
 - **Memory-persistent.** File-based memory system ensures continuity across restarts.
 - **Zero API cost.** Claude Max subscription covers all usage; no per-token billing surprises.
@@ -37,7 +37,7 @@ graph TB
                 subgraph workspace["Workspace (~/.claude-agent/)"]
                     claudemd["CLAUDE.md<br/>(identity + rules)"]
                     memory["memory/YYYY-MM-DD.md<br/>(daily logs)"]
-                    skills[".claude/skills/<br/>(155+ skill modules)"]
+                    skills[".claude/skills/<br/>(160 skill modules)"]
                     agents[".claude/agents/<br/>(sub-agent defs)"]
                     rules[".claude/rules/<br/>(global rules)"]
                     hooks[".claude/settings.json<br/>(hooks + permissions)"]
@@ -118,7 +118,7 @@ sequenceDiagram
 
     Claude->>Claude: Determine task needs specialization
     Claude->>Agent: Spawn with task description + context
-    Note over Agent: Runs as isolated Claude process<br/>with its own model (sonnet) and instructions
+    Note over Agent: Runs as isolated Claude process<br/>with its own model (opus on Max) and instructions
     Agent->>Tools: Execute research / coding / analysis
     Tools-->>Agent: Results
     Agent-->>Claude: Structured output
@@ -126,7 +126,7 @@ sequenceDiagram
     Claude->>Plugin: Send final response
 ```
 
-Sub-agents run as separate Claude processes with potentially different models (typically `sonnet` for cost efficiency), their own tool scopes, and specialized system prompts defined in `.claude/agents/<name>.md`.
+Sub-agents run as separate Claude processes with their own model (on Max subscription, all use `opus` since there's no per-token cost), tool scopes, and specialized system prompts defined in `.claude/agents/<name>.md`.
 
 ---
 
@@ -267,7 +267,7 @@ Sub-agents are defined as markdown files with YAML frontmatter in `.claude/agent
 name: researcher
 description: Deep research tasks — web search, multi-source analysis, report writing.
              Use for any research request that requires thoroughness.
-model: sonnet
+model: opus
 ---
 
 You are a research agent. Given a topic:
@@ -278,18 +278,18 @@ You are a research agent. Given a topic:
 Be thorough but concise. Cite sources. Flag uncertainty.
 ```
 
-The `model` field allows overriding the model per agent. All custom agents in this setup use `sonnet` for cost efficiency — the main agent runs on Opus via Claude Max, but sub-agents doing narrow tasks don't need Opus-level reasoning.
+The `model` field allows overriding the model per agent. On a Max subscription, all agents use `opus` since there's no per-token cost. On API billing, you'd typically set sub-agents to `sonnet` or `haiku` to save cost.
 
 ### Available Custom Agents
 
 | Agent | Model | Purpose |
 |---|---|---|
-| `researcher` | Sonnet | Multi-source research, analysis, report writing |
-| `coder` | Sonnet | Feature implementation, bug fixes, refactoring |
-| `reviewer` | Sonnet | Code review, PR analysis, quality checks |
-| `analyst` | Sonnet | Data analysis, market research, metrics |
-| `sysadmin` | Sonnet | Infrastructure management, diagnostics |
-| `writer` | Sonnet | Documentation, reports, plans, summaries |
+| `researcher` | Opus | Multi-source research, analysis, report writing |
+| `coder` | Opus | Feature implementation, bug fixes, refactoring |
+| `reviewer` | Opus | Code review, PR analysis, quality checks |
+| `analyst` | Opus | Data analysis, market research, metrics |
+| `sysadmin` | Opus | Infrastructure management, diagnostics |
+| `writer` | Opus | Documentation, reports, plans, summaries |
 
 ### Built-in Agents
 
@@ -566,7 +566,7 @@ The identity file enforces additional behavioral constraints:
 | **TTS** | Via MCP / Bash | ✅ Built-in | ❌ |
 | **Image analysis** | Via API / MCP | ✅ Built-in | ❌ |
 | **Skill system** | ✅ Description-based auto-select | ✅ XML injection | ❌ |
-| **Skill marketplace** | Manual (155+ in this repo) | ClawHub (install/publish) | ❌ |
+| **Skill marketplace** | Manual (160 in this repo) | ClawHub (install/publish) | ❌ |
 | **Sub-agents** | ✅ Built-in (model override) | ✅ sessions_spawn | ❌ |
 | **Agent Teams** | ✅ Experimental | ❌ | ❌ |
 | **Identity system** | Single file (CLAUDE.md) | Multi-file (SOUL/USER/AGENTS/IDENTITY) | CLAUDE.md only |

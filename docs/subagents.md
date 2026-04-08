@@ -55,7 +55,7 @@ You can define your own agents in `.claude/agents/`. Each agent is a single mark
 ---
 name: agent-name
 description: When to use this agent — what tasks it handles, what triggers it.
-model: sonnet   # or opus, haiku
+model: opus   # or opus, haiku
 ---
 ```
 
@@ -63,17 +63,17 @@ model: sonnet   # or opus, haiku
 |---|---|
 | `name` | Identifier used to spawn the agent |
 | `description` | When to use this agent — used for auto-selection |
-| `model` | Which Claude model to use (default: sonnet) |
+| `model` | Which Claude model to use (default: opus on Max subscription) |
 
 The body is the system prompt for that agent. Write it as instructions in second person (*"You are a..."*).
 
 ### Model Selection
 
 - **`haiku`** — Fastest, cheapest. Good for exploration, summarization, simple lookups.
-- **`sonnet`** — Best balance of cost and capability. Default for most custom agents.
+- **`opus`** — Full reasoning power. Use on Max subscription where there's no per-token cost.
 - **`opus`** — Most powerful. Use for complex reasoning, hard problems, high-stakes decisions.
 
-A common pattern: use `sonnet` for the sub-agent (does the work cheaply) and let the main `opus` or `sonnet` session synthesize and respond.
+On Max subscription, use `opus` for all agents — there is no per-token cost, so there is no reason to downgrade. On API billing, consider `sonnet` or `haiku` for sub-agents to save cost.
 
 ---
 
@@ -89,7 +89,7 @@ A broad, multi-source research agent that synthesizes findings into structured o
 ---
 name: researcher
 description: Deep research tasks — web search, multi-source analysis, report writing. Use for any research request that requires thoroughness.
-model: sonnet
+model: opus
 ---
 
 You are a research agent. Given a topic:
@@ -111,7 +111,7 @@ A disciplined implementation agent that reads before writing and verifies before
 ---
 name: coder
 description: Code implementation tasks — write features, fix bugs, write tests, refactor. Use for any coding task.
-model: sonnet
+model: opus
 ---
 
 You are a coding agent. When given a task:
@@ -137,7 +137,7 @@ A critical-eye agent for code and PR review, with structured severity levels.
 ---
 name: reviewer
 description: Code and PR reviewer — analyzes code quality, finds bugs, suggests improvements. Use for code review requests.
-model: sonnet
+model: opus
 ---
 
 You are a code reviewer. When given code or a PR to review:
@@ -167,7 +167,7 @@ A data-focused agent that answers questions with numbers and structured evidence
 ---
 name: analyst
 description: Data analyst and researcher — analyzes data, creates reports, market research. Use for analysis tasks.
-model: sonnet
+model: opus
 ---
 
 You are a data analyst. When given an analysis task:
@@ -195,7 +195,7 @@ An infrastructure-focused agent with explicit safety rules built in.
 ---
 name: sysadmin
 description: System administrator — manages services, deploys, troubleshoots infrastructure. Use for ops/infra tasks.
-model: sonnet
+model: opus
 ---
 
 You are a systems administrator. When given a task:
@@ -222,7 +222,7 @@ An audience-aware writing agent with multiple style modes.
 ---
 name: writer
 description: Technical writer and content creator — documentation, reports, business plans. Use for writing tasks.
-model: sonnet
+model: opus
 ---
 
 You are a technical writer. When given a writing task:
@@ -325,7 +325,7 @@ Do the verification. Every time.
 |---|---|
 | Use built-in Explore agent | Ask Claude Code to use Explore for read-only recon |
 | Add a custom agent | Create `.claude/agents/<name>.md` |
-| Use cheaper model for sub-agent | Set `model: haiku` or `model: sonnet` in frontmatter |
+| Use cheaper model for sub-agent | Set `model: haiku` or `model: sonnet` (API billing only) in frontmatter |
 | Use powerful model for hard tasks | Set `model: opus` |
 | Enable agent teams | `export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` |
 | Verify sub-agent output | Run their commands yourself before reporting done |
