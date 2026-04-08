@@ -48,18 +48,18 @@ This repo documents the complete system architecture, provides templates for bui
 ## Architecture
 
 ```
-┌───────────────────────────────────────────────┐
+┌────────────────────────────────────────────────┐
 │              YOUR LINUX MACHINE                │
 │                                                │
 │  ┌──────────────────────────────────────────┐  │
 │  │         CLAUDE CODE (tmux/systemd)       │  │
 │  │                                          │  │
-│  │  ┌──────────┐  ┌────────┐  ┌─────────┐   │  │
+│  │  ┌──────────┐  ┌────────┐  ┌──────────┐  │  │
 │  │  │ CLAUDE.md│  │ Memory │  │Sub-agents│  │  │
 │  │  │ (soul,   │  │ (daily │  │(research,│  │  │
-│  │  │  user,   │  │  notes) │  │ coder,  │  │  │
-│  │  │  rules)  │  │        │  │ writer) │   │  │
-│  │  └──────────┘  └────────┘  └─────────┘   │  │
+│  │  │  user,   │  │  notes)│  │ coder,   │  │  │
+│  │  │  rules)  │  │        │  │ writer)  │  │  │
+│  │  └──────────┘  └────────┘  └──────────┘  │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
 │  │  │  Telegram  │  │   155+ Skills     │   │  │
@@ -77,12 +77,12 @@ This repo documents the complete system architecture, provides templates for bui
 │  │     systemd + watchdog cron (5 min)      │  │
 │  │     keeps the agent alive 24/7           │  │
 │  └──────────────────────────────────────────┘  │
-└───────────────────────────────────────────────┘
+└────────────────────────────────────────────────┘
                       │
                       │ Telegram Bot API
                       ▼
                ┌──────────────┐
-               │    Aksel's   │
+               │    User's    │
                │   Telegram   │
                └──────────────┘
 ```
