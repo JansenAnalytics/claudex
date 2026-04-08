@@ -1,0 +1,22 @@
+[Unit]
+Description=Claudex - Claude Code Autonomous Agent (Telegram)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ajans/.claude-agent
+ExecStart=/home/ajans/.claude-agent/scripts/start-claudex.sh
+Restart=on-failure
+RestartSec=30
+Environment=HOME=/home/ajans
+Environment=PATH=/home/ajans/.bun/bin:/home/ajans/.local/bin:/home/ajans/.cargo/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LANG=en_US.UTF-8
+StandardOutput=append:/home/ajans/.claude-agent/logs/claudex-systemd.log
+StandardError=append:/home/ajans/.claude-agent/logs/claudex-systemd.log
+
+# Keep running after user logs out
+KillMode=process
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

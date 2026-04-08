@@ -1,0 +1,164 @@
+# Skill Catalog
+
+All 0 skills available in this system, organized by category.
+
+- **1password**: Set up and use 1Password CLI (op). Use when installing the CLI, enabling desktop app integration, signing in (single or multi-account), or reading/injecting/running secrets via op.
+- **a11y-audit**: "Accessibility auditing: WCAG compliance checking, contrast ratios, ARIA labels, keyboard navigation, semantic HTML, screen reader compatibility."
+- **adr-manager**: ADR Manager Skill
+- **api-critic**: Autonomous API testing and evaluation. Tests any REST API for correctness, security, performance, error handling, and standards compliance. Discovers endpoints, probes with valid/invalid/edge-case payloads, checks auth, response times, injection vulnerabilities, and generates severity-scored reports with actionable fixes. Use before any API "done" claim.
+- **api-tester**: "Systematic REST and GraphQL API endpoint testing: happy path, error cases, auth flows, rate limits, schema validation. Use when: testing backend APIs, validating endpoint responses, checking error ..."
+- **apple-notes**: Manage Apple Notes via the `memo` CLI on macOS (create, view, edit, delete, search, move, and export notes). Use when a user asks OpenClaw to add a note, list notes, search notes, or manage note folders.
+- **apple-reminders**: Manage Apple Reminders via remindctl CLI (list, add, edit, complete, delete). Supports lists, date filters, and JSON/plain output.
+- **arch-diagram**: "Generate architecture diagrams from codebase analysis: Mermaid, PlantUML, or ASCII."
+- **architecture-critic**: Static code analysis like a senior developer — cyclomatic/cognitive complexity, dead code detection, dependency graph analysis (circular deps, god modules), pattern consistency, error handling audit, code duplication detection. Use during refactors or before shipping.
+- **backup-restore**: "Automated backup strategies: database dumps, file snapshots, incremental backups, verification, disaster recovery. Use when: setting up backup schedules, creating database backups, restoring from b..."
+- **bear-notes**: Create, search, and manage Bear notes via grizzly CLI.
+- **blogwatcher**: Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.
+- **blucli**: BluOS CLI (blu) for discovery, playback, grouping, and volume.
+- **bluebubbles**: Use when you need to send or manage iMessages via BlueBubbles (recommended iMessage integration). Calls go through the generic message tool with channel="bluebubbles".
+- **calendar-manager**: "Read and manage Google Calendar events: list upcoming, create events, check availability, send reminders."
+- **camsnap**: Capture frames or clips from RTSP/ONVIF cameras.
+- **canvas**: "Display HTML content on connected OpenClaw nodes (Mac app, iOS, Android)."
+- **ci-cd**: "Create and debug GitHub Actions CI/CD pipelines: workflow authoring, matrix builds, caching, secrets, deployment steps."
+- **clawhub**: Use the ClawHub CLI to search, install, update, and publish agent skills from clawhub.com. Use when you need to fetch new skills on the fly, sync installed skills to latest or a specific version, or publish new/updated skill folders with the npm-installed clawhub CLI.
+- **cloud-deploy**: "Provision and manage cloud servers on Hetzner, DigitalOcean, or AWS. Set up infrastructure, firewalls, DNS, and deploy applications."
+- **code-review**: Review code for bugs, improvements, and best practices. Use when asked to review a file, PR, or codebase.
+- **codebase-navigator**: "Rapidly understand any codebase: identify entry points, map architecture, find key patterns, summarize modules, trace data flow."
+- **coding-agent**: "Delegate coding tasks to Codex, Claude Code, or Pi agents via background process. Use when: (1) building/creating new features or apps, (2) reviewing PRs (spawn in temp dir), (3) refactoring large codebases, (4) iterative coding that needs file exploration. NOT for: simple one-liner fixes (just edit), reading code (use read tool), or any work in ~/clawd workspace (never spawn agents here). Requires a bash tool that supports pty:true."
+- **cost-optimizer**: "Track and optimize LLM token spend: estimate costs per task, recommend model tiers, monitor cumulative usage, suggest batching strategies."
+- **cre-due-diligence**: "cd ~/projects/cre-due-diligence"
+- **cron-dashboard**: Unified dashboard for all cron jobs, systemd services, and Docker containers. Shows schedules, health status, log freshness, errors, upcoming runs, and diagnostics. Use when checking what's scheduled, what's running, what failed, or managing cron jobs.
+- **data-analysis**: Analyze data from CSV, JSON, SQLite, or APIs. Use when asked to analyze, summarize, or visualize data.
+- **data-pad**: "Use when: Aksel provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it."
+- **data-pipeline**: "ETL and data transformation: CSV, JSON, Parquet, NDJSON processing with filtering, mapping, joining, aggregating."
+- **data-validator**: Autonomous data quality validation — schema inference and validation, completeness/uniqueness/consistency checks, statistical anomaly detection, time-series gap detection, referential integrity, dataset comparison and drift detection. Supports CSV, JSON, SQLite, APIs. Use after any data pipeline work.
+- **database**: "Manage PostgreSQL, SQLite, and Redis databases: create, migrate, backup, restore, query, optimize."
+- **deep-research**: Conduct thorough multi-source research on any topic. Use when the user needs in-depth analysis, comparison, or investigation of a subject.
+- **dep-audit**: "Audit and update project dependencies: find outdated packages, check for vulnerabilities, auto-update safely with lockfile regeneration."
+- **design-critic**: Autonomous UI/UX review — screenshots every page at mobile/tablet/desktop (full-page scrolling), analyzes with vision models for layout bugs, checks accessibility (axe-core), audits contrast/colors/fonts/spacing for design system inconsistencies, detects dead buttons/links, overlapping elements hiding text/buttons, text truncation, broken links, and runs Lighthouse performance audits. Produces a prioritized report with severity scores and actionable fixes. Use before any launch, after major UI changes, or when the user asks to check/review a web app.
+- **design-system**: "Enforce design consistency: component inventory, style token extraction, CSS consistency checking, spacing/color/typography auditing."
+- **discord**: "Discord ops via the message tool (channel=discord)."
+- **doc-generator**: "Auto-generate documentation from code: README files, JSDoc comments, API docs. Scans project structure, detects frameworks, and produces ready-to-use documentation."
+- **doc-reader**: PDF/DOCX/XLSX/image document intelligence — text extraction, table parsing, OCR, financial statement analysis, contract clause detection, document classification, and format conversion. Use when reading, analyzing, extracting data from, or converting documents.
+- **doc-verifier**: Ensures documentation is accurate, complete, and actually works — catches documentation rot before users hit it. Validates code examples, checks links, compares API/CLI docs against reality, detects stale docs, and scores completeness.
+- **docker**: "Manage Docker containers and Compose stacks: build, run, stop, logs, exec, prune, multi-service orchestration."
+- **draft-queue**: Draft Queue Skill
+- **e2e-test-writer**: "Generate end-to-end tests for web applications using Playwright. Create test files from user flow descriptions, page snapshots, or existing page analysis."
+- **economic-data-collector**: "SKILL=~/openclaw/skills/economic-data-collector/scripts"
+- **eightctl**: Control Eight Sleep pods (status, temperature, alarms, schedules).
+- **email-manager**: "Read, search, send, and manage email via IMAP/SMTP or API (Gmail, Outlook)."
+- **error-monitor**: "Monitor application logs and stderr in real-time for errors, crashes, and exceptions. Auto-capture stack traces, alert on new error patterns, track error rates."
+- **event-log**: "An append-only structured JSONL event log giving Kite continuity across sessions — without reading every log file."
+- **file-manager**: File operations — organize, search, backup, manage files and directories. Use for any file management task.
+- **flow-tester**: End-to-end user journey tester using Playwright. Tests multi-step flows (signup, checkout, CRUD) with screenshots at each step. Auto-generates flows from URLs or text descriptions. Use after integration work to verify complete user journeys work.
+- **food-order**: Reorder Foodora orders + track ETA/status with ordercli. Never confirm without explicit user approval. Triggers: order food, reorder, track ETA.
+- **frontend-design**: "Based on Anthropic's Frontend Aesthetics research. Adapted for OpenClaw with practical tooling additions."
+- **frontend-inspector**: "Analyze frontend screenshots using vision model analysis and automated checks: detect layout bugs, alignment issues, overflow, z-index problems, spacing inconsistencies, color contrast issues."
+- **fundamental-research-engine**: "SKILL=~/openclaw/skills/fundamental-research-engine/scripts"
+- **gemini**: Gemini CLI for one-shot Q&A, summaries, and generation.
+- **gh-issues**: "Fetch GitHub issues, spawn sub-agents to implement fixes and open PRs, then monitor and address PR review comments. Usage: /gh-issues [owner/repo] [--label bug] [--limit 5] [--milestone v1.0] [--assignee @me] [--fork user/repo] [--watch] [--interval 5] [--reviews-only] [--cron] [--dry-run] [--model glm-5] [--notify-channel -1002381931352]"
+- **gifgrep**: Search GIF providers with CLI/TUI, download results, and extract stills/sheets.
+- **git-bisect-auto**: "Automated git bisect to find the exact commit that introduced a bug. Run a test command against each bisect step, report the first bad commit with full context."
+- **github-workflow**: Git and GitHub operations — clone, branch, commit, push, PRs, issues, CI status. Use for any git or GitHub task.
+- **gog**: Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.
+- **goplaces**: Query Google Places API (New) via the goplaces CLI for text search, place details, resolve, and reviews. Use for human-friendly place lookup or JSON output for scripts.
+- **health-check**: Quick system health check — services, disk, memory, processes. Use for periodic health monitoring.
+- **healthcheck**: Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS).
+- **himalaya**: "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIME Meta Language)."
+- **hypothesis-tester**: Hypothesis Tester Skill
+- **imsg**: iMessage/SMS CLI for listing chats, history, and sending messages via Messages.app.
+- **kanban-agent**: "Persistent task board backed by SQLite. Survives across sessions. Supports priorities (p0-p3), statuses (backlog → todo → in-progress → review → done), deadlines, dependencies, projects, tags, and ..."
+- **knowledge-base**: Knowledge Base Skill
+- **knowledge-graph**: "SQLite-backed entity-relationship store. Entities (people, projects, decisions, tools, rules) connected by typed relations (decided-by, depends-on, supersedes, etc.). Full-text search, path finding..."
+- **latex-doc**: "Converts Markdown → LaTeX → PDF. Handles Mermaid diagrams, math, tables, citations, figures."
+- **lighthouse-perf**: "Run performance audits on web pages: Lighthouse scores, Core Web Vitals, resource analysis, bundle size tracking, performance budgets."
+- **log-analyzer**: "Parse and analyze application logs: pattern matching, error extraction, correlation with timestamps, frequency analysis, anomaly detection. Use when: diagnosing production issues, finding error pat..."
+- **macro-briefing**: "SKILL_DIR=\"$(dirname \"$(realpath \"$0\")\")/..\"  # resolve from scripts/"
+- **market-data-engine**: "SKILL=~/openclaw/skills/market-data-engine/scripts"
+- **market-monitor**: Market Monitor Skill
+- **mcp-hub**: MCP server integration hub — standardized tool access to databases, filesystems, memory, reasoning, and 100s of third-party services via Model Context Protocol. Use when querying databases, structured file ops, knowledge graph memory, step-by-step reasoning, or when the user asks about MCP servers.
+- **mcporter**: Use the mcporter CLI to list, configure, auth, and call MCP servers/tools directly (HTTP or stdio), including ad-hoc servers, config edits, and CLI/type generation.
+- **media-fetch**: Download video/audio from 1000+ sites (YouTube, Twitter/X, Spotify, TikTok, etc.), extract audio, download subtitles, transcribe speech to text, and search for videos. Use when asked to download, summarize, or transcribe any video/audio URL, or when asked to search YouTube.
+- **meta-analyst**: Self-reflection and auto-improvement skill — analyzes session logs, tracks patterns, produces efficiency reports
+- **migration-planner**: "Plan and execute framework, language, or infrastructure migrations safely: version upgrades, framework swaps, API changes."
+- **mock-server**: "Spin up mock API servers for frontend development and testing: static responses, record/replay real API calls, dynamic response generation."
+- **model-router**: Model Router Skill
+- **model-usage**: Use CodexBar CLI local cost usage to summarize per-model usage for Codex or Claude, including the current (most recent) model or a full model breakdown. Trigger when asked for model-level usage/cost data from codexbar, or when you need a scriptable per-model summary from codexbar cost JSON.
+- **morning-briefing**: Generate a morning briefing with weather, market overview, system health, and upcoming tasks. Use for daily briefings.
+- **nano-banana-pro**: Generate or edit images via Gemini 3 Pro Image (Nano Banana Pro).
+- **nano-pdf**: Edit PDFs with natural-language instructions using the nano-pdf CLI.
+- **nginx-caddy**: Nginx & Caddy Skill
+- **notion**: Notion API for creating and managing pages, databases, and blocks.
+- **ntfy**: Send push notifications to phones/desktops via ntfy. Use when the user wants to send alerts, reminders, or notifications.
+- **obsidian**: Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.
+- **ocr-document**: "SKILL=~/openclaw/skills/ocr-document/scripts"
+- **openai-image-gen**: Batch-generate images via OpenAI Images API. Random prompt sampler + `index.html` gallery.
+- **openai-whisper-api**: Transcribe audio via OpenAI Audio Transcriptions API (Whisper).
+- **openai-whisper**: Local speech-to-text with the Whisper CLI (no API key).
+- **openhue**: Control Philips Hue lights and scenes via the OpenHue CLI.
+- **opportunity-scanner**: "SKILL=~/openclaw/skills/opportunity-scanner/scripts"
+- **oracle**: Best practices for using the oracle CLI (prompt + file bundling, engines, sessions, and file attachment patterns).
+- **ordercli**: Foodora-only CLI for checking past orders and active order status (Deliveroo WIP).
+- **peekaboo**: Capture and automate macOS UI with the Peekaboo CLI.
+- **perf-profiler**: Runtime performance analysis beyond Lighthouse — bundle size analysis, memory leak detection, HTTP load testing, resource optimization audit, and runtime CPU profiling. Use before launch or when investigating performance issues.
+- **pipeline-runner**: "Execute multi-step pipelines defined in JSON with:"
+- **post-mortem**: "Generate structured post-mortems after incidents or failures: root cause analysis, timeline, impact assessment, prevention steps."
+- **pr-monitor**: PR / CI Monitor Skill
+- **project-brief**: Project Brief Skill
+- **project-index**: "Kite's project registry — a structured JSON index of all active projects."
+- **project-planner**: Project Planner Skill
+- **project-scaffold**: "Scaffold new projects from templates: Node.js, Python, React, API server, CLI tool, monorepo."
+- **prompt-library**: "Library of tested prompt patterns for sub-agent orchestration: task decomposition, verification, error recovery, chain-of-thought."
+- **prop-hedge**: Prop trading hedge system — conferences, trade journal, stats, lessons. Use when Aksel sends trade commands or asks about trading.
+- **react-frontend**: "Opinionated guide for building data-heavy React applications — dashboards, trading UIs, analytics tools. Based on the 2025/2026 React ecosystem and our actual stack (React 19 + Vite + TypeScript + ..."
+- **refactor**: "Large-scale codebase restructuring: rename, extract, inline, move modules, update imports. Use when: restructuring project layout, extracting components/functions, renaming across files, splitting ..."
+- **release-manager**: "Manage releases: semantic versioning, changelog generation, GitHub releases, git tags, version bumping."
+- **research-pipeline**: "[TODO: 1-2 sentences explaining what this skill enables]"
+- **research-reporter**: Research Reporter Skill
+- **research-synthesizer**: "SKILL=~/openclaw/skills/research-synthesizer/scripts"
+- **responsive-checker**: "Test responsive design across viewport sizes: capture screenshots at mobile/tablet/desktop breakpoints, detect overflow issues, flag breakpoint problems."
+- **rss-digest**: RSS Digest Skill
+- **sag**: ElevenLabs text-to-speech with mac-style say UX.
+- **scheduler**: "Natural language task scheduling for Kite. Create, list, and cancel scheduled jobs in plain English with a human-readable registry of what's running and why."
+- **schema-analyzer**: "Analyze database schemas: generate ERD diagrams, detect normalization issues, suggest indexes, find missing foreign keys, audit schema quality."
+- **secret-vault**: "Encrypted credential store — AES-256-GCM secured tokens and secrets in one place."
+- **secrets-manager**: "Manage secrets and environment variables securely: .env files, encrypted vaults, key rotation, secret scanning. Use when: setting up environment variables, managing API keys, rotating secrets, scan..."
+- **sector-rotation**: "cd /path/to/sector-rotation"
+- **security-audit**: "Security auditing: vulnerability scanning, dependency checking, port scanning, permission review. Use when: auditing project security, scanning for CVEs in dependencies, checking open ports, review..."
+- **security-auditor**: Automated security testing — HTTP header audit, injection testing (SQL/XSS/SSRF/command), secret scanning in source code, auth bypass testing, dependency vulnerability scanning. Pen-test-style checks with safe mode default. Use before any launch or security review.
+- **seed-data**: "Generate realistic test and seed data for any database schema: users, products, orders, time series, financial data."
+- **self-skill**: "Meta-skill for detecting when a solved problem is worth packaging as a reusable skill, then scaffolding it. Runs automatically after completing any non-trivial task. Also use when explicitly asked to create, draft, or propose a new skill from something just built."
+- **sentiment-engine**: "SKILL=~/openclaw/skills/sentiment-engine/scripts"
+- **session-logs**: Search and analyze your own session logs (older/parent conversations) using jq.
+- **shared-clipboard**: Cross-session key-value clipboard for sharing snippets, code, URLs, configs, and notes between agents, sessions, and devices. Use when storing, retrieving, or sharing text snippets, when piping data between commands, or when the user says "save this", "remember this snippet", "clipboard", "clip", or "scratchpad".
+- **sherpa-onnx-tts**: Local text-to-speech via sherpa-onnx (offline, no cloud)
+- **skill-creator**: Create or update AgentSkills. Use when designing, structuring, or packaging skills with scripts, references, and assets.
+- **slack**: Use when you need to control Slack from OpenClaw via the slack tool, including reacting to messages or pinning/unpinning items in Slack channels or DMs.
+- **songsee**: Generate spectrograms and feature-panel visualizations from audio with the songsee CLI.
+- **sonoscli**: Control Sonos speakers (discover/status/play/volume/group).
+- **source-scorer**: Source Credibility Scorer Skill
+- **spotify-player**: Terminal Spotify playback/search via spogo (preferred) or spotify_player.
+- **sql-query**: "Build and execute complex SQL queries for analytics: joins, window functions, CTEs, aggregations, pivots."
+- **ssh-remote**: "SSH into remote servers, execute commands, transfer files via SCP/rsync, manage SSH keys and configs, tunnel ports."
+- **summarize**: Summarize or extract text/transcripts from URLs, podcasts, and local files (great fallback for “transcribe this YouTube/video”).
+- **system-admin**: System administration — manage services, processes, cron, systemd, networking. Use for any sysadmin task.
+- **systemd-manager**: Systemd Manager Skill
+- **task-queue**: Skill: task-queue
+- **technical-analysis-engine**: "SKILL=~/openclaw/skills/technical-analysis-engine/scripts"
+- **test-critic**: Evaluates test quality — coverage analysis, mutation testing (do tests actually catch bugs?), test gap detection, and test code quality scoring. Supports Jest, Vitest, pytest. Use after writing tests to verify they're meaningful.
+- **test-runner**: "Run and interpret test suites across frameworks: Jest, Vitest, pytest, Mocha, tap. Use when: running tests, debugging test failures, generating coverage reports, writing test fixtures, or setting u..."
+- **things-mac**: Manage Things 3 via the `things` CLI on macOS (add/update projects+todos via URL scheme; read/search/list from the local Things database). Use when a user asks OpenClaw to add a task to Things, list inbox/today/upcoming, search tasks, or inspect projects/areas/tags.
+- **tmux**: Remote-control tmux sessions for interactive CLIs by sending keystrokes and scraping pane output.
+- **trello**: Manage Trello boards, lists, and cards via the Trello REST API.
+- **video-frames**: Extract frames or short clips from videos using ffmpeg.
+- **visual-review**: "Screenshot comparison and visual regression detection: pixel diffing, before/after overlays, threshold-based change detection."
+- **visualize**: "Generate charts and visualizations: line, bar, scatter, heatmap, candlestick. Output as PNG/SVG for Telegram or web."
+- **voice-call**: Start voice calls via the OpenClaw voice-call plugin.
+- **vuln-scanner**: Vulnerability Scanner Skill
+- **wacli**: Send WhatsApp messages to other people or search/sync WhatsApp history via the wacli CLI (not for normal user chats).
+- **watchdog**: Monitor system health — check services, disk usage, processes, logs. Use when asked about system status or health.
+- **weather**: Get current weather and forecasts. Use when the user asks about weather, temperature, or forecasts for any location.
+- **web-monitor**: Monitor websites for changes, stock availability, price drops. Use when asked to watch a URL or check for changes.
+- **web-search**: Search the web and fetch content from URLs. Use for research, fact-checking, news, or any web lookup.
+- **webhook-receiver**: "Lightweight background HTTP server that receives webhooks from external services (GitHub, ntfy, Stripe, any HTTP POST) and runs configured shell commands in response. Use when setting up webhook integrations, receiving GitHub push/PR/issue events, triggering scripts from external services, or exposing a local endpoint for testing. Switches from polling to event-driven: things happen the moment they're triggered, not on the next cron cycle."
+- **website-screenshot**: Take a headless Chromium screenshot of any URL and send/save the result. Use when the user asks for a screenshot, snapshot, or visual of a website, webpage, or URL — including requests like "show me what X looks like", "capture the homepage of Y", or "screenshot this URL". Supports viewport vs full-page, mobile emulation, dark mode, and configurable wait strategies.
