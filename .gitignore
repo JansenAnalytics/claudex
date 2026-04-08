@@ -1,0 +1,24 @@
+# Secrets
+*.env
+.secrets
+access.json
+
+# Logs
+logs/
+*.log
+
+# Personal data
+memory/
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Temporary
+/tmp/
+*.tmp
