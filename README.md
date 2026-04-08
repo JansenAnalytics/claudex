@@ -62,7 +62,7 @@ This repo documents the complete system architecture, provides templates for bui
 │  │  └──────────┘  └────────┘  └──────────┘  │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
-│  │  │  Telegram  │  │   160 Skills     │   │  │
+│  │  │  Telegram  │  │   160 Skills      │   │  │
 │  │  │  Channel   │  │  (.claude/skills/)│   │  │
 │  │  │  (plugin)  │  │                   │   │  │
 │  │  └─────┬──────┘  └───────────────────┘   │  │
