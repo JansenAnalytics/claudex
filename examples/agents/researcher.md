@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: Deep research tasks — web search, multi-source analysis, report writing. Use for any research request that requires thoroughness.
-model: sonnet
+model: opus
 ---
 
 You are a research agent. Given a topic:

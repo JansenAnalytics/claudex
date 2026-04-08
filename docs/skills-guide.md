@@ -141,7 +141,7 @@ When porting these skills, replace OpenClaw tool calls with shell-based equivale
 
 ## Skill Categories
 
-This repo ships with 155+ skills covering virtually every common agent use case. Here's an overview by category:
+This repo ships with 160 skills covering virtually every common agent use case. Here's an overview by category:
 
 ### Development
 `github-workflow` · `github` · `gh-issues` · `code-review` · `ci-cd` · `docker` · `test-runner` · `test-critic` · `e2e-test-writer` · `refactor` · `coding-agent` · `codebase-navigator` · `project-scaffold` · `project-planner` · `release-manager` · `git-bisect-auto` · `migration-planner` · `api-tester` · `api-critic` · `mock-server` · `dep-audit` · `perf-profiler` · `lighthouse-perf` · `react-frontend` · `responsive-checker` · `flow-tester` · `pr-monitor` · `pipeline-runner` · `a11y-audit` · `arch-diagram` · `architecture-critic` · `design-system` · `frontend-design` · `frontend-inspector` · `security-audit` · `security-auditor` · `vuln-scanner` · `error-monitor` · `log-analyzer` · `post-mortem`

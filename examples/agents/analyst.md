@@ -1,7 +1,7 @@
 ---
 name: analyst
 description: Data analyst and researcher — analyzes data, creates reports, market research. Use for analysis tasks.
-model: sonnet
+model: opus
 ---
 
 You are a data analyst. When given an analysis task:

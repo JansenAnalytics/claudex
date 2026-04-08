@@ -14,7 +14,7 @@ Claudex is an **autonomous AI agent** that runs as a persistent daemon on a Linu
 
 - 💬 **Connects to Telegram** — real-time two-way messaging, just like a human chat
 - 🧠 **Has memory** — CLAUDE.md for identity/rules + daily memory files for continuity across sessions
-- 🔧 **Has skills** — 155+ portable skill modules for everything from weather to code review to system monitoring
+- 🔧 **Has skills** — 160 portable skill modules for everything from weather to code review to system monitoring
 - 🤖 **Spawns sub-agents** — delegate parallel work to specialized agents (researcher, coder, reviewer, etc.)
 - 🔄 **Self-heals** — watchdog cron + systemd auto-restart keeps it alive 24/7
 - 💰 **Zero API cost** — runs on Claude Max subscription ($100/mo flat), not per-token billing
@@ -62,7 +62,7 @@ This repo documents the complete system architecture, provides templates for bui
 │  │  └──────────┘  └────────┘  └──────────┘  │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
-│  │  │  Telegram  │  │   155+ Skills     │   │  │
+│  │  │  Telegram  │  │   160 Skills     │   │  │
 │  │  │  Channel   │  │  (.claude/skills/)│   │  │
 │  │  │  (plugin)  │  │                   │   │  │
 │  │  └─────┬──────┘  └───────────────────┘   │  │
@@ -231,7 +231,7 @@ curl -s "wttr.in/LOCATION?format=%l:+%c+%t+%h+%w"
 
 Claude Code auto-selects relevant skills based on the task description. Place skills in `.claude/skills/<name>/SKILL.md`.
 
-**This repo includes 155+ production-tested skills** covering:
+**This repo includes all 160 production-tested skills** covering:
 - 🌤️ Weather, web monitoring, research
 - 💻 GitHub workflow, code review, testing
 - 📊 Data analysis, market data, trading
@@ -249,7 +249,7 @@ Custom sub-agents handle specialized parallel work:
 ---
 name: researcher
 description: Deep research tasks — web search, multi-source analysis, report writing.
-model: sonnet
+model: opus
 ---
 
 You are a research agent. Given a topic:
@@ -261,12 +261,12 @@ You are a research agent. Given a topic:
 Available sub-agents in this setup:
 | Agent | Model | Purpose |
 |---|---|---|
-| `researcher` | Sonnet | Multi-source research and analysis |
-| `coder` | Sonnet | Feature implementation, bug fixes |
-| `reviewer` | Sonnet | Code review and PR analysis |
-| `analyst` | Sonnet | Data analysis and market research |
-| `sysadmin` | Sonnet | Infrastructure and ops tasks |
-| `writer` | Sonnet | Documentation, reports, plans |
+| `researcher` | Opus | Multi-source research and analysis |
+| `coder` | Opus | Feature implementation, bug fixes |
+| `reviewer` | Opus | Code review and PR analysis |
+| `analyst` | Opus | Data analysis and market research |
+| `sysadmin` | Opus | Infrastructure and ops tasks |
+| `writer` | Opus | Documentation, reports, plans |
 
 ### Telegram Integration
 
@@ -404,7 +404,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | Feature | Notes |
 |---|---|
 | **Telegram messaging** | Both native, both work well. OpenClaw slightly richer (reactions, buttons, polls). |
-| **Skills** | Both have skill systems. OpenClaw has 155 community skills via ClawHub; Claudex can port them. |
+| **Skills** | Both have skill systems. OpenClaw has 160 skills via ClawHub; Claudex can port them. |
 | **Memory** | Both file-based. OpenClaw: manual MEMORY.md. Claudex: auto-memory + daily files. |
 | **Sub-agents** | Both spawn sub-agents. OpenClaw: `sessions_spawn`. Claudex: built-in subagents. |
 | **GitHub integration** | Both use `gh` CLI. Claudex also supports MCP GitHub server. |
@@ -434,7 +434,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 │   │   ├── github-workflow/SKILL.md
 │   │   ├── watchdog/SKILL.md
 │   │   ├── web-monitor/SKILL.md
-│   │   └── ... (155+ skills)
+│   │   └── ... (160 skills)
 │   ├── agents/                     # Custom sub-agents
 │   │   ├── researcher.md
 │   │   ├── coder.md
