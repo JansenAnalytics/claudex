@@ -73,7 +73,7 @@ fi
 # Copy example skills
 echo "▸ Copying example skills..."
 SKILL_COUNT=0
-for skill_dir in "$REPO_DIR/examples/skills"/*/; do
+for skill_dir in "$REPO_DIR/skills"/*/; do
     skill_name=$(basename "$skill_dir")
     target="$WORKSPACE/.claude/skills/$skill_name"
     if [ ! -d "$target" ]; then
@@ -87,7 +87,7 @@ echo "  ✅ $SKILL_COUNT skills installed"
 # Copy sub-agents
 echo "▸ Copying sub-agent definitions..."
 AGENT_COUNT=0
-for agent_file in "$REPO_DIR/examples/agents"/*.md; do
+for agent_file in "$REPO_DIR/agents"/*.md; do
     agent_name=$(basename "$agent_file")
     target="$WORKSPACE/.claude/agents/$agent_name"
     if [ ! -f "$target" ]; then
@@ -99,7 +99,7 @@ echo "  ✅ $AGENT_COUNT sub-agents installed"
 
 # Copy rules
 echo "▸ Copying rules..."
-for rule_file in "$REPO_DIR/examples/rules"/*.md; do
+for rule_file in "$REPO_DIR/rules"/*.md; do
     rule_name=$(basename "$rule_file")
     target="$WORKSPACE/.claude/rules/$rule_name"
     if [ ! -f "$target" ]; then
@@ -167,6 +167,34 @@ else
     (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
     echo "  ✅ Watchdog cron installed (every 5 minutes)"
 fi
+
+# Memory search setup
+echo ""
+echo "▸ Setting up memory search (RAG system)..."
+mkdir -p "$WORKSPACE/data"
+
+# Copy memory search script
+if [ -f "$REPO_DIR/scripts/memory-search.cjs" ]; then
+    cp "$REPO_DIR/scripts/memory-search.cjs" "$WORKSPACE/scripts/"
+    cp "$REPO_DIR/scripts/memory-reindex.sh" "$WORKSPACE/scripts/"
+    chmod +x "$WORKSPACE/scripts/memory-reindex.sh"
+    echo "  ✅ Memory search scripts installed"
+fi
+
+# Memory reindex cron (every 30 min)
+REINDEX_CRON="*/30 * * * * bash $WORKSPACE/scripts/memory-reindex.sh"
+if crontab -l 2>/dev/null | grep -q "memory-reindex"; then
+    echo "  ⚠️  Reindex cron already exists — skipping"
+else
+    (crontab -l 2>/dev/null; echo "$REINDEX_CRON") | crontab -
+    echo "  ✅ Memory reindex cron installed (every 30 minutes)"
+fi
+
+echo ""
+echo "  ℹ️  Memory search requires OPENAI_API_KEY for embeddings."
+echo "     Set it in your environment or in a .env file."
+echo "     Run initial index: node --experimental-sqlite $WORKSPACE/scripts/memory-search.cjs --index"
+echo ""
 
 # Telegram setup
 echo ""

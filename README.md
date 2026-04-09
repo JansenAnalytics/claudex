@@ -33,7 +33,7 @@ This repo documents the complete system architecture, provides templates for bui
   - [Sub-agents](#sub-agents)
   - [Telegram Integration](#telegram-integration)
   - [Persistence](#persistence)
-  - [Memory System](#memory-system)
+  - [Memory & RAG System](#memory--rag-system)
   - [Hooks & Automation](#hooks--automation)
   - [MCP Servers](#mcp-servers)
 - [Comparison: Claudex vs OpenClaw](#comparison-claudex-vs-openclaw)
@@ -126,13 +126,13 @@ cp templates/CLAUDE.md.example ~/.claude-agent/CLAUDE.md
 cp templates/settings.json ~/.claude-agent/.claude/settings.json
 
 # Copy skills you want
-cp -r examples/skills/* ~/.claude-agent/.claude/skills/
+cp -r skills/* ~/.claude-agent/.claude/skills/
 
 # Copy sub-agents
-cp examples/agents/* ~/.claude-agent/.claude/agents/
+cp agents/* ~/.claude-agent/.claude/agents/
 
 # Copy rules
-cp examples/rules/* ~/.claude-agent/.claude/rules/
+cp rules/* ~/.claude-agent/.claude/rules/
 
 # Start Claude Code with Telegram
 cd ~/.claude-agent
@@ -238,7 +238,7 @@ Claude Code auto-selects relevant skills based on the task description. Place sk
 - 🔧 System admin, Docker, CI/CD
 - 📝 Documentation, LaTeX, note-taking
 - 🔔 Notifications (ntfy), webhooks
-- And many more — see [examples/skills/](examples/skills/)
+- And many more — see [skills/](skills/)
 
 ### Sub-agents
 
@@ -300,15 +300,82 @@ Key: `loginctl enable-linger $USER` makes the systemd user service survive logou
 
 See [docs/persistence.md](docs/persistence.md) for details and troubleshooting.
 
-### Memory System
+### Memory & RAG System
 
-Claudex uses a file-based memory system:
+Claudex has a **two-layer memory system**: file-based markdown notes (simple, durable) plus a **vector RAG system** for semantic search across all memories and conversation history.
 
-- **`CLAUDE.md`** — permanent identity and rules (like DNA — rarely changes)
-- **`memory/YYYY-MM-DD.md`** — daily notes (what happened today, decisions made, tasks completed)
-- **Claude's auto-memory** — Claude Code automatically remembers key learnings across sessions
+#### Layer 1: File-Based Memory
 
-The agent reads recent memory files at session start to restore context about ongoing work.
+- **`CLAUDE.md`** — permanent identity and rules (rarely changes)
+- **`memory/YYYY-MM-DD.md`** — daily notes (decisions, tasks, context)
+- **Claude's auto-memory** — Claude Code's built-in cross-session learning
+
+#### Layer 2: Vector Memory Search (RAG)
+
+The file-based memory is supplemented by a **semantic search engine** (`scripts/memory-search.cjs`) that indexes everything into a SQLite database with OpenAI embeddings. This gives the agent the ability to recall relevant context even when the exact wording doesn't match.
+
+**What gets indexed:**
+- All markdown memory files (`CLAUDE.md`, `memory/*.md`)
+- Claude Code session transcripts (full conversation history from `~/.claude/projects/`)
+- Cross-agent memories (search what other agents know — Kite, Poe, Argus, etc.)
+
+**How it works:**
+```
+                    ┌──────────────┐
+User asks about  →  │ memory-search │  → Top N relevant chunks
+  past work         │   .cjs       │     with scores
+                    └──────┬───────┘
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+        ┌──────────┐ ┌──────────┐ ┌──────────┐
+        │ Markdown  │ │ Session  │ │ Cross-   │
+        │ Memory    │ │ Trans-   │ │ Agent    │
+        │ Files     │ │ cripts   │ │ Memory   │
+        └──────────┘ └──────────┘ └──────────┘
+              │            │            │
+              └────────────┼────────────┘
+                           ▼
+                    ┌──────────────┐
+                    │   SQLite DB  │
+                    │  + FTS5      │
+                    │  + Embeddings│
+                    └──────────────┘
+```
+
+**Search is hybrid** — combines three signals:
+1. **Vector similarity** (70% weight) — OpenAI `text-embedding-3-small` embeddings, cosine similarity
+2. **Full-text search** (30% weight) — SQLite FTS5 with Porter stemming
+3. **Recency decay** — recent memories rank higher (60-day half-life)
+
+**Usage:**
+```bash
+# Search across all memories
+node --experimental-sqlite scripts/memory-search.cjs --search "Harkerud property business plan"
+
+# Filter by source
+node --experimental-sqlite scripts/memory-search.cjs --search "query" --source session
+node --experimental-sqlite scripts/memory-search.cjs --search "query" --source cross-agent
+
+# Filter by agent
+node --experimental-sqlite scripts/memory-search.cjs --search "query" --agent kite
+
+# Full reindex
+node --experimental-sqlite scripts/memory-search.cjs --index
+
+# Incremental reindex (only changed files)
+node --experimental-sqlite scripts/memory-search.cjs --index --incremental
+
+# Show statistics
+node --experimental-sqlite scripts/memory-search.cjs --stats
+```
+
+**Automatic indexing:**
+- **SessionStart hook** — incremental reindex every time the agent starts a new session
+- **Cron job** — reindexes every 30 minutes to catch changes from other agents
+- **Embedding cache** — unchanged text is never re-embedded (saves API cost)
+
+See [docs/memory-search.md](docs/memory-search.md) for the full technical guide, including cross-agent setup, configuration, and troubleshooting.
 
 ### Hooks & Automation
 
@@ -381,6 +448,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | **🔒 Permission modes** | Granular: `default`, `plan`, `bypassPermissions` with per-tool allowlists. OpenClaw: binary policy. |
 | **🏗️ Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
 | **📦 No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
+| **🔍 Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
 
 ### What OpenClaw Does Better
 
@@ -405,7 +473,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 |---|---|
 | **Telegram messaging** | Both native, both work well. OpenClaw slightly richer (reactions, buttons, polls). |
 | **Skills** | Both have skill systems. OpenClaw has 160 skills via ClawHub; Claudex can port them. |
-| **Memory** | Both file-based. OpenClaw: manual MEMORY.md. Claudex: auto-memory + daily files. |
+| **Memory & RAG** | Both have vector semantic search + FTS5 hybrid. OpenClaw: built-in `memory_search` tool. Claudex: custom RAG engine with cross-agent search. Both index session transcripts. |
 | **Sub-agents** | Both spawn sub-agents. OpenClaw: `sessions_spawn`. Claudex: built-in subagents. |
 | **GitHub integration** | Both use `gh` CLI. Claudex also supports MCP GitHub server. |
 | **File operations** | Both: Read/Write/Edit/Exec. Identical capability. |
@@ -424,39 +492,82 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 
 ## Directory Structure
 
+### This Repository
+
+```
+claudex/
+├── README.md                       # You're reading it
+├── LICENSE                         # MIT
+├── CONTRIBUTING.md                 # Contribution guidelines
+├── docs/                           # Comprehensive documentation
+│   ├── architecture.md             #   System architecture + Mermaid diagrams
+│   ├── memory-search.md            #   Vector RAG system (setup, config, API)
+│   ├── telegram-setup.md           #   Telegram integration step-by-step
+│   ├── persistence.md              #   3-layer persistence (tmux+systemd+cron)
+│   ├── automation.md               #   Hooks, scheduled tasks, /loop
+│   ├── skills-guide.md             #   Skill format, auto-selection, porting
+│   ├── skills-catalog.md           #   Full catalog of all 160 skills
+│   ├── subagents.md                #   Custom sub-agents and teams
+│   ├── claude-md-guide.md          #   Writing an effective CLAUDE.md
+│   └── mcp-servers.md              #   MCP server configuration
+├── skills/                         # 160 production-tested skill modules
+│   ├── weather/SKILL.md
+│   ├── github-workflow/SKILL.md
+│   ├── memory-search/SKILL.md
+│   ├── watchdog/SKILL.md
+│   └── ... (160 total)
+├── agents/                         # Custom sub-agent definitions
+│   ├── researcher.md
+│   ├── coder.md
+│   ├── reviewer.md
+│   ├── analyst.md
+│   ├── sysadmin.md
+│   └── writer.md
+├── rules/                          # Global behavior rules
+│   ├── safety.md
+│   └── telegram.md
+├── templates/                      # Setup templates
+│   ├── CLAUDE.md.example           #   Annotated identity template
+│   └── settings.json               #   Permissions + hooks config
+├── scripts/                        # Management + infrastructure
+│   ├── bootstrap.sh                #   Automated setup script
+│   ├── memory-search.cjs           #   Vector RAG search engine
+│   ├── memory-reindex.sh           #   Cron-based incremental reindexing
+│   ├── start-claudex.sh            #   Start agent (tmux)
+│   ├── stop-claudex.sh             #   Stop agent
+│   ├── restart-claudex.sh          #   Restart agent
+│   ├── status-claudex.sh           #   Status check (all layers)
+│   └── watchdog-claudex.sh         #   Auto-restart watchdog
+├── systemd/                        # Systemd user service
+│   └── claudex.service
+└── examples/                       # Complete workspace example
+    └── workspace/                  #   Sanitized production workspace
+```
+
+### Deployed Workspace (created by `bootstrap.sh`)
+
 ```
 ~/.claude-agent/                    # Agent workspace root
-├── CLAUDE.md                       # Main instructions (soul + user + rules)
+├── CLAUDE.md                       # Your agent's identity (customize this!)
 ├── .claude/
 │   ├── settings.json               # Permissions, hooks, env vars
-│   ├── skills/                     # Skill modules
-│   │   ├── weather/SKILL.md
-│   │   ├── github-workflow/SKILL.md
-│   │   ├── watchdog/SKILL.md
-│   │   ├── web-monitor/SKILL.md
-│   │   └── ... (160 skills)
-│   ├── agents/                     # Custom sub-agents
-│   │   ├── researcher.md
-│   │   ├── coder.md
-│   │   ├── reviewer.md
-│   │   ├── analyst.md
-│   │   ├── sysadmin.md
-│   │   └── writer.md
-│   └── rules/                      # Global rules
-│       ├── safety.md
-│       └── telegram.md
+│   ├── skills/                     # 160 skill modules (copied from repo)
+│   ├── agents/                     # 6 sub-agent definitions
+│   └── rules/                      # Safety + Telegram formatting rules
+├── data/
+│   └── memory.sqlite               # Vector RAG database (auto-created)
 ├── memory/                         # Daily memory files
 │   └── YYYY-MM-DD.md
-├── logs/                           # Session and watchdog logs
-├── scripts/                        # Management scripts
+├── logs/                           # Session, watchdog, and reindex logs
+├── scripts/                        # Management scripts (copied from repo)
+│   ├── memory-search.cjs           #   Vector RAG search engine
+│   ├── memory-reindex.sh           #   Incremental reindexer
 │   ├── start-claudex.sh
 │   ├── stop-claudex.sh
 │   ├── restart-claudex.sh
 │   ├── status-claudex.sh
 │   └── watchdog-claudex.sh
-└── projects/                       # Symlinks to project directories
-    ├── my-project -> ~/projects/my-project
-    └── another-project -> ~/projects/another-project
+└── projects/                       # Symlinks to your project directories
 ```
 
 ---
@@ -541,7 +652,7 @@ See [examples/workspace/](examples/workspace/) for a sanitized version of a prod
 
 ### Example Skills
 
-See [examples/skills/](examples/skills/) for production-tested skills including:
+See [skills/](skills/) for production-tested skills including:
 - `weather` — fetch forecasts from wttr.in
 - `github-workflow` — full git + GitHub operations
 - `watchdog` — system health monitoring
@@ -550,7 +661,7 @@ See [examples/skills/](examples/skills/) for production-tested skills including:
 
 ### Example Sub-agents
 
-See [examples/agents/](examples/agents/) for specialized sub-agent definitions.
+See [agents/](agents/) for specialized sub-agent definitions.
 
 ---
 
