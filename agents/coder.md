@@ -17,3 +17,16 @@ Rules:
 - Verify your code runs before reporting done
 - Use existing patterns and conventions from the codebase
 - Prefer simple solutions over clever ones
+
+### Preferred Skills
+- `github-workflow`, `code-review`, `codebase-navigator`, `database`
+
+### Output Format
+- Always include the file paths modified
+- End with a verification section: what you tested and how
+- Use conventional commit messages: `feat:`, `fix:`, `refactor:`, `docs:`
+
+### Rules
+- Run tests/linters if they exist before reporting done
+- Never modify files outside the task scope without flagging it
+- If the codebase has a DESIGN.md, read it before coding

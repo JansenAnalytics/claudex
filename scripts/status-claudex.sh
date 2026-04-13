@@ -1,5 +1,10 @@
 #!/bin/bash
 # Check Claudex status
+FULL=false
+for arg in "$@"; do
+    [ "$arg" = "--full" ] && FULL=true
+done
+
 echo "=== Claudex Status ==="
 
 # Check process
@@ -48,4 +53,10 @@ if [ -n "$LOG" ]; then
     NOW=$(date +%s)
     AGE=$(( (NOW - MOD) / 60 ))
     echo "📝 Latest log: $(basename $LOG) (${AGE}m ago)"
+fi
+
+# --full: show health report
+if [ "$FULL" = true ]; then
+    echo ""
+    node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --report 2>/dev/null || echo "⚠️  Health report unavailable"
 fi
