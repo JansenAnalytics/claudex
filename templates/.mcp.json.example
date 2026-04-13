@@ -1,0 +1,31 @@
+{
+  "_comment": "MCP server configuration. Copy to ~/.claude-agent/.mcp.json and customize.",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/USER/.claude-agent", "/home/USER/projects"],
+      "_comment": "Replace USER with your username. Restricts filesystem access to specified directories."
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_YOUR_TOKEN_HERE"
+      },
+      "_comment": "GitHub API access. Create token at github.com/settings/tokens with repo scope."
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "_comment": "Persistent key-value memory across sessions."
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_BRAVE_API_KEY"
+      },
+      "_comment": "Web search via Brave Search API. Get key at api.search.brave.com."
+    }
+  }
+}

@@ -19,10 +19,12 @@ if [ -z "$PIDS" ]; then
     PIDS=$(pgrep -f "claude.*channels.*telegram" 2>/dev/null || true)
     if [ -n "$PIDS" ]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Claudex restarted (PID: $PIDS)" >> "$LOG"
+        node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --record restart 2>/dev/null || true
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ Restart FAILED" >> "$LOG"
     fi
 else
+    node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --record watchdog_ok 2>/dev/null || true
     # Only log every hour to avoid spam (check minute = 00)
     MIN=$(date +%M)
     if [ "$MIN" = "00" ]; then

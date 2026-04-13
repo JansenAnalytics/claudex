@@ -1,0 +1,6 @@
+{
+  "_comment": "Claudex RAG configuration. Edit crossAgentDirs to match your setup.",
+  "crossAgentDirs": {
+    "other-agent": "~/.other-agent/workspace"
+  }
+}

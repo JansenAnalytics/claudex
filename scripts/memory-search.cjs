@@ -5,18 +5,32 @@
  * 
  * A semantic search system for Claude Code autonomous agents.
  * Indexes markdown memory files and session transcripts into a SQLite
- * database with OpenAI embeddings for hybrid (vector + FTS) search.
+ * database with hybrid (vector + FTS) search.
+ * 
+ * Supports multiple embedding providers:
+ *   1. OpenAI (best quality, ~$0.02/mo) — requires OPENAI_API_KEY
+ *   2. Ollama (local, free) — requires Ollama running with an embedding model
+ *   3. TF-IDF (zero-dependency fallback) — pure Node.js, no API, no installs
+ * 
+ * Auto-detects: OpenAI if key set → Ollama if running → TF-IDF fallback.
+ * Override with CLAUDEX_EMBEDDING_PROVIDER=openai|ollama|tfidf
  * 
  * Usage:
  *   node --experimental-sqlite memory-search.cjs --search "query"
  *   node --experimental-sqlite memory-search.cjs --index
  *   node --experimental-sqlite memory-search.cjs --index --incremental
  *   node --experimental-sqlite memory-search.cjs --stats
+ *   node --experimental-sqlite memory-search.cjs --provider    # show active provider
  * 
  * Environment:
- *   OPENAI_API_KEY          Required for embeddings
- *   CLAUDEX_MEMORY_DB       Override database path
- *   CLAUDEX_WORKSPACE       Override workspace path
+ *   OPENAI_API_KEY              Required for OpenAI embeddings
+ *   CLAUDEX_EMBEDDING_PROVIDER  Force provider: openai | ollama | tfidf
+ *   CLAUDEX_EMBEDDING_MODEL     Override model (default per provider)
+ *   CLAUDEX_OLLAMA_URL          Ollama API URL (default: http://localhost:11434)
+ *   CLAUDEX_OLLAMA_MODEL        Ollama model (default: nomic-embed-text)
+ *   CLAUDEX_MEMORY_DB           Override database path
+ *   CLAUDEX_WORKSPACE           Override workspace path
+ *   CLAUDEX_RAG_CONFIG          Override rag-config.json path
  */
 
 'use strict';
@@ -31,20 +45,41 @@ const crypto = require('crypto');
 const HOME = process.env.HOME || '/home/ajans';
 const WORKSPACE = process.env.CLAUDEX_WORKSPACE || path.join(HOME, '.claude-agent');
 const DB_PATH = process.env.CLAUDEX_MEMORY_DB || path.join(WORKSPACE, 'data', 'memory.sqlite');
-const EMBEDDING_MODEL = process.env.CLAUDEX_EMBEDDING_MODEL || 'text-embedding-3-small';
+const RAG_CONFIG_PATH = process.env.CLAUDEX_RAG_CONFIG || path.join(WORKSPACE, 'data', 'rag-config.json');
+
+// Provider config
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OLLAMA_URL = process.env.CLAUDEX_OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_MODEL = process.env.CLAUDEX_OLLAMA_MODEL || 'nomic-embed-text';
+const OPENAI_MODEL = process.env.CLAUDEX_EMBEDDING_MODEL || 'text-embedding-3-small';
 
 // Session transcript location (Claude Code stores these here)
 const CLAUDE_PROJECTS_DIR = path.join(HOME, '.claude', 'projects');
-// Claude Code encodes the workspace path: /home/ajans/.claude-agent → -home-ajans--claude-agent
 const CLAUDE_AGENT_PROJECT = '-home-ajans--claude-agent';
 
-// Cross-agent memory locations (OpenClaw agents)
-const CROSS_AGENT_DIRS = {
-  'kite':  path.join(HOME, '.openclaw', 'workspace'),
-  'poe':   path.join(HOME, '.openclaw-poe', 'workspace'),
-  'argus': path.join(HOME, '.openclaw-argus', 'workspace'),
-};
+// Load cross-agent dirs from config or use defaults
+function loadCrossAgentDirs() {
+  try {
+    if (fs.existsSync(RAG_CONFIG_PATH)) {
+      const cfg = JSON.parse(fs.readFileSync(RAG_CONFIG_PATH, 'utf-8'));
+      if (cfg.crossAgentDirs && typeof cfg.crossAgentDirs === 'object') {
+        // Resolve ~ in paths
+        const resolved = {};
+        for (const [k, v] of Object.entries(cfg.crossAgentDirs)) {
+          resolved[k] = v.replace(/^~/, HOME);
+        }
+        return resolved;
+      }
+    }
+  } catch {}
+  // Defaults (for this installation)
+  return {
+    'kite':  path.join(HOME, '.openclaw', 'workspace'),
+    'poe':   path.join(HOME, '.openclaw-poe', 'workspace'),
+    'argus': path.join(HOME, '.openclaw-argus', 'workspace'),
+  };
+}
+const CROSS_AGENT_DIRS = loadCrossAgentDirs();
 
 // Chunking
 const CHUNK_MIN_CHARS = 100;
@@ -60,6 +95,61 @@ const RECENCY_HALF_LIFE_DAYS = 60;
 // API rate limiting
 const EMBEDDING_BATCH_SIZE = 20;
 const EMBEDDING_DELAY_MS = 250;
+
+// ─── Embedding Provider Detection ───────────────────────────────────────────
+
+let _detectedProvider = null;
+let _providerLabel = null;
+
+async function detectProvider() {
+  if (_detectedProvider) return _detectedProvider;
+
+  const forced = process.env.CLAUDEX_EMBEDDING_PROVIDER;
+  if (forced) {
+    const p = forced.toLowerCase().trim();
+    if (['openai', 'ollama', 'tfidf'].includes(p)) {
+      _detectedProvider = p;
+      _providerLabel = `${p} (forced via CLAUDEX_EMBEDDING_PROVIDER)`;
+      return p;
+    }
+  }
+
+  // Auto-detect chain: OpenAI → Ollama → TF-IDF
+  if (OPENAI_API_KEY) {
+    _detectedProvider = 'openai';
+    _providerLabel = `openai (${OPENAI_MODEL})`;
+    return 'openai';
+  }
+
+  // Check if Ollama is running
+  try {
+    const resp = await fetch(`${OLLAMA_URL}/api/tags`, { signal: AbortSignal.timeout(2000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      const models = (data.models || []).map(m => m.name.split(':')[0]);
+      if (models.includes(OLLAMA_MODEL) || models.includes(OLLAMA_MODEL.split(':')[0])) {
+        _detectedProvider = 'ollama';
+        _providerLabel = `ollama (${OLLAMA_MODEL} @ ${OLLAMA_URL})`;
+        return 'ollama';
+      }
+      // Ollama running but model not pulled
+      console.error(`  ⚠️  Ollama running but '${OLLAMA_MODEL}' not found. Available: ${models.join(', ')}`);
+      console.error(`     Pull it: ollama pull ${OLLAMA_MODEL}`);
+    }
+  } catch {
+    // Ollama not running — fall through
+  }
+
+  _detectedProvider = 'tfidf';
+  _providerLabel = 'tfidf (zero-dependency fallback)';
+  return 'tfidf';
+}
+
+function getProviderModelKey() {
+  if (_detectedProvider === 'openai') return `openai:${OPENAI_MODEL}`;
+  if (_detectedProvider === 'ollama') return `ollama:${OLLAMA_MODEL}`;
+  return 'tfidf:v1';
+}
 
 // ─── Database ───────────────────────────────────────────────────────────────
 
@@ -96,6 +186,7 @@ function initDb(dbPath) {
       end_line INTEGER NOT NULL,
       text TEXT NOT NULL,
       embedding TEXT,
+      embedding_provider TEXT,
       hash TEXT NOT NULL,
       file_mtime INTEGER NOT NULL DEFAULT 0,
       updated_at INTEGER NOT NULL DEFAULT (unixepoch())
@@ -106,7 +197,7 @@ function initDb(dbPath) {
     CREATE INDEX IF NOT EXISTS idx_chunks_agent ON chunks(agent);
   `);
   
-  // FTS5 table (separate from main — we'll sync manually)
+  // FTS5 table
   db.exec(`
     CREATE VIRTUAL TABLE IF NOT EXISTS chunks_fts USING fts5(
       chunk_id UNINDEXED,
@@ -115,7 +206,7 @@ function initDb(dbPath) {
     );
   `);
   
-  // Embedding cache
+  // Embedding cache — now includes provider
   db.exec(`
     CREATE TABLE IF NOT EXISTS embedding_cache (
       text_hash TEXT PRIMARY KEY,
@@ -124,8 +215,15 @@ function initDb(dbPath) {
       created_at INTEGER NOT NULL DEFAULT (unixepoch())
     );
   `);
+
+  // Migration: add embedding_provider column if missing
+  try {
+    db.exec("SELECT embedding_provider FROM chunks LIMIT 0");
+  } catch {
+    try { db.exec("ALTER TABLE chunks ADD COLUMN embedding_provider TEXT"); } catch {}
+  }
   
-  db.exec("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', '2')");
+  db.exec("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', '3')");
   
   return db;
 }
@@ -207,7 +305,6 @@ function chunkSession(content) {
     }
     
     if (!text || text.length < 20) continue;
-    // Skip tool/command noise
     if (text.startsWith('<tool_result>') || text.startsWith('<command-message>')) continue;
     if (text.startsWith('<') || text.startsWith('```tool_code')) continue;
     
@@ -239,23 +336,25 @@ function chunkSession(content) {
   return chunks;
 }
 
-// ─── OpenAI Embeddings ──────────────────────────────────────────────────────
+// ─── Embedding Providers ────────────────────────────────────────────────────
 
 function sha256(text) {
   return crypto.createHash('sha256').update(text).digest('hex');
 }
 
-async function getEmbeddings(texts, db) {
+// --- OpenAI ---
+
+async function getEmbeddingsOpenAI(texts, db) {
   if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not set');
   
+  const modelKey = getProviderModelKey();
   const results = new Array(texts.length);
   const uncached = [];
   
-  // Check cache
   const getCache = db.prepare('SELECT embedding FROM embedding_cache WHERE text_hash = ? AND model = ?');
   for (let i = 0; i < texts.length; i++) {
     const hash = sha256(texts[i]).substring(0, 32);
-    const cached = getCache.get(hash, EMBEDDING_MODEL);
+    const cached = getCache.get(hash, modelKey);
     if (cached) {
       results[i] = JSON.parse(cached.embedding);
     } else {
@@ -269,7 +368,6 @@ async function getEmbeddings(texts, db) {
     'INSERT OR REPLACE INTO embedding_cache (text_hash, model, embedding) VALUES (?, ?, ?)'
   );
   
-  // Batch API calls
   for (let b = 0; b < uncached.length; b += EMBEDDING_BATCH_SIZE) {
     const batchIndices = uncached.slice(b, b + EMBEDDING_BATCH_SIZE);
     const batchTexts = batchIndices.map(i => texts[i]);
@@ -280,7 +378,7 @@ async function getEmbeddings(texts, db) {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model: EMBEDDING_MODEL, input: batchTexts }),
+      body: JSON.stringify({ model: OPENAI_MODEL, input: batchTexts }),
     });
     
     if (!resp.ok) {
@@ -296,10 +394,9 @@ async function getEmbeddings(texts, db) {
       results[idx] = embedding;
       
       const hash = sha256(batchTexts[j]).substring(0, 32);
-      insertCache.run(hash, EMBEDDING_MODEL, JSON.stringify(embedding));
+      insertCache.run(hash, modelKey, JSON.stringify(embedding));
     }
     
-    // Rate limit
     if (b + EMBEDDING_BATCH_SIZE < uncached.length) {
       await new Promise(r => setTimeout(r, EMBEDDING_DELAY_MS));
     }
@@ -308,9 +405,193 @@ async function getEmbeddings(texts, db) {
   return results;
 }
 
+// --- Ollama ---
+
+async function getEmbeddingsOllama(texts, db) {
+  const modelKey = getProviderModelKey();
+  const results = new Array(texts.length);
+  const uncached = [];
+  
+  const getCache = db.prepare('SELECT embedding FROM embedding_cache WHERE text_hash = ? AND model = ?');
+  for (let i = 0; i < texts.length; i++) {
+    const hash = sha256(texts[i]).substring(0, 32);
+    const cached = getCache.get(hash, modelKey);
+    if (cached) {
+      results[i] = JSON.parse(cached.embedding);
+    } else {
+      uncached.push(i);
+    }
+  }
+  
+  if (uncached.length === 0) return results;
+  
+  const insertCache = db.prepare(
+    'INSERT OR REPLACE INTO embedding_cache (text_hash, model, embedding) VALUES (?, ?, ?)'
+  );
+  
+  // Ollama embeds one at a time (no batch API)
+  for (const idx of uncached) {
+    const resp = await fetch(`${OLLAMA_URL}/api/embeddings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: OLLAMA_MODEL, prompt: texts[idx] }),
+    });
+    
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`Ollama ${resp.status}: ${err.substring(0, 200)}`);
+    }
+    
+    const data = await resp.json();
+    const embedding = data.embedding;
+    results[idx] = embedding;
+    
+    const hash = sha256(texts[idx]).substring(0, 32);
+    insertCache.run(hash, modelKey, JSON.stringify(embedding));
+  }
+  
+  return results;
+}
+
+// --- TF-IDF (zero-dependency fallback) ---
+
+// Global document frequency map, built during indexing
+let _idfMap = null;
+let _vocabSize = 0;
+const TFIDF_DIM = 512; // Fixed dimension for compatibility
+
+function buildIDF(allTexts) {
+  const df = new Map();
+  const N = allTexts.length;
+  
+  for (const text of allTexts) {
+    const words = new Set(tokenize(text));
+    for (const w of words) {
+      df.set(w, (df.get(w) || 0) + 1);
+    }
+  }
+  
+  // Compute IDF: log(N / df)
+  const idf = new Map();
+  for (const [word, count] of df) {
+    idf.set(word, Math.log(N / count));
+  }
+  
+  _idfMap = idf;
+  _vocabSize = idf.size;
+  return idf;
+}
+
+function tokenize(text) {
+  return text.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 2 && w.length < 30);
+}
+
+function tfidfVector(text, idf) {
+  const words = tokenize(text);
+  const tf = new Map();
+  for (const w of words) {
+    tf.set(w, (tf.get(w) || 0) + 1);
+  }
+  
+  // Build sparse vector, then hash to fixed dimension
+  const vec = new Float64Array(TFIDF_DIM);
+  
+  for (const [word, count] of tf) {
+    const idfVal = idf.get(word) || 0;
+    if (idfVal === 0) continue;
+    const tfidf = (count / words.length) * idfVal;
+    
+    // Hash word to fixed dimension (feature hashing / hashing trick)
+    const h = simpleHash(word) % TFIDF_DIM;
+    // Use sign hash to reduce collisions
+    const sign = (simpleHash(word + '_sign') % 2 === 0) ? 1 : -1;
+    vec[h] += sign * tfidf;
+  }
+  
+  // L2 normalize
+  let norm = 0;
+  for (let i = 0; i < vec.length; i++) norm += vec[i] * vec[i];
+  norm = Math.sqrt(norm);
+  if (norm > 0) {
+    for (let i = 0; i < vec.length; i++) vec[i] /= norm;
+  }
+  
+  return Array.from(vec);
+}
+
+function simpleHash(str) {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash + str.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+async function getEmbeddingsTFIDF(texts, db) {
+  const modelKey = getProviderModelKey();
+  const results = new Array(texts.length);
+  const uncached = [];
+  
+  const getCache = db.prepare('SELECT embedding FROM embedding_cache WHERE text_hash = ? AND model = ?');
+  for (let i = 0; i < texts.length; i++) {
+    const hash = sha256(texts[i]).substring(0, 32);
+    const cached = getCache.get(hash, modelKey);
+    if (cached) {
+      results[i] = JSON.parse(cached.embedding);
+    } else {
+      uncached.push(i);
+    }
+  }
+  
+  if (uncached.length === 0) return results;
+  
+  // Build IDF from existing chunks + new texts if not built yet
+  if (!_idfMap) {
+    try {
+      const existing = db.prepare('SELECT text FROM chunks').all().map(r => r.text);
+      buildIDF([...existing, ...texts]);
+    } catch {
+      buildIDF(texts);
+    }
+  }
+  
+  const insertCache = db.prepare(
+    'INSERT OR REPLACE INTO embedding_cache (text_hash, model, embedding) VALUES (?, ?, ?)'
+  );
+  
+  for (const idx of uncached) {
+    const embedding = tfidfVector(texts[idx], _idfMap);
+    results[idx] = embedding;
+    
+    const hash = sha256(texts[idx]).substring(0, 32);
+    insertCache.run(hash, modelKey, JSON.stringify(embedding));
+  }
+  
+  return results;
+}
+
+// --- Provider dispatch ---
+
+async function getEmbeddings(texts, db) {
+  const provider = await detectProvider();
+  switch (provider) {
+    case 'openai': return getEmbeddingsOpenAI(texts, db);
+    case 'ollama': return getEmbeddingsOllama(texts, db);
+    case 'tfidf':  return getEmbeddingsTFIDF(texts, db);
+    default: throw new Error(`Unknown provider: ${provider}`);
+  }
+}
+
 // ─── Vector Math ────────────────────────────────────────────────────────────
 
 function cosine(a, b) {
+  if (a.length !== b.length) {
+    // Dimension mismatch (e.g., provider changed) — return 0
+    return 0;
+  }
   let dot = 0, nA = 0, nB = 0;
   for (let i = 0; i < a.length; i++) {
     dot += a[i] * b[i];
@@ -349,14 +630,14 @@ function discoverFiles() {
       const fp = path.join(sessDir, f);
       try {
         const stat = fs.statSync(fp);
-        if (stat.size > 10240) { // Skip tiny sessions
+        if (stat.size > 10240) {
           files.push({ path: fp, source: 'session', agent: 'claudex' });
         }
       } catch {}
     }
   }
   
-  // 3. Cross-agent memory (Kite, Poe, Argus)
+  // 3. Cross-agent memory
   for (const [agent, wsDir] of Object.entries(CROSS_AGENT_DIRS)) {
     if (!fs.existsSync(wsDir)) continue;
     
@@ -385,6 +666,10 @@ function readdirSafe(dir) {
 // ─── Indexing ───────────────────────────────────────────────────────────────
 
 async function indexFiles(db, incremental = true) {
+  const provider = await detectProvider();
+  const providerKey = getProviderModelKey();
+  console.error(`  Provider: ${_providerLabel}`);
+  
   const files = discoverFiles();
   
   const getFile = db.prepare('SELECT hash FROM files WHERE path = ?');
@@ -394,7 +679,7 @@ async function indexFiles(db, incremental = true) {
   const deleteChunks = db.prepare('DELETE FROM chunks WHERE path = ?');
   const deleteFts = db.prepare('DELETE FROM chunks_fts WHERE chunk_id IN (SELECT id FROM chunks WHERE path = ?)');
   const insertChunk = db.prepare(
-    'INSERT INTO chunks (id, path, source, agent, start_line, end_line, text, embedding, hash, file_mtime, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, unixepoch())'
+    'INSERT INTO chunks (id, path, source, agent, start_line, end_line, text, embedding, embedding_provider, hash, file_mtime, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, unixepoch())'
   );
   const insertFts = db.prepare(
     'INSERT INTO chunks_fts (chunk_id, text) VALUES (?, ?)'
@@ -416,12 +701,10 @@ async function indexFiles(db, incremental = true) {
       if (existing && existing.hash === hash) { stats.skipped++; continue; }
     }
     
-    // Chunk
     const isSession = file.source === 'session';
     const chunks = isSession ? chunkSession(content) : chunkMarkdown(content);
     if (chunks.length === 0) { stats.skipped++; continue; }
     
-    // Embed
     let embeddings;
     try {
       embeddings = await getEmbeddings(chunks.map(c => c.text), db);
@@ -432,8 +715,6 @@ async function indexFiles(db, incremental = true) {
       continue;
     }
     
-    // Store
-    // Delete old FTS entries first (before deleting chunks)
     try { deleteFts.run(file.path); } catch {}
     deleteChunks.run(file.path);
     upsertFile.run(file.path, file.source, file.agent, hash, Math.floor(stat.mtimeMs / 1000), stat.size);
@@ -446,6 +727,7 @@ async function indexFiles(db, incremental = true) {
         chunkId, file.path, file.source, file.agent,
         c.startLine, c.endLine, c.text,
         JSON.stringify(embeddings[i]),
+        providerKey,
         hash, Math.floor(stat.mtimeMs / 1000)
       );
       
@@ -468,11 +750,13 @@ async function indexFiles(db, incremental = true) {
 async function search(db, query, opts = {}) {
   const { limit = DEFAULT_LIMIT, source = null, agent = null } = opts;
   
-  // Embed query
+  const provider = await detectProvider();
+  const providerKey = getProviderModelKey();
+  
   const [queryEmb] = await getEmbeddings([query], db);
   
-  // Get all chunks with embeddings
-  let sql = 'SELECT id, path, source, agent, start_line, end_line, text, embedding, file_mtime FROM chunks WHERE embedding IS NOT NULL';
+  // Get chunks — prefer same provider, but include all (cosine handles dimension mismatch)
+  let sql = 'SELECT id, path, source, agent, start_line, end_line, text, embedding, embedding_provider, file_mtime FROM chunks WHERE embedding IS NOT NULL';
   const params = [];
   if (source) { sql += ' AND source = ?'; params.push(source); }
   if (agent) { sql += ' AND agent = ?'; params.push(agent); }
@@ -498,16 +782,23 @@ async function search(db, query, opts = {}) {
     }
   } catch {}
   
-  // Score all chunks
   const now = Date.now() / 1000;
   const scored = rows.map(row => {
     const emb = JSON.parse(row.embedding);
-    const vecScore = cosine(queryEmb, emb);
+    
+    // Skip chunks from different providers (dimension mismatch → 0 cosine)
+    const sameProvider = row.embedding_provider === providerKey || !row.embedding_provider;
+    const vecScore = sameProvider ? cosine(queryEmb, emb) : 0;
     const ftsScore = ftsScores.get(row.id) || 0;
     
-    let score = VECTOR_WEIGHT * vecScore + FTS_WEIGHT * ftsScore;
+    // If vector score is 0 (wrong provider), lean heavier on FTS
+    let score;
+    if (vecScore === 0 && ftsScore > 0) {
+      score = ftsScore; // FTS only
+    } else {
+      score = VECTOR_WEIGHT * vecScore + FTS_WEIGHT * ftsScore;
+    }
     
-    // Recency decay
     const ageDays = Math.max(0, (now - row.file_mtime) / 86400);
     const decay = Math.pow(0.5, ageDays / RECENCY_HALF_LIFE_DAYS);
     score *= decay;
@@ -540,11 +831,30 @@ function getStats(db) {
   const cached = db.prepare('SELECT COUNT(*) as c FROM embedding_cache').get().c;
   const bySource = db.prepare('SELECT source, COUNT(*) as c, SUM(LENGTH(text)) as bytes FROM chunks GROUP BY source').all();
   const byAgent = db.prepare('SELECT agent, COUNT(*) as c FROM chunks GROUP BY agent').all();
+  const byProvider = db.prepare('SELECT embedding_provider, COUNT(*) as c FROM chunks WHERE embedding_provider IS NOT NULL GROUP BY embedding_provider').all();
   const recent = db.prepare(
     'SELECT path, source, agent, indexed_at FROM files ORDER BY indexed_at DESC LIMIT 10'
   ).all();
   
-  return { total, totalFiles, cached, bySource, byAgent, recent };
+  return { total, totalFiles, cached, bySource, byAgent, byProvider, recent };
+}
+
+// ─── Config Management ──────────────────────────────────────────────────────
+
+function initConfig() {
+  if (fs.existsSync(RAG_CONFIG_PATH)) return;
+  
+  const defaultConfig = {
+    _comment: "Claudex RAG configuration. Edit crossAgentDirs to add/remove agents.",
+    crossAgentDirs: {
+      kite:  "~/.openclaw/workspace",
+      poe:   "~/.openclaw-poe/workspace",
+      argus: "~/.openclaw-argus/workspace",
+    }
+  };
+  
+  fs.mkdirSync(path.dirname(RAG_CONFIG_PATH), { recursive: true });
+  fs.writeFileSync(RAG_CONFIG_PATH, JSON.stringify(defaultConfig, null, 2) + '\n');
 }
 
 // ─── CLI ────────────────────────────────────────────────────────────────────
@@ -559,10 +869,12 @@ async function main() {
 Claudex Memory Search — Vector RAG System
 
 Commands:
-  --search "query"    Semantic search across all memories
-  --index             Full reindex all sources
+  --search "query"       Semantic search across all memories
+  --index                Full reindex all sources
   --index --incremental  Reindex only changed files
-  --stats             Show index statistics
+  --stats                Show index statistics
+  --provider             Show active embedding provider
+  --init-config          Create default rag-config.json
 
 Options:
   --limit N           Max results (default: ${DEFAULT_LIMIT})
@@ -571,9 +883,36 @@ Options:
   --json              JSON output
   --quiet             Minimal output
 
+Embedding Providers (auto-detected):
+  1. OpenAI   — set OPENAI_API_KEY (best quality, ~$0.02/mo)
+  2. Ollama   — run Ollama + 'ollama pull nomic-embed-text' (free, local)
+  3. TF-IDF   — zero-dependency fallback (no API, no installs)
+
+Override: CLAUDEX_EMBEDDING_PROVIDER=openai|ollama|tfidf
+
 Environment:
-  OPENAI_API_KEY      Required for embeddings
+  OPENAI_API_KEY              OpenAI embedding API key
+  CLAUDEX_EMBEDDING_PROVIDER  Force provider
+  CLAUDEX_OLLAMA_URL          Ollama URL (default: http://localhost:11434)
+  CLAUDEX_OLLAMA_MODEL        Ollama model (default: nomic-embed-text)
+  CLAUDEX_MEMORY_DB           Override database path
+  CLAUDEX_WORKSPACE           Override workspace path
+  CLAUDEX_RAG_CONFIG          Override rag-config.json path
 `);
+    return;
+  }
+  
+  // Init config if needed
+  if (flag('--init-config')) {
+    initConfig();
+    console.log(`✅ Config written to ${RAG_CONFIG_PATH}`);
+    return;
+  }
+  
+  // Show provider
+  if (flag('--provider')) {
+    await detectProvider();
+    console.log(`Provider: ${_providerLabel}`);
     return;
   }
   
@@ -603,6 +942,10 @@ Environment:
       for (const r of s.bySource) console.log(`     ${r.source}: ${r.c} chunks (${(r.bytes / 1024).toFixed(1)} KB)`);
       console.log(`   By agent:`);
       for (const r of s.byAgent) console.log(`     ${r.agent}: ${r.c} chunks`);
+      if (s.byProvider.length > 0) {
+        console.log(`   By provider:`);
+        for (const r of s.byProvider) console.log(`     ${r.embedding_provider}: ${r.c} chunks`);
+      }
       console.log(`\n   Recent:`);
       for (const r of s.recent) {
         const p = path.basename(r.path);
@@ -614,8 +957,6 @@ Environment:
     
     const query = arg('--search');
     if (query) {
-      if (!OPENAI_API_KEY) { console.error('❌ OPENAI_API_KEY required'); process.exit(1); }
-      
       const results = await search(db, query, {
         limit: parseInt(arg('--limit') || DEFAULT_LIMIT),
         source: arg('--source'),
@@ -624,7 +965,10 @@ Environment:
       
       if (flag('--json')) { console.log(JSON.stringify(results, null, 2)); return; }
       
-      if (!flag('--quiet')) console.log(`\n🔍 "${query}" — ${results.length} results\n`);
+      if (!flag('--quiet')) {
+        await detectProvider();
+        console.log(`\n🔍 "${query}" — ${results.length} results (${_detectedProvider})\n`);
+      }
       
       for (let i = 0; i < results.length; i++) {
         const r = results[i];

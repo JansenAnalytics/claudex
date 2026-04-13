@@ -181,6 +181,53 @@ if [ -f "$REPO_DIR/scripts/memory-search.cjs" ]; then
     echo "  ✅ Memory search scripts installed"
 fi
 
+echo ""
+echo "▸ Configuring embedding provider for RAG..."
+echo "  The memory search system needs an embedding provider."
+echo "  Options:"
+echo "    1) OpenAI  — best quality, ~\$0.02/month (needs API key)"
+echo "    2) Ollama  — local, free (needs Ollama installed)"
+echo "    3) None    — skip RAG setup (can configure later)"
+echo ""
+read -p "  Choose [1/2/3]: " -n 1 -r EMBED_CHOICE
+echo ""
+
+case $EMBED_CHOICE in
+  1)
+    read -p "  Enter your OpenAI API key: " -r OPENAI_KEY
+    if [ -n "$OPENAI_KEY" ]; then
+      echo "OPENAI_API_KEY=$OPENAI_KEY" > "$WORKSPACE/.env"
+      chmod 600 "$WORKSPACE/.env"
+      echo "  ✅ OpenAI API key saved to $WORKSPACE/.env"
+
+      # Source and run initial index
+      export OPENAI_API_KEY="$OPENAI_KEY"
+      if command -v node &>/dev/null; then
+        echo "  ▸ Running initial memory index..."
+        node --experimental-sqlite "$WORKSPACE/scripts/memory-search.cjs" --index 2>&1 | tail -3
+        echo "  ✅ Initial index complete"
+      fi
+    fi
+    ;;
+  2)
+    if command -v ollama &>/dev/null; then
+      echo "  ✅ Ollama found"
+      echo "  ▸ Pulling nomic-embed-text model..."
+      ollama pull nomic-embed-text 2>&1 | tail -1
+      echo "CLAUDEX_EMBEDDING_PROVIDER=ollama" > "$WORKSPACE/.env"
+      chmod 600 "$WORKSPACE/.env"
+      echo "  ✅ Ollama embedding configured"
+    else
+      echo "  ❌ Ollama not installed. Install from https://ollama.ai"
+      echo "     Then run: ollama pull nomic-embed-text"
+      echo "     And set CLAUDEX_EMBEDDING_PROVIDER=ollama in $WORKSPACE/.env"
+    fi
+    ;;
+  3)
+    echo "  ⚠️  RAG skipped. You can set up later — see docs/memory-search.md"
+    ;;
+esac
+
 # Memory reindex cron (every 30 min)
 REINDEX_CRON="*/30 * * * * bash $WORKSPACE/scripts/memory-reindex.sh"
 if crontab -l 2>/dev/null | grep -q "memory-reindex"; then
@@ -191,9 +238,8 @@ else
 fi
 
 echo ""
-echo "  ℹ️  Memory search requires OPENAI_API_KEY for embeddings."
-echo "     Set it in your environment or in a .env file."
-echo "     Run initial index: node --experimental-sqlite $WORKSPACE/scripts/memory-search.cjs --index"
+echo "  ℹ️  Memory search supports OpenAI, Ollama, or TF-IDF embeddings."
+echo "     See docs/memory-search.md for configuration options."
 echo ""
 
 # Telegram setup

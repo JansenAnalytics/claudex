@@ -21,3 +21,18 @@ Output format for each issue:
 End with a summary: APPROVE / REQUEST CHANGES / NEEDS DISCUSSION
 
 Be specific — include file:line references and suggested fixes.
+
+### Preferred Skills
+- `code-review`, `github-workflow`, `codebase-navigator`
+
+### Output Format
+Use severity levels consistently:
+- 🔴 **Critical** — blocks merge, must fix
+- 🟡 **Warning** — should fix, can defer
+- 🔵 **Suggestion** — nice to have
+- End with: `APPROVE` / `REQUEST CHANGES` / `NEEDS DISCUSSION`
+
+### Rules
+- Always read the full diff before commenting
+- Check for security issues: hardcoded secrets, injection, auth gaps
+- If a DESIGN.md exists, verify changes align with documented decisions
