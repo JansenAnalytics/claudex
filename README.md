@@ -337,16 +337,16 @@ export CLAUDEX_EMBEDDING_PROVIDER=tfidf  # or openai, ollama
 **How it works:**
 ```
                     ┌──────────────┐
-User asks about  →  │ memory-search │  → Top N relevant chunks
+User asks about  →  │ memory-search│  → Top N relevant chunks
   past work         │   .cjs       │     with scores
                     └──────┬───────┘
                            │
               ┌────────────┼────────────┐
               ▼            ▼            ▼
         ┌──────────┐ ┌──────────┐ ┌──────────┐
-        │ Markdown  │ │ Session  │ │ Cross-   │
-        │ Memory    │ │ Trans-   │ │ Agent    │
-        │ Files     │ │ cripts   │ │ Memory   │
+        │ Markdown │ │ Session  │ │ Cross-   │
+        │ Memory   │ │ Trans-   │ │ Agent    │
+        │ Files    │ │ cripts   │ │ Memory   │
         └──────────┘ └──────────┘ └──────────┘
               │            │            │
               └────────────┼────────────┘
@@ -511,35 +511,35 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 
 | Feature | Detail |
 |---|---|
-| **💰 Cost model** | Flat $100/mo (Max subscription) vs variable API billing ($30-100+/mo). No per-token surprises. Heavy users save significantly. |
-| **🧠 Context window** | 1M tokens (Opus 4.6 via Max) vs ~200K typical API. Massive context for complex tasks. |
-| **📱 Mobile control** | `claude.ai/code` Remote Control — manage from phone/browser. OpenClaw: Telegram only. |
-| **🤝 Native sub-agents** | Built-in agent teams with shared task lists and direct communication. OpenClaw: `sessions_spawn` with manual polling. |
-| **🔧 Skills auto-loading** | Skills auto-selected by description match. OpenClaw: manual scan of `<available_skills>` list. |
-| **🪝 Lifecycle hooks** | Rich hook system (SessionStart, Stop, PostToolUse, etc.). OpenClaw: limited hook support. |
-| **📋 Scheduled tasks** | Desktop + Cloud scheduled tasks, `/loop` polling. OpenClaw: cron-only scheduling. |
-| **🔒 Permission modes** | Granular: `default`, `plan`, `bypassPermissions` with per-tool allowlists. OpenClaw: binary policy. |
-| **🏗️ Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
-| **📦 No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
-| **🔍 Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
-| **📊 Health monitoring** | Built-in health metrics, uptime tracking, session counts. OpenClaw: manual monitoring only. |
+| ** Cost model** | Flat $100/mo (Max subscription) vs variable API billing ($30-100+/mo). No per-token surprises. Heavy users save significantly. |
+| ** Context window** | 1M tokens (Opus 4.6 via Max) vs ~200K typical API. Massive context for complex tasks. |
+| ** Mobile control** | `claude.ai/code` Remote Control — manage from phone/browser. OpenClaw: Telegram only. |
+| ** Native sub-agents** | Built-in agent teams with shared task lists and direct communication. OpenClaw: `sessions_spawn` with manual polling. |
+| ** Skills auto-loading** | Skills auto-selected by description match. OpenClaw: manual scan of `<available_skills>` list. |
+| ** Lifecycle hooks** | Rich hook system (SessionStart, Stop, PostToolUse, etc.). OpenClaw: limited hook support. |
+| ** Scheduled tasks** | Desktop + Cloud scheduled tasks, `/loop` polling. OpenClaw: cron-only scheduling. |
+| ** Permission modes** | Granular: `default`, `plan`, `bypassPermissions` with per-tool allowlists. OpenClaw: binary policy. |
+| ** Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
+| ** No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
+| ** Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
+| ** Health monitoring** | Built-in health metrics, uptime tracking, session counts. OpenClaw: manual monitoring only. |
 
 ### What OpenClaw Does Better
 
 | Feature | Detail |
 |---|---|
 | **📡 Multi-channel** | Telegram, Discord, WhatsApp, Signal, Slack, iMessage, IRC, Google Chat — all native. Claudex: Telegram + Discord + iMessage only (via plugins). |
-| **🏠 Paired nodes** | Camera/screen/location control on phones and other devices. Claudex: no equivalent. |
-| **🌐 Browser control** | Dual mode: headless Playwright + live Chrome relay via extension. Claudex: Bash + Playwright only (no live browser relay). |
-| **🎨 Canvas** | Render HTML/React UIs inline in chat. Claudex: no equivalent. |
-| **📊 ClawHub** | Skill marketplace with `clawhub install/publish`. Claudex: manual skill management only. |
-| **🔊 TTS** | Built-in `tts` tool + ElevenLabs integration. Claudex: needs MCP server or manual setup. |
-| **💓 Heartbeat system** | Native heartbeat polling with `HEARTBEAT.md`. Claudex: approximated via scheduled tasks. |
-| **🔄 Always-on guarantee** | Gateway daemon designed for 24/7 uptime. Claudex: sessions can timeout, need restart infrastructure. |
-| **🖼️ Image analysis** | Native `image` tool with vision model. Claudex: via Bash + API or MCP. |
-| **📨 Message tool** | Rich `message` tool with reactions, polls, buttons, effects. Claudex: basic send/receive. |
-| **⚡ Session management** | `sessions_list`, `sessions_send`, `sessions_history` for cross-session communication. Claudex: independent sessions only. |
-| **🔑 Secret management** | Built-in secret/token handling. Claudex: env vars + manual management. |
+| ** Paired nodes** | Camera/screen/location control on phones and other devices. Claudex: no equivalent. |
+| ** Browser control** | Dual mode: headless Playwright + live Chrome relay via extension. Claudex: Bash + Playwright only (no live browser relay). |
+| ** Canvas** | Render HTML/React UIs inline in chat. Claudex: no equivalent. |
+| ** ClawHub** | Skill marketplace with `clawhub install/publish`. Claudex: manual skill management only. |
+| ** TTS** | Built-in `tts` tool + ElevenLabs integration. Claudex: needs MCP server or manual setup. |
+| ** Heartbeat system** | Native heartbeat polling with `HEARTBEAT.md`. Claudex: approximated via scheduled tasks. |
+| ** Always-on guarantee** | Gateway daemon designed for 24/7 uptime. Claudex: sessions can timeout, need restart infrastructure. |
+| ** Image analysis** | Native `image` tool with vision model. Claudex: via Bash + API or MCP. |
+| ** Message tool** | Rich `message` tool with reactions, polls, buttons, effects. Claudex: basic send/receive. |
+| ** Session management** | `sessions_list`, `sessions_send`, `sessions_history` for cross-session communication. Claudex: independent sessions only. |
+| ** Secret management** | Built-in secret/token handling. Claudex: env vars + manual management. |
 
 ### What's Roughly Equivalent
 
