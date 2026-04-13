@@ -42,6 +42,9 @@ graph TB
                     rules[".claude/rules/<br/>(global rules)"]
                     hooks[".claude/settings.json<br/>(hooks + permissions)"]
                     mcp[".mcp.json<br/>(MCP servers)"]
+                    health["data/health.sqlite<br/>(health metrics)"]
+                    inbox["data/inbox.json<br/>(task queue)"]
+                    ragconfig["data/rag-config.json<br/>(RAG config)"]
                 end
 
                 subagents_pool["Sub-agents<br/>(researcher / coder /<br/>reviewer / analyst /<br/>sysadmin / writer)"]
@@ -59,6 +62,8 @@ graph TB
     systemd -->|"starts & restarts"| tmux
     cron -->|"checks PID, restarts if dead"| tmux
 
+    brain <-->|"records events"| health
+    brain <-->|"checks on start"| inbox
     brain <-->|"reads at session start"| claudemd
     brain <-->|"reads/writes"| memory
     brain <-->|"auto-loads relevant"| skills
@@ -127,6 +132,35 @@ sequenceDiagram
 ```
 
 Sub-agents run as separate Claude processes with their own model (on Max subscription, all use `opus` since there's no per-token cost), tool scopes, and specialized system prompts defined in `.claude/agents/<name>.md`.
+
+### Session Startup Flow
+
+When a new session begins, the SessionStart hook triggers initialization:
+
+```mermaid
+sequenceDiagram
+    participant Hook as SessionStart Hook
+    participant Init as session-init.sh
+    participant Health as health-check.cjs
+    participant Inbox as inbox.cjs
+    participant RAG as memory-search.cjs
+    participant Claude as Claude Code
+
+    Hook->>Init: bash session-init.sh
+    Init->>Health: --record session_start
+    Init->>Init: Check interrupted-task.json
+    alt Interrupted task found
+        Init->>Claude: Print task details to stdout
+        Init->>Init: Rename to .handled
+    end
+    Init->>Inbox: --list (pending tasks)
+    alt Tasks pending
+        Init->>Claude: Print inbox summary
+    end
+    Init->>Init: Rotate logs (gzip >7d, delete >30d)
+    Init->>RAG: --index --incremental
+    Init->>Claude: "✅ Session started"
+```
 
 ---
 
@@ -380,6 +414,8 @@ fi
 
 This catches cases where the process is technically running (so systemd doesn't see a crash) but has entered a broken state, or where systemd hit its restart limit and gave up.
 
+The watchdog also records health metrics: `watchdog_ok` when the process is alive, `restart` when it triggers a recovery. These events feed into `health-check.cjs --report` for uptime tracking.
+
 ### Why All Three?
 
 | Layer | Survives |
@@ -419,6 +455,22 @@ Claude Code has a built-in auto-memory mechanism that persists key learnings and
 
 Auto-memory complements daily logs: logs are explicit and agent-controlled; auto-memory is implicit and model-driven.
 
+### Embedding Providers
+
+The RAG system supports three embedding providers with automatic fallback:
+
+| Provider | Quality | Cost | Requirements |
+|----------|---------|------|-------------|
+| **OpenAI** (`text-embedding-3-small`) | Best | ~$0.02/mo | `OPENAI_API_KEY` env var |
+| **Ollama** (`nomic-embed-text`) | Good | Free | Ollama running locally |
+| **TF-IDF** (feature hashing) | Decent | Free | Nothing — pure Node.js |
+
+Auto-detection chain: OpenAI → Ollama → TF-IDF. Override with `CLAUDEX_EMBEDDING_PROVIDER`.
+
+The embedding cache stores the provider key (`openai:text-embedding-3-small`, `ollama:nomic-embed-text`, `tfidf:v1`) per entry. When searching, chunks from a different provider than the current one get vector score 0 and fall back to FTS-only scoring. A full reindex after switching providers is recommended.
+
+Cross-agent directory paths are configured in `data/rag-config.json` (created via `--init-config`), making the system portable across installations.
+
 ### Memory Comparison
 
 | Type | Controlled by | Persists | Best for |
@@ -435,11 +487,11 @@ Hooks execute shell commands at lifecycle events. They're defined in `.claude/se
 
 ### Available Hook Events
 
-| Event | Fires when |
-|---|---|
-| `SessionStart` | Claude Code session begins |
-| `Stop` | Session ends cleanly |
-| `PostToolUse` | After any tool call completes |
+| Event | Fires when | Production use |
+|---|---|---|
+| `SessionStart` | Claude Code session begins | `session-init.sh` — health event, interrupted task check, inbox scan, log rotation, memory reindex |
+| `PostToolUse` | After a tool call completes | Auto-stage git changes on `Write\|Edit` |
+| `Stop` | Session ends | `session-shutdown.sh` — save interrupted state, record health event |
 
 ### Hook Format
 
@@ -599,6 +651,67 @@ The identity file enforces additional behavioral constraints:
 - You want the ClawHub skill marketplace
 
 **Use both:** They coexist cleanly on the same machine — Claudex as the "always-on, huge context" daemon; OpenClaw for its unique multi-channel and device capabilities. Complementary, not competing.
+
+---
+
+## 12. Health & Observability
+
+Claudex tracks operational health in `data/health.sqlite`:
+
+### Events Tracked
+
+| Event | Source | Purpose |
+|---|---|---|
+| `session_start` | SessionStart hook | Count sessions, track start times |
+| `session_stop` | Stop hook | Track session duration |
+| `watchdog_ok` | Watchdog cron (5 min) | Calculate uptime (count × 5 min) |
+| `restart` | Watchdog cron | Track involuntary restarts |
+
+### Querying Health
+
+```bash
+# Full report
+node --experimental-sqlite scripts/health-check.cjs --report
+
+# JSON output (for dashboards or monitoring)
+node --experimental-sqlite scripts/health-check.cjs --report --json
+
+# Prune old events (>90 days)
+node --experimental-sqlite scripts/health-check.cjs --prune
+```
+
+### Uptime Calculation
+
+Uptime is estimated from `watchdog_ok` events: each event represents 5 minutes of confirmed uptime. This is conservative — if the watchdog cron itself fails, uptime is underreported, which is the safe direction for monitoring.
+
+---
+
+## 13. Task Inbox
+
+The inbox (`data/inbox.json`) provides an asynchronous task queue — cron jobs, webhooks, or manual entries can queue work for the agent to process on its next session start.
+
+### Flow
+
+```mermaid
+graph LR
+    Cron["Cron job"] -->|"inbox.cjs --add"| Inbox["data/inbox.json"]
+    Webhook["Webhook"] -->|"inbox.cjs --add"| Inbox
+    Manual["Manual"] -->|"inbox.cjs --add"| Inbox
+    Inbox -->|"session-init.sh checks"| Agent["Claude Code"]
+    Agent -->|"inbox.cjs --done ID"| Inbox
+```
+
+### Priority Levels
+
+| Priority | Icon | Processing order |
+|----------|------|-----------------|
+| `high` | 🔴 | First |
+| `normal` | 🟡 | Second |
+| `low` | 🔵 | Last |
+
+Within the same priority level, oldest tasks are processed first (FIFO).
+
+See [docs/inbox.md](inbox.md) for CLI usage and integration examples.
 
 ---
 

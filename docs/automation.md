@@ -173,6 +173,24 @@ Write a summary file when the session ends so the next session picks it up:
 }
 ```
 
+### Production Hook Configuration
+
+The default setup uses three hooks:
+
+**SessionStart → `session-init.sh`**
+Runs on every new session:
+1. Records health event (`health-check.cjs --record session_start`)
+2. Checks for interrupted tasks (`data/interrupted-task.json`)
+3. Scans task inbox (`inbox.cjs --list`)
+4. Rotates logs (gzip >7d, delete >30d)
+5. Runs incremental memory reindex
+
+**PostToolUse → Auto git staging**
+Matches `Write|Edit` tools. Runs `git add -A` in the repo root. Keeps changes staged for easy commits.
+
+**Stop → `session-shutdown.sh`**
+Saves current state to `data/interrupted-task.json` for resume on next session. Records health event.
+
 ---
 
 ## Scheduled Tasks
@@ -240,6 +258,20 @@ Cron is best when:
 - The task is pure shell (no LLM reasoning needed)
 - You want the job isolated from Claude's session history
 - The task needs to run as a system process
+
+### Cron → Inbox → Agent Pipeline
+
+Queue tasks from cron for the agent to process on next wake:
+
+```bash
+# Morning briefing at 8 AM
+0 8 * * * node ~/.claude-agent/scripts/inbox.cjs --add "Morning briefing: check email, calendar, weather" --priority high --source cron
+
+# Weekly code review reminder
+0 10 * * 1 node ~/.claude-agent/scripts/inbox.cjs --add "Weekly code review: check open PRs" --priority normal --source cron
+```
+
+The agent sees these tasks on session start and processes them in priority order.
 
 ---
 

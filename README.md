@@ -35,6 +35,8 @@ This repo documents the complete system architecture, provides templates for bui
   - [Persistence](#persistence)
   - [Memory & RAG System](#memory--rag-system)
   - [Hooks & Automation](#hooks--automation)
+  - [Health Monitoring](#health-monitoring)
+  - [Task Inbox](#task-inbox)
   - [MCP Servers](#mcp-servers)
 - [Comparison: Claudex vs OpenClaw](#comparison-claudex-vs-openclaw)
 - [Directory Structure](#directory-structure)
@@ -60,6 +62,10 @@ This repo documents the complete system architecture, provides templates for bui
 │  │  │  user,   │  │  notes)│  │ coder,   │  │  │
 │  │  │  rules)  │  │        │  │ writer)  │  │  │
 │  │  └──────────┘  └────────┘  └──────────┘  │  │
+│  │                                          │  │
+│  │  ┌──────────┐  ┌────────┐                │  │
+│  │  │  Health  │  │ Inbox  │                │  │
+│  │  └──────────┘  └────────┘                │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
 │  │  │  Telegram  │  │   160 Skills      │   │  │
@@ -312,7 +318,16 @@ Claudex has a **two-layer memory system**: file-based markdown notes (simple, du
 
 #### Layer 2: Vector Memory Search (RAG)
 
-The file-based memory is supplemented by a **semantic search engine** (`scripts/memory-search.cjs`) that indexes everything into a SQLite database with OpenAI embeddings. This gives the agent the ability to recall relevant context even when the exact wording doesn't match.
+The file-based memory is supplemented by a **semantic search engine** (`scripts/memory-search.cjs`) that indexes everything into a SQLite database for hybrid search. It supports **three embedding providers** with automatic fallback:
+
+1. **OpenAI** (`text-embedding-3-small`) — best quality, ~$0.02/month. Used when `OPENAI_API_KEY` is set.
+2. **Ollama** (`nomic-embed-text`) — local, completely free. Used when Ollama is running.
+3. **TF-IDF** — zero-dependency fallback, pure Node.js. No API key, no installs needed. Automatically activates when neither OpenAI nor Ollama is available.
+
+The system auto-detects the best available provider, or you can force one:
+```bash
+export CLAUDEX_EMBEDDING_PROVIDER=tfidf  # or openai, ollama
+```
 
 **What gets indexed:**
 - All markdown memory files (`CLAUDE.md`, `memory/*.md`)
@@ -406,6 +421,64 @@ Hooks fire at lifecycle events:
 
 See [docs/automation.md](docs/automation.md) for scheduled tasks, `/loop`, and event-driven patterns.
 
+### Production Hook Setup
+
+The default `settings.json` ships with three hooks:
+
+1. **SessionStart** → `session-init.sh` — logs start, checks for interrupted tasks, processes inbox, rotates logs, runs incremental memory reindex
+2. **PostToolUse** → auto-stages git changes after Write/Edit operations
+3. **Stop** → `session-shutdown.sh` — saves interrupted task state, records health event
+
+For a locked-down production setup, see [templates/settings.production.json](templates/settings.production.json).
+
+### Health Monitoring
+
+Track agent health metrics in SQLite — session counts, restart events, uptime:
+
+```bash
+# Record events (called automatically by hooks and watchdog)
+node --experimental-sqlite scripts/health-check.cjs --record session_start
+node --experimental-sqlite scripts/health-check.cjs --record watchdog_ok
+
+# View health report
+node --experimental-sqlite scripts/health-check.cjs --report
+```
+
+Output:
+```
+📊 Claudex Health Report
+   Uptime (today):          8h 30m
+   Sessions (today):         3
+   Restarts (today):         0
+   Restarts (7d):            1
+   Last session:             2026-04-13 14:22
+   Last restart:             2026-04-10 03:15
+   Avg sessions/day (30d):   4.2
+```
+
+Health events are recorded automatically by the lifecycle hooks (SessionStart, Stop) and watchdog cron. Use `status-claudex.sh --full` for a combined process + health view.
+
+### Task Inbox
+
+Queue tasks for the agent from cron jobs, webhooks, or manually:
+
+```bash
+# Add tasks
+node scripts/inbox.cjs --add "Check email for urgent messages" --priority high --source cron
+node scripts/inbox.cjs --add "Review PR #42" --priority normal --source webhook
+
+# List pending
+node scripts/inbox.cjs --list
+```
+
+```
+📥 Inbox (2 pending)
+  🔴 [a1b2c3] Check email for urgent messages        (cron, 2h ago)
+  🟡 [d4e5f6] Review PR #42                          (webhook, 30m ago)
+```
+
+The agent checks the inbox automatically on session start and processes pending tasks. See [docs/inbox.md](docs/inbox.md) for the full guide.
+
 ### MCP Servers
 
 MCP (Model Context Protocol) servers extend Claude Code with external tool access:
@@ -449,6 +522,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | **🏗️ Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
 | **📦 No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
 | **🔍 Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
+| **📊 Health monitoring** | Built-in health metrics, uptime tracking, session counts. OpenClaw: manual monitoring only. |
 
 ### What OpenClaw Does Better
 
@@ -479,6 +553,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | **File operations** | Both: Read/Write/Edit/Exec. Identical capability. |
 | **Web search** | Both supported. OpenClaw: built-in Brave API. Claudex: MCP or Bash. |
 | **Systemd persistence** | Both use systemd. Claudex additionally has tmux + watchdog layers. |
+| **Task queuing** | Both can queue tasks. Claudex: inbox.json + cron. OpenClaw: HEARTBEAT.md + cron. |
 
 ### Bottom Line
 
@@ -509,7 +584,8 @@ claudex/
 │   ├── skills-catalog.md           #   Full catalog of all 160 skills
 │   ├── subagents.md                #   Custom sub-agents and teams
 │   ├── claude-md-guide.md          #   Writing an effective CLAUDE.md
-│   └── mcp-servers.md              #   MCP server configuration
+│   ├── mcp-servers.md              #   MCP server configuration
+│   └── inbox.md                    #   Task inbox — full guide and API
 ├── skills/                         # 160 production-tested skill modules
 │   ├── weather/SKILL.md
 │   ├── github-workflow/SKILL.md
@@ -528,15 +604,22 @@ claudex/
 │   └── telegram.md
 ├── templates/                      # Setup templates
 │   ├── CLAUDE.md.example           #   Annotated identity template
-│   └── settings.json               #   Permissions + hooks config
+│   ├── settings.json               #   Permissions + hooks config
+│   ├── settings.production.json    #   Locked-down production hook config
+│   ├── .mcp.json.example           #   Example MCP server configuration
+│   └── rag-config.json.example     #   Example RAG/embedding provider config
 ├── scripts/                        # Management + infrastructure
 │   ├── bootstrap.sh                #   Automated setup script
-│   ├── memory-search.cjs           #   Vector RAG search engine
+│   ├── memory-search.cjs           #   Vector RAG search engine (multi-provider)
 │   ├── memory-reindex.sh           #   Cron-based incremental reindexing
+│   ├── health-check.cjs            #   Health metrics recorder and reporter
+│   ├── inbox.cjs                   #   Task inbox — add, list, consume tasks
+│   ├── session-init.sh             #   SessionStart hook — inbox check, reindex, log rotate
+│   ├── session-shutdown.sh         #   Stop hook — save interrupted tasks, record health
 │   ├── start-claudex.sh            #   Start agent (tmux)
 │   ├── stop-claudex.sh             #   Stop agent
 │   ├── restart-claudex.sh          #   Restart agent
-│   ├── status-claudex.sh           #   Status check (all layers)
+│   ├── status-claudex.sh           #   Status check (all layers + health)
 │   └── watchdog-claudex.sh         #   Auto-restart watchdog
 ├── systemd/                        # Systemd user service
 │   └── claudex.service
@@ -641,6 +724,16 @@ The Telegram channel plugin stores its access config at:
 ```
 
 Not in the workspace — in the user-level `.claude` directory. The allowlist and paired accounts live here.
+
+### 8. Embedding Provider Mismatch After Switching
+
+**Problem:** If you switch embedding providers (e.g., from OpenAI to TF-IDF), existing chunks have embeddings from the old provider with different dimensions. Vector search returns 0 similarity for those chunks.
+
+**Fix:** Run a full reindex after changing providers:
+```bash
+node --experimental-sqlite scripts/memory-search.cjs --index  # full reindex (not --incremental)
+```
+The system handles dimension mismatches gracefully (falls back to FTS-only scoring), but a full reindex ensures optimal search quality.
 
 ---
 
