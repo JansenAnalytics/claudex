@@ -4,6 +4,49 @@ Claude Code's built-in auto-memory is basic — it learns key-value facts across
 
 ---
 
+## Embedding Providers
+
+The RAG system supports three embedding providers with automatic fallback:
+
+| Provider | Model | Quality | Cost | Requirements |
+|----------|-------|---------|------|-------------|
+| **OpenAI** | `text-embedding-3-small` | Best (1536 dims) | ~$0.02/mo | `OPENAI_API_KEY` |
+| **Ollama** | `nomic-embed-text` | Good (768 dims) | Free | Ollama running locally |
+| **TF-IDF** | Feature hashing (512 dims) | Decent | Free | Nothing — zero dependencies |
+
+**Auto-detection:** OpenAI (if key set) → Ollama (if running) → TF-IDF (always available).
+
+**Override:** `export CLAUDEX_EMBEDDING_PROVIDER=openai|ollama|tfidf`
+
+**Check active provider:**
+```bash
+node --experimental-sqlite scripts/memory-search.cjs --provider
+# Output: Provider: openai (text-embedding-3-small)
+```
+
+### TF-IDF Details
+
+The TF-IDF fallback uses feature hashing (the "hashing trick") to project term frequency–inverse document frequency vectors into a fixed 512-dimensional space. It's not as semantically rich as neural embeddings, but it:
+- Finds exact and near-exact matches reliably
+- Handles keyword-heavy queries well
+- Combined with FTS5, provides usable search quality for small-to-medium corpora (<10k chunks)
+- Requires zero API calls, zero installs, zero configuration
+
+In testing, TF-IDF found the same top-3 results as OpenAI for factual queries across 900 chunks.
+
+### Switching Providers
+
+When switching providers, existing embeddings have different dimensions. The system handles this gracefully:
+- Vector similarity returns 0 for dimension-mismatched chunks
+- FTS5 still works (keyword matching is provider-independent)
+- For best results after switching: run a full reindex
+
+```bash
+node --experimental-sqlite scripts/memory-search.cjs --index  # full reindex
+```
+
+---
+
 ## Overview
 
 The memory search system (`scripts/memory-search.cjs`) builds a SQLite database with OpenAI embeddings over three data sources:
@@ -213,6 +256,16 @@ node --experimental-sqlite scripts/memory-search.cjs --index
 node --experimental-sqlite scripts/memory-search.cjs --index --incremental
 ```
 
+### Provider & Config
+
+```bash
+# Show active embedding provider
+node --experimental-sqlite scripts/memory-search.cjs --provider
+
+# Create default rag-config.json (cross-agent paths config)
+node --experimental-sqlite scripts/memory-search.cjs --init-config
+```
+
 ### Statistics
 
 ```bash
@@ -287,9 +340,26 @@ const CROSS_AGENT_DIRS = {
 };
 ```
 
+### Cross-Agent Configuration
+
+Cross-agent memory paths are configured in `data/rag-config.json`:
+
+```json
+{
+  "crossAgentDirs": {
+    "kite": "~/.openclaw/workspace",
+    "poe": "~/.openclaw-poe/workspace"
+  }
+}
+```
+
+Create the default config: `node --experimental-sqlite scripts/memory-search.cjs --init-config`
+
+Paths support `~` expansion. Remove agents you don't have — missing directories are silently skipped.
+
 ### Adding Your Own Agents
 
-Edit the `CROSS_AGENT_DIRS` object in `memory-search.cjs` to add more agents:
+Edit `data/rag-config.json` to add more agents, or edit the `CROSS_AGENT_DIRS` object in `memory-search.cjs` directly:
 
 ```javascript
 const CROSS_AGENT_DIRS = {
@@ -388,12 +458,16 @@ const DEFAULT_LIMIT = 8;            // Default number of results
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `OPENAI_API_KEY` | (required) | OpenAI API key for embeddings |
-| `CLAUDEX_WORKSPACE` | `~/.claude-agent` | Agent workspace path |
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `OPENAI_API_KEY` | — | OpenAI embedding API key |
+| `CLAUDEX_EMBEDDING_PROVIDER` | auto-detect | Force provider: `openai`, `ollama`, `tfidf` |
+| `CLAUDEX_EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI model override |
+| `CLAUDEX_OLLAMA_URL` | `http://localhost:11434` | Ollama API endpoint |
+| `CLAUDEX_OLLAMA_MODEL` | `nomic-embed-text` | Ollama embedding model |
 | `CLAUDEX_MEMORY_DB` | `~/.claude-agent/data/memory.sqlite` | Database path |
-| `CLAUDEX_EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding model |
+| `CLAUDEX_WORKSPACE` | `~/.claude-agent` | Workspace root |
+| `CLAUDEX_RAG_CONFIG` | `~/.claude-agent/data/rag-config.json` | Cross-agent config |
 
 ---
 
