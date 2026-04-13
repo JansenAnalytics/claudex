@@ -46,7 +46,7 @@ node /home/ajans/projects/project-index/index.cjs add \
   --id my-tool \
   --name "My Tool" \
   --path ~/projects/my-tool \
-  --github janseninvest/my-tool \
+  --github JansenAnalytics/my-tool \
   --desc "Does something cool" \
   --tags monitoring,cron \
   --cron "*/15 * * * *"
@@ -81,7 +81,7 @@ When the user asks about project status, Kite should:
   "id": "web-monitor",
   "name": "Web Monitor",
   "path": "/home/ajans/projects/web-monitor",
-  "github": "janseninvest/web-monitor",
+  "github": "JansenAnalytics/web-monitor",
   "status": "active",
   "description": "Configurable URL/content monitor",
   "last_action": "Deployed and watching Eric Bloodaxe silver bar",

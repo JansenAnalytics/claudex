@@ -35,13 +35,13 @@ node /home/ajans/projects/draft-queue/add-draft.cjs \
 **github-comment**
 
 ```json
-{ "repo": "janseninvest/myrepo", "issue": 42, "body": "comment text" }
+{ "repo": "JansenAnalytics/myrepo", "issue": 42, "body": "comment text" }
 ```
 
 **github-pr-merge**
 
 ```json
-{ "repo": "janseninvest/myrepo", "pr": 7, "method": "squash" }
+{ "repo": "JansenAnalytics/myrepo", "pr": 7, "method": "squash" }
 ```
 
 **file-write**

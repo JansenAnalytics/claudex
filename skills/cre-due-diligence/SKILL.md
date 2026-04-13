@@ -87,4 +87,4 @@ Configured via mcporter: `ssb-mcp` — key tables for CRE:
 - NGU: `geo.ngu.no/`
 
 ## Repo
-`~/projects/cre-due-diligence` → https://github.com/janseninvest/cre-due-diligence (private)
+`~/projects/cre-due-diligence` → https://github.com/JansenAnalytics/cre-due-diligence (private)
