@@ -32,7 +32,7 @@ Runs every 30 minutes.
 
 ## Repos watched
 
-All janseninvest repos (auto-discovered). Exclusions in config.json.
+All JansenAnalytics repos (auto-discovered). Exclusions in config.json.
 
 ## Alert cooldown
 
@@ -44,7 +44,7 @@ All janseninvest repos (auto-discovered). Exclusions in config.json.
 
 ## Add a new repo (force-include)
 
-node /home/ajans/projects/pr-monitor/add-repo.cjs janseninvest/some-new-repo
+node /home/ajans/projects/pr-monitor/add-repo.cjs JansenAnalytics/some-new-repo
 
 ## Files
 

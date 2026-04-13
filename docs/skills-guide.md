@@ -221,7 +221,7 @@ description: Git and GitHub operations — clone, branch, commit, push, PRs, iss
 # GitHub Workflow
 
 ## Tools
-- **gh CLI**: `~/.local/bin/gh` — authenticated as janseninvest
+- **gh CLI**: `~/.local/bin/gh` — authenticated as JansenAnalytics
 - **git**: Standard git commands
 
 ## Rules
@@ -246,8 +246,8 @@ gh run list
 gh run view <id> --log-failed
 
 # Repo
-gh repo create janseninvest/<name> --private
-gh repo clone janseninvest/<name>
+gh repo create JansenAnalytics/<name> --private
+gh repo clone JansenAnalytics/<name>
 \`\`\`
 
 ## Key Repos

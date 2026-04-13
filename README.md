@@ -113,7 +113,7 @@ claude auth login  # authenticate with your Anthropic account
 ### 2. Run the bootstrap script
 
 ```bash
-git clone https://github.com/janseninvest/claudex.git
+git clone https://github.com/JansenAnalytics/claudex.git
 cd claudex
 bash scripts/bootstrap.sh
 ```
@@ -760,7 +760,7 @@ See [agents/](agents/) for specialized sub-agent definitions.
 
 ## Origins
 
-This system was built by Aksel Jansen ([@janseninvest](https://github.com/janseninvest)) with Kite (an OpenClaw-based AI agent) as a way to replicate and extend OpenClaw's autonomous agent capabilities using Claude Code's native features.
+This system was built by Aksel Jansen ([@JansenAnalytics](https://github.com/JansenAnalytics)) with Kite (an OpenClaw-based AI agent) as a way to replicate and extend OpenClaw's autonomous agent capabilities using Claude Code's native features.
 
 The goal: prove that a persistent, Telegram-connected, skill-equipped, self-healing AI agent can be built entirely on Claude Code's subscription model — no custom gateway, no API billing, no infrastructure beyond a Linux box.
 
