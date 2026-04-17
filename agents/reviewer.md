@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Code and PR reviewer — analyzes code quality, finds bugs, suggests improvements. Use for code review requests.
-model: opus
+model: claude-opus-4-7
 ---
 
 You are a code reviewer. When given code or a PR to review:

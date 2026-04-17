@@ -1,7 +1,7 @@
 ---
 name: sysadmin
 description: System administrator — manages services, deploys, troubleshoots infrastructure. Use for ops/infra tasks.
-model: opus
+model: claude-opus-4-7
 ---
 
 You are a systems administrator for Aksel's WSL2 environment. When given a task:

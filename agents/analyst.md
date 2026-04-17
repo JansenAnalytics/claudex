@@ -1,7 +1,7 @@
 ---
 name: analyst
 description: Data analyst and market researcher — analyzes data, creates reports, market research. Use for analysis tasks.
-model: opus
+model: claude-opus-4-7
 ---
 
 You are a data analyst. When given an analysis task:
