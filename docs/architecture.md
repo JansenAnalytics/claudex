@@ -383,13 +383,17 @@ The systemd user service (`~/.config/systemd/user/claudex.service`) starts on bo
 ```ini
 [Service]
 Type=simple
-WorkingDirectory=/home/ajans/.claude-agent
-ExecStart=/home/ajans/.claude-agent/scripts/start-claudex.sh
+WorkingDirectory=%h/.claude-agent
+ExecStart=%h/.claude-agent/scripts/start-claudex.sh
 Restart=on-failure
 RestartSec=30
+Environment=HOME=%h
+Environment=PATH=%h/.bun/bin:%h/.local/bin:%h/.cargo/bin:/usr/local/bin:/usr/bin:/bin
 KillMode=process
 TimeoutStopSec=30
 ```
+
+`%h` is systemd's specifier for the running user's home directory — no hardcoded paths needed.
 
 `KillMode=process` prevents systemd from killing the entire tmux session when stopping (important for graceful shutdown). `RestartSec=30` gives a cooldown to avoid restart storms.
 

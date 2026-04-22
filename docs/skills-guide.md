@@ -286,7 +286,7 @@ systemctl --user list-units --state=running --no-pager | head -20
 systemctl --user status openclaw-poe-gateway openclaw-argus-gateway 2>&1 | grep -E "●|Active:"
 
 # Large files
-dust -n 10 /home/ajans
+dust -n 10 $HOME
 
 # Network connectivity
 curl -s -o /dev/null -w "%{http_code}" https://api.telegram.org
