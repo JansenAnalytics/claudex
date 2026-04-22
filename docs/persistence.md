@@ -154,53 +154,50 @@ Make it executable: `chmod +x ~/.claude-agent/scripts/start-claudex.sh`
 
 ## Layer 3: Watchdog Cron
 
-systemd's `Restart=on-failure` handles crashes, but not stalls. If Claude enters a hung state — waiting for input that never comes, stuck in a retry loop — the process is still technically running. systemd sees it as healthy. Nobody's home.
+systemd's `Restart=on-failure` handles crashes, but not stalls. A more subtle failure mode: Claude's process is alive, bun is running, messages arrive — but responses never reach Telegram. The outbound MCP channel between Claude and the Telegram plugin silently dies. The process looks healthy from the outside.
 
-The watchdog cron job checks every 5 minutes for the specific Claude process. If it's not found, it restarts.
+The watchdog runs every 5 minutes and performs **three checks**:
+
+```
+*/5 * * * * bash ~/.claude-agent/scripts/watchdog-claudex.sh
+```
+
+### Check 1: Process liveness
+
+Basic `pgrep` for the Claude process. If it's gone, restart immediately.
+
+### Check 2: Session age (24h proactive restart)
+
+Tracks the session start time in `data/watchdog_session_start`. After 24 hours, proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently rotting — a real failure mode observed in long-running sessions.
 
 ```bash
-#!/usr/bin/env bash
-# ~/.claude-agent/scripts/watchdog.sh
-
-set -euo pipefail
-
-WORKSPACE="/home/USER/.claude-agent"
-LOG="$WORKSPACE/logs/watchdog.log"
-START_SCRIPT="$WORKSPACE/scripts/start-claudex.sh"
-
-mkdir -p "$WORKSPACE/logs"
-
-timestamp() { date '+%Y-%m-%d %H:%M:%S'; }
-
-# Detect the specific Claude process by its launch arguments.
-# Matching on "claude.*channels.*telegram" ensures we find OUR Claude,
-# not some other instance or test run.
-if pgrep -f "claude.*channels.*telegram" > /dev/null 2>&1; then
-  exit 0  # All good, nothing to do
-fi
-
-echo "$(timestamp) Claude process not found — restarting..." >> "$LOG"
-
-# Trigger restart via systemd (preferred — tracks restart count)
-if systemctl --user is-active claudex.service > /dev/null 2>&1; then
-  systemctl --user restart claudex.service
-  echo "$(timestamp) Restarted via systemd" >> "$LOG"
-else
-  # Systemd service not running — start script directly
-  bash "$START_SCRIPT"
-  echo "$(timestamp) Restarted via direct script" >> "$LOG"
+SESSION_AGE=$(( NOW - SESSION_START ))
+MAX_SESSION_AGE=$(( 24 * 3600 ))  # 24 hours
+if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
+    do_restart "session age exceeds 24h limit — proactive refresh"
 fi
 ```
+
+### Check 3: Telegram delivery health
+
+Counts inbound message files in `~/.claude/channels/telegram/inbox/`. If the count grows (new messages arrived) but no delivery is confirmed after 10 minutes, the watchdog checks whether Claude is actively working by inspecting the tmux pane:
+
+```bash
+PANE=$(tmux capture-pane -t claudex -p)
+if echo "$PANE" | grep -q "✻\|Thinking\|Running\|Executing"; then
+    # Actively working — skip restart, keep waiting
+else
+    # Idle at prompt, delivery stuck — restart
+    do_restart "Telegram delivery stuck"
+fi
+```
+
+This is important: **long tasks are safe**. If Claudex is working on a 45-minute build, the watchdog sees the activity indicators and leaves it alone. It only restarts when Claude is visibly idle but hasn't sent a response.
 
 ### Cron entry
 
 ```bash
-crontab -e
-```
-
-Add:
-```
-*/5 * * * * /home/USER/.claude-agent/scripts/watchdog.sh
+(crontab -l 2>/dev/null; echo "*/5 * * * * bash ~/.claude-agent/scripts/watchdog-claudex.sh") | crontab -
 ```
 
 ---

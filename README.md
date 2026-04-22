@@ -291,7 +291,7 @@ Three layers keep the agent alive:
 
 1. **tmux session** — detaches from terminal, survives SSH disconnect
 2. **systemd user service** — auto-starts on boot, restarts on crash
-3. **watchdog cron** — every 5 minutes, checks if the process is alive and restarts if not
+3. **watchdog cron** — every 5 minutes, three checks: process alive, session age (24h proactive restart), and Telegram delivery health (detects stuck outbound channel without interrupting long tasks)
 
 ```
 systemd (boot/crash restart)
@@ -299,7 +299,9 @@ systemd (boot/crash restart)
         └── claude code process
               └── telegram plugin (bun subprocess)
 
-cron (every 5 min) ──► watchdog checks PID ──► restarts if dead
+cron (every 5 min) ──► 1. process alive?
+                    ──► 2. session age > 24h? → proactive restart
+                    ──► 3. inbound stuck > 10min AND idle? → delivery restart
 ```
 
 Key: `loginctl enable-linger $USER` makes the systemd user service survive logout.

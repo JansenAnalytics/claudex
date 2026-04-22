@@ -397,22 +397,27 @@ TimeoutStopSec=30
 
 ### Layer 3: Watchdog Cron
 
-**Failure mode covered:** Zombie processes, systemd restart limit exhaustion, edge cases systemd misses.
+**Failure mode covered:** Zombie processes, systemd restart limit exhaustion, Telegram plugin channel rot, and silent delivery failures.
 
-The watchdog cron runs every 5 minutes and directly checks for the running process:
+The watchdog cron runs every 5 minutes and performs **three checks**:
 
 ```bash
 # crontab entry
 */5 * * * * bash ~/.claude-agent/scripts/watchdog-claudex.sh
-
-# watchdog logic
-PIDS=$(pgrep -f "claude.*channels.*telegram")
-if [ -z "$PIDS" ]; then
-    bash ~/.claude-agent/scripts/start-claudex.sh
-fi
 ```
 
-This catches cases where the process is technically running (so systemd doesn't see a crash) but has entered a broken state, or where systemd hit its restart limit and gave up.
+**Check 1 — Process alive?**
+Basic `pgrep` check. Restart if the Claude process is gone.
+
+**Check 2 — Session age (24h limit)**
+Tracks when the session started via `data/watchdog_session_start`. If the session has been running for more than 24 hours, it proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently corrupting over time — a known failure mode in long-running sessions.
+
+**Check 3 — Telegram delivery health**
+Counts files in `~/.claude/channels/telegram/inbox/`. If new inbound messages arrive but no delivery is confirmed after 10 minutes, the watchdog checks the tmux pane for active work indicators (`✻`, `Running`, `Executing`, etc.):
+- **If actively working** → skip restart, keep waiting. Long tasks (30+ minutes) are safe.
+- **If idle at prompt** → restart. The outbound channel is stuck.
+
+This prevents the case where the process is technically alive but Claude's responses never reach Telegram.
 
 The watchdog also records health metrics: `watchdog_ok` when the process is alive, `restart` when it triggers a recovery. These events feed into `health-check.cjs --report` for uptime tracking.
 
