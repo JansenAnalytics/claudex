@@ -68,14 +68,20 @@ LAST_INBOUND=$(cat "$LAST_INBOUND_FILE" 2>/dev/null || echo "0")
 if [ "$CURRENT_INBOUND" -gt "$LAST_INBOUND" ]; then
     # New inbound messages arrived since last check
     if [ -f "$PING_FILE" ]; then
-        # We already flagged this — Claudex received a message but delivery still unconfirmed
-        # Check how long ago we set the flag
+        # We already flagged this — check how long ago
         PING_AGE=$(( NOW - $(cat "$PING_FILE" 2>/dev/null || echo "$NOW") ))
         if [ "$PING_AGE" -gt 600 ]; then
-            # 10 minutes passed with inbound messages but no delivery confirmation — stuck
-            do_restart "Telegram delivery stuck (inbound messages not being delivered for ${PING_AGE}s)"
-            echo "$CURRENT_INBOUND" > "$LAST_INBOUND_FILE"
-            exit 0
+            # 10+ minutes passed — but check if Claudex is actively working first
+            PANE=$(tmux capture-pane -t claudex -p 2>/dev/null || true)
+            if echo "$PANE" | grep -q "✻\|Thinking\|Running\|Executing\|ms elapsed\|elapsed"; then
+                # Claudex is actively processing a task — do NOT restart
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ Delivery flag ${PING_AGE}s old but Claudex is actively working — skipping restart" >> "$LOG"
+            else
+                # Idle at prompt with no response sent — genuinely stuck
+                do_restart "Telegram delivery stuck — idle for ${PING_AGE}s with undelivered inbound"
+                echo "$CURRENT_INBOUND" > "$LAST_INBOUND_FILE"
+                exit 0
+            fi
         fi
         # Still within grace period — wait
     else
