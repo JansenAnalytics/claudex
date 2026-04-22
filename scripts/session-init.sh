@@ -7,8 +7,10 @@ INTERRUPTED_FILE="$DATA_DIR/interrupted-task.json"
 
 mkdir -p "$LOGS_DIR" "$DATA_DIR"
 
-# 1. Log session start
+# 1. Log session start + record watchdog session timestamp
 echo "[$(date '+%Y-%m-%d %H:%M')] Session started" >> "$LOGS_DIR/sessions.log"
+date +%s > "$DATA_DIR/watchdog_session_start"
+ls "$HOME/.claude/channels/telegram/inbox/" 2>/dev/null | wc -l | tr -d ' ' > "$DATA_DIR/watchdog_last_inbound_count"
 # Record health event
 node --experimental-sqlite "$WORKSPACE/scripts/health-check.cjs" --record session_start 2>/dev/null || true
 
