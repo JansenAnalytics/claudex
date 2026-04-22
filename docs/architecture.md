@@ -409,8 +409,8 @@ The watchdog cron runs every 5 minutes and performs **three checks**:
 **Check 1 — Process alive?**
 Basic `pgrep` check. Restart if the Claude process is gone.
 
-**Check 2 — Session age (24h limit)**
-Tracks when the session started via `data/watchdog_session_start`. If the session has been running for more than 24 hours, it proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently corrupting over time — a known failure mode in long-running sessions.
+**Check 2 — Session age (72h limit)**
+Tracks when the session started via `data/watchdog_session_start`. If the session has been running for more than 72 hours, it proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently corrupting over time — a known failure mode in long-running sessions.
 
 **Check 3 — Telegram delivery health**
 Counts files in `~/.claude/channels/telegram/inbox/`. If new inbound messages arrive but no delivery is confirmed after 10 minutes, the watchdog checks the tmux pane for active work indicators (`✻`, `Running`, `Executing`, etc.):
