@@ -53,7 +53,7 @@ node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --reco
 SESSION_START=$(cat "$SESSION_START_FILE" 2>/dev/null || echo "0")
 NOW=$(date +%s)
 SESSION_AGE=$(( NOW - SESSION_START ))
-MAX_SESSION_AGE=$(( 24 * 3600 ))  # 24 hours
+MAX_SESSION_AGE=$(( 72 * 3600 ))  # 72 hours
 
 if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
     do_restart "session age $(( SESSION_AGE / 3600 ))h exceeds 4h limit — proactive refresh"

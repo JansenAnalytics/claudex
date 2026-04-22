@@ -291,7 +291,7 @@ Three layers keep the agent alive:
 
 1. **tmux session** — detaches from terminal, survives SSH disconnect
 2. **systemd user service** — auto-starts on boot, restarts on crash
-3. **watchdog cron** — every 5 minutes, three checks: process alive, session age (24h proactive restart), and Telegram delivery health (detects stuck outbound channel without interrupting long tasks)
+3. **watchdog cron** — every 5 minutes, three checks: process alive, session age (72h proactive restart), and Telegram delivery health (detects stuck outbound channel without interrupting long tasks)
 
 ```
 systemd (boot/crash restart)

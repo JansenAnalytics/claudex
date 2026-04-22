@@ -166,15 +166,15 @@ The watchdog runs every 5 minutes and performs **three checks**:
 
 Basic `pgrep` for the Claude process. If it's gone, restart immediately.
 
-### Check 2: Session age (24h proactive restart)
+### Check 2: Session age (72h proactive restart)
 
-Tracks the session start time in `data/watchdog_session_start`. After 24 hours, proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently rotting — a real failure mode observed in long-running sessions.
+Tracks the session start time in `data/watchdog_session_start`. After 72 hours, proactively restarts with a fresh session. This prevents the Telegram plugin's outbound MCP channel from silently rotting — a real failure mode observed in long-running sessions.
 
 ```bash
 SESSION_AGE=$(( NOW - SESSION_START ))
-MAX_SESSION_AGE=$(( 24 * 3600 ))  # 24 hours
+MAX_SESSION_AGE=$(( 24 * 3600 ))  # 72 hours
 if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
-    do_restart "session age exceeds 24h limit — proactive refresh"
+    do_restart "session age exceeds 72h limit — proactive refresh"
 fi
 ```
 
