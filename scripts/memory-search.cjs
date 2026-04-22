@@ -37,12 +37,13 @@
 
 const { DatabaseSync } = require('node:sqlite');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 
-const HOME = process.env.HOME || '/home/ajans';
+const HOME = process.env.HOME || os.homedir();
 const WORKSPACE = process.env.CLAUDEX_WORKSPACE || path.join(HOME, '.claude-agent');
 const DB_PATH = process.env.CLAUDEX_MEMORY_DB || path.join(WORKSPACE, 'data', 'memory.sqlite');
 const RAG_CONFIG_PATH = process.env.CLAUDEX_RAG_CONFIG || path.join(WORKSPACE, 'data', 'rag-config.json');
@@ -55,7 +56,8 @@ const OPENAI_MODEL = process.env.CLAUDEX_EMBEDDING_MODEL || 'text-embedding-3-sm
 
 // Session transcript location (Claude Code stores these here)
 const CLAUDE_PROJECTS_DIR = path.join(HOME, '.claude', 'projects');
-const CLAUDE_AGENT_PROJECT = '-home-ajans--claude-agent';
+// Claude Code encodes workspace path as directory name: /home/user/.claude-agent → -home-user--claude-agent
+const CLAUDE_AGENT_PROJECT = WORKSPACE.replace(/\//g, '-').replace(/^-/, '');
 
 // Load cross-agent dirs from config or use defaults
 function loadCrossAgentDirs() {

@@ -6,7 +6,7 @@
 set -euo pipefail
 
 export PATH="$HOME/.bun/bin:$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:/usr/bin:/bin"
-export HOME="/home/ajans"
+export HOME="${HOME:-$(getent passwd "$(whoami)" | cut -d: -f6)}"
 export LANG="en_US.UTF-8"
 export TERM="xterm-256color"
 
