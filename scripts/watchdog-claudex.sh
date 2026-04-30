@@ -60,7 +60,20 @@ if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
     exit 0
 fi
 
-# ─── Check 3: Telegram delivery health ──────────────────────────────────────
+# ─── Check 3: Bun plugin network health ─────────────────────────────────────
+# The outbound channel can die silently even if the bun process is alive.
+# Verify the bun process has at least one established connection to Telegram API.
+# Check for active bun connections to Telegram API (149.154.x.x or 91.108.x.x)
+# The child bun process (server.ts) owns the sockets, not the parent — so match by IP, not PID.
+if [ "$SESSION_AGE" -gt 3600 ]; then
+    ACTIVE_CONNS=$(ss -tp 2>/dev/null | grep "bun" | grep -cE "149\.154\.|91\.108\." || true)
+    if [ "$ACTIVE_CONNS" -eq 0 ]; then
+        do_restart "bun telegram plugin has no active connections to Telegram API (session age: $(( SESSION_AGE / 3600 ))h)"
+        exit 0
+    fi
+fi
+
+# ─── Check 4: Telegram delivery health ──────────────────────────────────────
 # Count current inbox files
 CURRENT_INBOUND=$(ls "$INBOX/" 2>/dev/null | wc -l | tr -d ' ')
 LAST_INBOUND=$(cat "$LAST_INBOUND_FILE" 2>/dev/null || echo "0")
