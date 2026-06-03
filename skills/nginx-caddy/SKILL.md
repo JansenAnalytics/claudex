@@ -1,6 +1,9 @@
 ---
 name: nginx-caddy
 description: Nginx & Caddy Skill
+category: system
+maturity: stable
+tags: [reverse-proxy, ssl, certbot, load-balancing, caddyfile]
 ---
 
 # Nginx & Caddy Skill

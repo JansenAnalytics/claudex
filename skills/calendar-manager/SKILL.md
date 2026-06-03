@@ -1,6 +1,9 @@
 ---
 name: calendar-manager
 description: "Read and manage Google Calendar events: list upcoming, create events, check availability, send reminders."
+category: productivity
+maturity: stable
+tags: [google-calendar, ics, scheduling, availability, reminders]
 ---
 
 # calendar-manager

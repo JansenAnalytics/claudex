@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: beta
+tags: [sonos, speakers, playback, local-network, ssdp]
 ---
 
 # Sonos CLI

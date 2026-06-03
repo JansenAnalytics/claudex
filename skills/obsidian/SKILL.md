@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [obsidian, markdown-notes, obsidian-cli, vault, wikilinks]
 ---
 
 # Obsidian

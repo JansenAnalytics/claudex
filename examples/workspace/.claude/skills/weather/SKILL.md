@@ -18,6 +18,6 @@ curl -s "wttr.in/LOCATION?format=v2"
 curl -s "wttr.in/LOCATION?format=j1"
 ```
 
-Default location: **Oslo** (Aksel's location)
+Default location: **Oslo** (the user's location)
 
 Format the response naturally — don't dump raw output.

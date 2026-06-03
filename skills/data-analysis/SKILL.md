@@ -1,6 +1,9 @@
 ---
 name: data-analysis
 description: Analyze data from CSV, JSON, SQLite, or APIs. Use when asked to analyze, summarize, or visualize data.
+category: data
+maturity: beta
+tags: [csv, json, sqlite, matplotlib, summarization]
 ---
 
 # Data Analysis
@@ -19,7 +22,7 @@ sqlite3 -header -csv DB_PATH "SELECT * FROM table;" > output.csv
 ```
 
 ## Key Databases
-- **Trade journal:** ~/projects/prop-hedge-agents/data/trade-journal.db
+- **Trade journal:** ${PROP_HEDGE_AGENTS_HOME:-$HOME/projects/prop-hedge-agents}/data/trade-journal.db
   - Tables: trades, lessons, market_contexts, agent_memory
   - 34+ trades with structured lessons
 

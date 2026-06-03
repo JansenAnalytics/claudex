@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [image-generation, gemini, image-editing, ai-images]
 ---
 
 # Nano Banana Pro (Gemini 3 Pro Image)

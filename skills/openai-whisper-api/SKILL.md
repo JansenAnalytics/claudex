@@ -11,6 +11,9 @@ metadata:
         "primaryEnv": "OPENAI_API_KEY",
       },
   }
+category: media
+maturity: stable
+tags: [whisper, transcription, openai-api, speech-to-text, audio]
 ---
 
 # OpenAI Whisper API (curl)
@@ -33,7 +36,7 @@ Defaults:
 ```bash
 {baseDir}/scripts/transcribe.sh /path/to/audio.ogg --model whisper-1 --out /tmp/transcript.txt
 {baseDir}/scripts/transcribe.sh /path/to/audio.m4a --language en
-{baseDir}/scripts/transcribe.sh /path/to/audio.m4a --prompt "Speaker names: Peter, Daniel"
+{baseDir}/scripts/transcribe.sh /path/to/audio.m4a --prompt "Speaker names: Alice, Bob"
 {baseDir}/scripts/transcribe.sh /path/to/audio.m4a --json --out /tmp/transcript.json
 ```
 

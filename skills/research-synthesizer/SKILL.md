@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/research-synthesizer/scripts"
+description: "Synthesizes technical, fundamental, macro, and sentiment signals into conviction-scored trade ideas across forex, stocks, and crypto. Use when scanning markets for opportunities, ranking trade ideas by conviction, deciding what to trade, or asking for a buy/sell signal or setup on an instrument."
 name: research-synthesizer
 triggers:
   - trade idea
@@ -8,6 +8,9 @@ triggers:
   - what to trade
   - scan
   - synthesize
+category: trading-finance
+maturity: stable
+tags: [trade-ideas, conviction-scoring, technical-analysis, fundamentals, opportunity-scan]
 ---
 
 # Research Synthesizer
@@ -15,7 +18,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/research-synthesizer/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/research-synthesizer/scripts
 
 # Single instrument synthesis
 python3 $SKILL/synthesize.py EURUSD

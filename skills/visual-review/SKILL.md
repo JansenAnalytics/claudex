@@ -1,6 +1,9 @@
 ---
 name: visual-review
 description: "Screenshot comparison and visual regression detection: pixel diffing, before/after overlays, threshold-based change detection."
+category: frontend
+maturity: stable
+tags: [visual-regression, screenshot-diff, pixel-diffing, overlay, ui-testing]
 ---
 
 # visual-review

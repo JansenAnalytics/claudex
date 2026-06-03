@@ -1,6 +1,9 @@
 ---
 name: secret-vault
 description: "Encrypted credential store — AES-256-GCM secured tokens and secrets in one place."
+category: security
+maturity: stable
+tags: [aes-256-gcm, credential-store, encryption, cli, node]
 ---
 
 # secret-vault
@@ -27,13 +30,13 @@ The master key (`~/.openclaw/vault.key`) is 32 random bytes stored with `chmod 6
 ## Primary file
 
 ```
-/home/ajans/projects/secret-vault/vault.cjs
+${SECRET_VAULT_HOME:-$HOME/projects/secret-vault}/vault.cjs
 ```
 
 Symlink (or same file) also lives at:
 
 ```
-/home/ajans/openclaw/skills/secret-vault/scripts/vault.cjs
+${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/secret-vault/scripts/vault.cjs
 ```
 
 ## CLI quick reference
@@ -50,7 +53,7 @@ node vault.cjs check              # verify integrity + count
 ## Programmatic usage
 
 ```js
-const { getSecret } = require("/home/ajans/projects/secret-vault/vault.cjs");
+const { getSecret } = require("${SECRET_VAULT_HOME:-$HOME/projects/secret-vault}/vault.cjs");
 const token = getSecret("GITHUB_TOKEN"); // returns string or null
 ```
 

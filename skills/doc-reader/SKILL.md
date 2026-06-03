@@ -13,6 +13,9 @@ triggers:
   - read docx
   - read excel
   - document analysis
+category: research
+maturity: stable
+tags: [pdf-extraction, ocr, table-parsing, docx, document-intelligence]
 ---
 
 # Doc Reader — Document Intelligence
@@ -22,7 +25,7 @@ Extract text, tables, and insights from any document format. Handles native text
 ## Quick Reference
 
 ```bash
-SCRIPTS=~/openclaw/skills/doc-reader/scripts
+SCRIPTS=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/doc-reader/scripts
 
 # Extract text from any document
 python3 $SCRIPTS/extract.py document.pdf

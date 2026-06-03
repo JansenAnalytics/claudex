@@ -1,6 +1,9 @@
 ---
 name: design-system
 description: "Enforce design consistency: component inventory, style token extraction, CSS consistency checking, spacing/color/typography auditing."
+category: frontend
+maturity: stable
+tags: [design-tokens, css, component-inventory, style-audit, consistency]
 ---
 
 # design-system

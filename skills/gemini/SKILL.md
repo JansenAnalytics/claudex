@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: meta
+maturity: beta
+tags: [gemini-cli, llm, one-shot, google-ai, generation]
 ---
 
 # Gemini CLI

@@ -1,6 +1,9 @@
 ---
 name: ci-cd
 description: "Create and debug GitHub Actions CI/CD pipelines: workflow authoring, matrix builds, caching, secrets, deployment steps."
+category: development
+maturity: stable
+tags: [github-actions, workflows, matrix-builds, caching, deployment]
 ---
 
 # ci-cd

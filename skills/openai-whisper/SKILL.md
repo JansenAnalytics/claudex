@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [whisper, transcription, speech-to-text, local, audio]
 ---
 
 # Whisper (CLI)

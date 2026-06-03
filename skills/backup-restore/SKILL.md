@@ -1,6 +1,9 @@
 ---
 name: backup-restore
 description: "Automated backup strategies: database dumps, file snapshots, incremental backups, verification, disaster recovery. Use when: setting up backup schedules, creating database backups, restoring from b..."
+category: system
+maturity: stable
+tags: [backups, database-dumps, incremental, disaster-recovery, retention]
 ---
 
 # backup-restore

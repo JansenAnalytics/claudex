@@ -1,6 +1,9 @@
 ---
 name: test-runner
 description: "Run and interpret test suites across frameworks: Jest, Vitest, pytest, Mocha, tap. Use when: running tests, debugging test failures, generating coverage reports, writing test fixtures, or setting u..."
+category: development
+maturity: stable
+tags: [test-execution, coverage, flaky-tests, framework-detection, pytest]
 ---
 
 # test-runner

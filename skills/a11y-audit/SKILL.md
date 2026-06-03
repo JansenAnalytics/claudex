@@ -1,6 +1,9 @@
 ---
 name: a11y-audit
 description: "Accessibility auditing: WCAG compliance checking, contrast ratios, ARIA labels, keyboard navigation, semantic HTML, screen reader compatibility."
+category: frontend
+maturity: stable
+tags: [accessibility, wcag, aria, contrast-ratio, keyboard-nav]
 ---
 
 # a11y-audit

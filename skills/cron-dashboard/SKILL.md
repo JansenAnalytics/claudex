@@ -12,13 +12,16 @@ triggers:
   - cron dashboard
   - check services
   - what failed
+category: system
+maturity: stable
+tags: [cron, systemd, docker, health-monitoring, diagnostics]
 ---
 
 # Cron Dashboard
 
 Unified view of all scheduled jobs, systemd services, and Docker containers with health monitoring.
 
-**Binary:** `~/bin/cron-dash` (or `node ~/openclaw/skills/cron-dashboard/scripts/dashboard.cjs`)
+**Binary:** `~/bin/cron-dash` (or `node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/cron-dashboard/scripts/dashboard.cjs`)
 
 ## Quick Reference
 
@@ -189,6 +192,6 @@ cron-dash diagnose <name>
 
 ### When setting up a new cron
 ```bash
-cron-dash add "0 */4 * * *" "cd ~/projects/myapp && python3 sync.py >> logs/sync.log 2>&1" --name "myapp-sync"
+cron-dash add "0 */4 * * *" "cd ~/projects/<your-app> && python3 sync.py >> logs/sync.log 2>&1" --name "myapp-sync"
 cron-dash status  # Verify it appears
 ```

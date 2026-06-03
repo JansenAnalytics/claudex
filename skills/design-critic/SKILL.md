@@ -16,20 +16,23 @@ triggers:
   - design critic
   - review the site
   - check the website
+category: frontend
+maturity: stable
+tags: [ui-review, screenshots, accessibility, axe-core, lighthouse]
 ---
 
 # Design Critic
 
 Autonomous UI/UX reviewer. Point it at any running web app → get a prioritized list of every visual, responsive, accessibility, and functionality issue with actionable fixes.
 
-**Scripts:** `~/openclaw/skills/design-critic/scripts/`
+**Scripts:** `${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/design-critic/scripts/`
 **Reviews:** `~/.design-critic/reviews/`
 **Binary:** `~/bin/design-critic`
 
 ## Quick Reference
 
 ```bash
-S=~/openclaw/skills/design-critic/scripts
+S=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/design-critic/scripts
 
 # Full review (the default workflow)
 design-critic http://localhost:5173
@@ -51,7 +54,7 @@ design-critic http://localhost:5173 --compare ~/.design-critic/reviews/PREVIOUS_
 
 ## The Autonomous Review Workflow
 
-**This is the workflow to use before telling Aksel anything is "done":**
+**This is the workflow to use before telling the user anything is "done":**
 
 ### Step 1: Run the review
 ```bash

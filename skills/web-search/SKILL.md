@@ -1,6 +1,9 @@
 ---
 name: web-search
 description: Search the web and fetch content from URLs. Use for research, fact-checking, news, or any web lookup.
+category: research
+maturity: beta
+tags: [duckduckgo, url-fetch, text-extraction, lynx, fact-checking]
 ---
 
 # Web Search & Fetch

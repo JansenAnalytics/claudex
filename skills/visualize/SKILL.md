@@ -1,6 +1,9 @@
 ---
 name: visualize
 description: "Generate charts and visualizations: line, bar, scatter, heatmap, candlestick. Output as PNG/SVG for Telegram or web."
+category: data
+maturity: stable
+tags: [charts, matplotlib, candlestick, csv, plotting]
 ---
 
 # visualize

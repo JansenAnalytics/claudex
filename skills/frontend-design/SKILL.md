@@ -12,6 +12,9 @@ triggers:
   - make it look good
   - redesign
   - polish the frontend
+category: frontend
+maturity: stable
+tags: [aesthetics, css, typography, design-direction, ui-design]
 ---
 
 # Frontend Design Skill
@@ -200,7 +203,7 @@ After generating frontend code, preview it:
 echo '<html>...</html>' > /tmp/preview.html
 
 # Use the website-screenshot skill for headless capture:
-# node ~/openclaw/skills/website-screenshot/scripts/screenshot.cjs file:///tmp/preview.html
+# node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/website-screenshot/scripts/screenshot.cjs file:///tmp/preview.html
 
 # Or serve locally for React/Vue apps:
 npx vite preview --host 0.0.0.0 --port 5173

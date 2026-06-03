@@ -8,6 +8,9 @@ triggers:
   - pen test
   - vulnerability scan
   - check security
+category: security
+maturity: stable
+tags: [pentest, injection-testing, secret-scanning, auth-bypass, cvss]
 ---
 
 # Security Auditor

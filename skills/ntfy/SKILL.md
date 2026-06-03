@@ -1,11 +1,14 @@
 ---
 name: ntfy
 description: Send push notifications to phones/desktops via ntfy. Use when the user wants to send alerts, reminders, or notifications.
+category: comms
+maturity: stable
+tags: [push-notifications, ntfy, alerts, curl, reminders]
 ---
 
 # ntfy Push Notifications
 
-Send notifications to Aksel's phone/desktop:
+Send notifications to the user's phone/desktop:
 
 ```bash
 # Simple notification

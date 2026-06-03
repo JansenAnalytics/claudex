@@ -18,6 +18,9 @@ metadata:
           ],
       },
   }
+category: meta
+maturity: stable
+tags: [skill-registry, skill-install, skill-publish, marketplace, versioning]
 ---
 
 # ClawHub CLI

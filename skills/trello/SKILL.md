@@ -7,6 +7,9 @@ metadata:
     "openclaw":
       { "emoji": "📋", "requires": { "bins": ["jq"], "env": ["TRELLO_API_KEY", "TRELLO_TOKEN"] } },
   }
+category: productivity
+maturity: stable
+tags: [trello, kanban, boards, cards, rest-api]
 ---
 
 # Trello Skill

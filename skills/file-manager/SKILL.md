@@ -1,6 +1,9 @@
 ---
 name: file-manager
 description: File operations — organize, search, backup, manage files and directories. Use for any file management task.
+category: system
+maturity: beta
+tags: [file-operations, fd, ripgrep, trash, backup]
 ---
 
 # File Manager

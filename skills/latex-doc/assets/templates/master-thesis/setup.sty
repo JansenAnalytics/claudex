@@ -1,0 +1,222 @@
+% Usepackage
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{packages}[2021/01/15 Packages]
+\usepackage[norsk]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{comment}
+\usepackage{blindtext}
+\usepackage{import}
+\usepackage{mathtools}
+
+\usepackage{titlesec}
+
+\usepackage{xcolor}
+
+%************** Teksttype, skriftstørrelse og avsnitt*********
+\usepackage{fontspec}
+ 
+\setmainfont{Times New Roman}
+\setromanfont{Times New Roman}
+
+\usepackage{setspace}
+
+
+%\usepackage{fontspec}
+%\usemainfont{Times New Roman}
+%\setmainfont{Times New Roman}
+
+
+% ------ Contents -------
+% Appendices
+% Bibliography & References
+% Code input
+% Flow charts
+% Front matter
+% General
+% Image
+% Language
+% Main matter
+% Mathematics
+% Page setup
+% -----------------------
+
+% --- Appendices ---
+\usepackage{appendix}
+\newcommand{\addappendix}{   % Self-created command to insert appendix with predefined settings
+    \newpage
+    \appendix
+    \section*{Appendiks}   % Name of appendix
+    \addcontentsline{toc}{section}{Appendiks}  % Add appendix name to table of contents
+    \renewcommand{\thesubsection}{\Roman{subsection}}    % Change numbering of section to upper-case letters.
+}
+\usepackage{booktabs,caption}
+\usepackage[flushleft]{threeparttable}
+
+% --- Bibliography & References---
+
+\usepackage[backend = biber,    % Recommended backend for sorting bibliography
+            style = bwl-FU,    % Close to the 'Harvard' referencing style
+            urldate = short,     % Long: 24th Mar. 1997 | Short: 24/03/1997
+            maxcitenames = 3,   % Number of authors in cite before replaced with 'Author#1 et al
+            ]{biblatex}
+\addbibresource{newRef.bib}
+
+
+
+\urlstyle{same}
+
+
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[nottoc]{tocbibind}  % Includes Bibliography, Index, list of Listing etc. to table of contents
+\newcommand{\source}[1]{\vspace{-4pt} \caption*{\hfill \footnotesize{Source: {#1}} } }   % Easily insert sources in images
+
+% --- Code ---
+\usepackage{minted} % Includes several programming languages and styles
+
+% --- Flow Charts ---
+% Keep in mind that you may customize these flow chart settings to fit your own preferences.
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+
+% --- Front matter ---
+% Front matter is located before the table of contents, e.g. preface (Norsk: forord) and has separate settings
+\newcommand{\frontmatter}{
+    \pagenumbering{roman}   % Setting page numbering to lower-case roman
+}
+% Edit title of lists (uncomment below)
+\renewcommand*\contentsname{Table of Contents}   % Rename table of contents
+\renewcommand{\listfigurename}{List of Figures}   % Rename list of figures
+\renewcommand{\listtablename}{List of Tables}  % Rename list of tables
+
+% --- General ---
+\usepackage{import}     % Enable importing of sections
+\usepackage{csquotes}   % Provides international handling of quote marks. Especially useful for bibliography management using BibLaTeX
+\usepackage{hyperref}   % Hyper-references, possible to change color
+\hypersetup{    % Color of hyper-references
+    colorlinks,
+    citecolor = black,
+    filecolor = black,
+    linkcolor = black,
+    urlcolor = black
+}
+\usepackage{comment}    % Comment blocks of text
+\def\equationautorefname{Equation}  % Autoref-name for equations
+\def\figureautorefname{Figure}  % Autoref-name for figures
+\def\tableautorefname{Table}    % Autoref-name for tables
+\def\sectionautorefname{Section}    % Autoref-name for sections
+\def\subsectionautorefname{\sectionautorefname} % Autoref-name for subsections
+\def\subsubsectionautorefname{\sectionautorefname} % Autoref-name for subsubsections
+
+% --- Image ---
+\usepackage{graphicx}   % Handle images
+\usepackage{wrapfig}    % Wrap text around images
+\usepackage{float}      % Force image location using "H"
+\usepackage{url}
+\urlstyle{sf}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}   % Ruler
+
+
+%\usepackage{subfig}
+
+%\usepackage[subfigure]{ccaption}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+% --- Language ---
+\usepackage{siunitx}    % Enable SI units
+
+% --- Main matter ---
+% This is the main part of the paper.
+\newcommand{\mainmatter}{
+    \newpage
+    \pagenumbering{arabic}  % Setting page numbering to normal integers
+}
+
+% --- Mathematics ---
+\usepackage{bm}     % Bold text in math mode
+\usepackage{amsmath}    %  Math formulas and improved typographical quality of their output
+\usepackage{amssymb}    % Extended symbol collection
+\usepackage{amsthm}     % Helps define theorem-like structures
+
+% --- Page setup ---
+\usepackage[a4paper, total={150mm, 245mm, margin=2in}]{geometry}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.8em}
+
+
+% Customized header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.1ex}
+\renewcommand{\footrulewidth}{0.1ex}
+\fancyfoot[C]{\thepage}
+
+% ---- Tabeller
+\usepackage{booktabs}
+
+% ---- Lister i dokumentet
+%\usepackage{bold-extra} % Trengs for å gjøre descriptive list litt mer tydelig
+\usepackage{enumitem}
+\usepackage{enumerate}
+\usepackage{paralist}
+
+\def\DescrItem[#1]#2{\item[{\rm #1}]#2}   % Definerer item uten fet skrift for descriptive list
+%\let\itemize\compactitem
+%\let\enditemize\endcompactitem
+%\let\enumerate\compactenum
+%\let\endenumerate\endcompactenum
+%\let\description\compactdesc
+%\let\enddescription\endcompactdesc
+
+
+%\pltopsep=0pt
+%\plitemsep=2pt
+%\plparsep=5pt
+% Forhåndinnstilling for deskriptive lister
+\newenvironment{my_enumerate}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}{\end{enumerate}
+}
+
+\newenvironment{deflist}[1][\quad]%
+  {\begin{list}{}{%
+     \renewcommand{\makelabel}[1]{\textbf{##1}\hfil}%
+     \settowidth{\labelwidth}{\textbf{#1}}%
+     \setlength{\leftmargin}{\labelwidth+\labelsep}}}
+  {\end{list}}
+
+
+% DEFINERER AVSTAND ETTER OVERSKRIFTENE
+
+%\usepackage{titlesec}
+
+%\usepackage[compact]{titlesec}
+
+% For å lage forkortelses-liste
+
+
+
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    citecolor=blue,
+    filecolor=magenta,      
+    urlcolor=black,
+    pdftitle={Fremtidsprediksjon av spotprisen på Nordsjøolje},
+    }

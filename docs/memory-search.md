@@ -298,7 +298,7 @@ Each result includes:
 1. [kite] 2026-03-12.md#L40-L47 (0.432)
    ## Poe (formerly Metis) — Fully Operational
    - Folder: `~/.openclaw-poe/`
-   - Service: `openclaw-poe-gateway.service` (port 18791)
+   - Service: `openclaw-poe-gateway.service` (local service)
    ...
    ─ vec:0.539 fts:0.725 recency:0.727
 ```

@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: beta
+tags: [eight-sleep, smart-bed, temperature, alarms, cli-wrapper]
 ---
 
 # eightctl

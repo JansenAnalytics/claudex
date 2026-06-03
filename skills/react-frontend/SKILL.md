@@ -12,6 +12,9 @@ triggers:
   - analytics frontend
   - refactor react
   - react architecture
+category: frontend
+maturity: stable
+tags: [react, vite, typescript, tailwind, dashboards]
 ---
 
 # React Frontend Skill

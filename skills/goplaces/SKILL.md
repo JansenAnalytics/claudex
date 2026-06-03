@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: stable
+tags: [google-places, place-lookup, geosearch, reviews, location]
 ---
 
 # goplaces

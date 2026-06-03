@@ -27,6 +27,9 @@ metadata:
           ],
       },
   }
+category: comms
+maturity: stable
+tags: [whatsapp, messaging, wacli, history-search, send]
 ---
 
 # wacli

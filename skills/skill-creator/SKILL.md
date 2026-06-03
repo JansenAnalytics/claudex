@@ -1,6 +1,9 @@
 ---
 name: skill-creator
 description: Create or update AgentSkills. Use when designing, structuring, or packaging skills with scripts, references, and assets.
+category: meta
+maturity: stable
+tags: [agentskills, scaffolding, progressive-disclosure, packaging, skill-design]
 ---
 
 # Skill Creator

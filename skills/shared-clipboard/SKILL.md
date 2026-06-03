@@ -10,13 +10,16 @@ triggers:
   - share between sessions
   - remember this code
   - store this value
+category: productivity
+maturity: stable
+tags: [clipboard, scratchpad, sqlite, snippets, cross-session]
 ---
 
 # Shared Clipboard
 
 Cross-session key-value snippet store. Share text, code, URLs, configs, SQL queries, and notes between agents, sessions, devices, and humans.
 
-**Binary:** `~/bin/clip` (or `node ~/openclaw/skills/shared-clipboard/scripts/clip.cjs`)
+**Binary:** `~/bin/clip` (or `node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/shared-clipboard/scripts/clip.cjs`)
 **Database:** `~/.clipboard/clips.db` (SQLite)
 
 ## Quick Reference

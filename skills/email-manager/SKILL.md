@@ -1,6 +1,9 @@
 ---
 name: email-manager
 description: "Read, search, send, and manage email via IMAP/SMTP or API (Gmail, Outlook)."
+category: comms
+maturity: stable
+tags: [imap, smtp, gmail, email-send, inbox]
 ---
 
 # email-manager

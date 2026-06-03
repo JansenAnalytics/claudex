@@ -1,6 +1,9 @@
 ---
 name: vuln-scanner
 description: Vulnerability Scanner Skill
+category: security
+maturity: beta
+tags: [vulnerability-scanning, npm-audit, cve, cron, alerts]
 ---
 
 # Vulnerability Scanner Skill
@@ -9,28 +12,28 @@ Use when: checking if any projects have security vulnerabilities, or when adding
 
 ## Run a scan now
 
-node /home/ajans/projects/vuln-scanner/scan.cjs
+node ${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/scan.cjs
 
 ## Scan specific project
 
-node /home/ajans/projects/vuln-scanner/scan.cjs --project <name>
+node ${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/scan.cjs --project <name>
 
 ## Dry run (no alerts)
 
-node /home/ajans/projects/vuln-scanner/scan.cjs --dry-run
+node ${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/scan.cjs --dry-run
 
 ## View last scan results
 
-node /home/ajans/projects/vuln-scanner/report.cjs
+node ${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/report.cjs
 
 ## Cron
 
-Weekly on Sundays at 09:00: scans all projects with package.json in ~/projects/
+Weekly on Sundays at 09:00: scans all projects with package.json in $HOME/projects/
 
 ## Config
 
-~/projects/vuln-scanner/config.json
+${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/config.json
 
-## Adding projects without package.json in ~/projects/
+## Adding projects without package.json in $HOME/projects/
 
-node /home/ajans/projects/vuln-scanner/add-project.cjs --path ~/projects/myapp --manager npm
+node ${VULN_SCANNER_HOME:-$HOME/projects/vuln-scanner}/add-project.cjs --path ~/projects/<your-app> --manager npm

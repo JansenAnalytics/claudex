@@ -1,6 +1,9 @@
 ---
 description: "SKILL_DIR=\"$(dirname \"$(realpath \"$0\")\")/..\"  # resolve from scripts/"
 name: macro-briefing
+category: trading-finance
+maturity: stable
+tags: [yfinance, economic-calendar, yield-curve, vix, sqlite]
 ---
 
 # Macro Briefing

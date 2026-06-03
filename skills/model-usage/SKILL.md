@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: meta
+maturity: beta
+tags: [codexbar, cost, per-model-usage, cli, macos]
 ---
 
 # Model usage

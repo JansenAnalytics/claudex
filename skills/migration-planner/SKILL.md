@@ -1,6 +1,9 @@
 ---
 name: migration-planner
 description: "Plan and execute framework, language, or infrastructure migrations safely: version upgrades, framework swaps, API changes."
+category: development
+maturity: stable
+tags: [migration, upgrade, breaking-changes, rollback, checklist]
 ---
 
 # migration-planner

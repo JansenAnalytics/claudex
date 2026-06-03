@@ -1,6 +1,9 @@
 ---
 name: event-log
 description: "An append-only structured JSONL event log giving Kite continuity across sessions — without reading every log file."
+category: productivity
+maturity: stable
+tags: [jsonl, event-log, session-continuity, append-only, audit-trail]
 ---
 
 # event-log
@@ -32,54 +35,54 @@ Each line is one JSON event:
 ## Script location
 
 ```
-/home/ajans/projects/event-log/event-log.cjs
+${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs
 ```
 
 Also symlinked in skill scripts for reference:
 
 ```
-/home/ajans/openclaw/skills/event-log/scripts/event-log.cjs
+${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/event-log/scripts/event-log.cjs
 ```
 
 ## CLI usage
 
 ```bash
 # Log an event
-node /home/ajans/projects/event-log/event-log.cjs log \
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs log \
   --type note --summary "Started working on X"
 
 # With metadata
-node /home/ajans/projects/event-log/event-log.cjs log \
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs log \
   --type notification_sent \
   --summary "Sent stock alert" \
   --meta '{"channel":"telegram","topic":"stock"}'
 
 # View last 20 events
-node /home/ajans/projects/event-log/event-log.cjs tail
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs tail
 
 # View last 50
-node /home/ajans/projects/event-log/event-log.cjs tail --n 50
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs tail --n 50
 
 # Events from today
-node /home/ajans/projects/event-log/event-log.cjs today
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs today
 
 # Search summaries
-node /home/ajans/projects/event-log/event-log.cjs search "stock"
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs search "stock"
 
 # Filter by type
-node /home/ajans/projects/event-log/event-log.cjs type notification_sent
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs type notification_sent
 
 # Events since a date
-node /home/ajans/projects/event-log/event-log.cjs since "2026-02-21"
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs since "2026-02-21"
 
 # Stats: counts by type, today/week
-node /home/ajans/projects/event-log/event-log.cjs stats
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs stats
 ```
 
 ## Programmatic API
 
 ```js
-const { logEvent } = require("/home/ajans/projects/event-log/event-log.cjs");
+const { logEvent } = require("${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs");
 
 logEvent("notification_sent", "Stock alert fired", { channel: "telegram" });
 logEvent("cron_ran", "web-monitor check complete", { success: true, duration_ms: 312 });
@@ -88,7 +91,7 @@ logEvent("error", "Failed to reach Eric Bloodaxe URL", { url: "https://...", cod
 
 ## Trigger phrases (Kite)
 
-When Aksel says any of these, Kite should query the event log:
+When the user says any of these, Kite should query the event log:
 
 - "What happened today?"
 - "What did you do today?"
@@ -104,7 +107,7 @@ When Aksel says any of these, Kite should query the event log:
 At the start of each main session, Kite should run:
 
 ```bash
-node /home/ajans/projects/event-log/event-log.cjs today
+node ${EVENT_LOG_HOME:-$HOME/projects/event-log}/event-log.cjs today
 ```
 
 This gives immediate context without reading every log file.

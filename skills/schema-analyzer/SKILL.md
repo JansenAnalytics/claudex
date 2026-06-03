@@ -1,6 +1,9 @@
 ---
 name: schema-analyzer
 description: "Analyze database schemas: generate ERD diagrams, detect normalization issues, suggest indexes, find missing foreign keys, audit schema quality."
+category: backend
+maturity: stable
+tags: [erd, schema-audit, indexes, foreign-keys, normalization]
 ---
 
 # schema-analyzer

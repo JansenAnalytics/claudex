@@ -1,0 +1,2808 @@
+[
+  {
+    "name": "1password",
+    "description": "Set up and use 1Password CLI (op). Use when installing the CLI, enabling desktop app integration, signing in (single or multi-account), or reading/injecting/running secrets via op.",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "1password",
+      "op-cli",
+      "secrets",
+      "credential-vault",
+      "signin"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "a11y-audit",
+    "description": "Accessibility auditing: WCAG compliance checking, contrast ratios, ARIA labels, keyboard navigation, semantic HTML, screen reader compatibility.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "accessibility",
+      "wcag",
+      "aria",
+      "contrast-ratio",
+      "keyboard-nav"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "adr-manager",
+    "description": "ADR Manager Skill",
+    "category": "writing",
+    "maturity": "beta",
+    "tags": [
+      "adr",
+      "decision-records",
+      "architecture-decisions",
+      "documentation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "api-critic",
+    "description": "Autonomous API testing and evaluation. Tests any REST API for correctness, security, performance, error handling, and standards compliance. Discovers endpoints, probes with valid/invalid/edge-case payloads, checks auth, response times, injection vulnerabilities, and generates severity-scored reports with actionable fixes. Use before any API \"done\" claim.",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "rest-api",
+      "endpoint-testing",
+      "injection-testing",
+      "auth",
+      "severity-scoring"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "api-tester",
+    "description": "Systematic REST and GraphQL API endpoint testing: happy path, error cases, auth flows, rate limits, schema validation. Use when: testing backend APIs, validating endpoint responses, checking error ...",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "rest-api",
+      "graphql",
+      "endpoint-testing",
+      "auth-flows",
+      "schema-validation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "apple-notes",
+    "description": "Manage Apple Notes via the `memo` CLI on macOS (create, view, edit, delete, search, move, and export notes). Use when a user asks OpenClaw to add a note, list notes, search notes, or manage note folders.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "apple-notes",
+      "memo-cli",
+      "macos",
+      "note-taking",
+      "export"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "apple-reminders",
+    "description": "Manage Apple Reminders via remindctl CLI (list, add, edit, complete, delete). Supports lists, date filters, and JSON/plain output.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "apple-reminders",
+      "remindctl",
+      "macos",
+      "todos",
+      "due-dates"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "arch-diagram",
+    "description": "Generate architecture diagrams from codebase analysis: Mermaid, PlantUML, or ASCII.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "mermaid",
+      "plantuml",
+      "ascii-diagram",
+      "dependency-graph",
+      "architecture"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "architecture-critic",
+    "description": "Static code analysis like a senior developer — cyclomatic/cognitive complexity, dead code detection, dependency graph analysis (circular deps, god modules), pattern consistency, error handling audit, code duplication detection. Use during refactors or before shipping.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "static-analysis",
+      "complexity",
+      "dead-code",
+      "dependency-graph",
+      "duplication"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "backup-restore",
+    "description": "Automated backup strategies: database dumps, file snapshots, incremental backups, verification, disaster recovery. Use when: setting up backup schedules, creating database backups, restoring from b...",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "backups",
+      "database-dumps",
+      "incremental",
+      "disaster-recovery",
+      "retention"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "bear-notes",
+    "description": "Create, search, and manage Bear notes via grizzly CLI.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "bear",
+      "grizzly-cli",
+      "macos",
+      "note-taking",
+      "tags"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "blogwatcher",
+    "description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.",
+    "category": "research",
+    "maturity": "beta",
+    "tags": [
+      "rss",
+      "atom",
+      "feed-monitoring",
+      "blogs",
+      "updates"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "blucli",
+    "description": "BluOS CLI (blu) for discovery, playback, grouping, and volume.",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "bluos",
+      "bluesound",
+      "audio-playback",
+      "speaker-control",
+      "tunein"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "bluebubbles",
+    "description": "Use when you need to send or manage iMessages via BlueBubbles (recommended iMessage integration). Calls go through the generic message tool with channel=\"bluebubbles\".",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "imessage",
+      "sms",
+      "tapback",
+      "group-chat",
+      "attachments"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "calendar-manager",
+    "description": "Read and manage Google Calendar events: list upcoming, create events, check availability, send reminders.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "google-calendar",
+      "ics",
+      "scheduling",
+      "availability",
+      "reminders"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "camsnap",
+    "description": "Capture frames or clips from RTSP/ONVIF cameras.",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "rtsp",
+      "onvif",
+      "ip-camera",
+      "snapshot",
+      "ffmpeg"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "canvas",
+    "description": "Display HTML content on connected OpenClaw nodes (Mac app, iOS, Android).",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "html-display",
+      "openclaw-nodes",
+      "webview",
+      "live-reload",
+      "screenshot"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "ci-cd",
+    "description": "Create and debug GitHub Actions CI/CD pipelines: workflow authoring, matrix builds, caching, secrets, deployment steps.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "github-actions",
+      "workflows",
+      "matrix-builds",
+      "caching",
+      "deployment"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "clawhub",
+    "description": "Use the ClawHub CLI to search, install, update, and publish agent skills from clawhub.com. Use when you need to fetch new skills on the fly, sync installed skills to latest or a specific version, or publish new/updated skill folders with the npm-installed clawhub CLI.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "skill-registry",
+      "skill-install",
+      "skill-publish",
+      "marketplace",
+      "versioning"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "cloud-deploy",
+    "description": "Provision and manage cloud servers on Hetzner, DigitalOcean, or AWS. Set up infrastructure, firewalls, DNS, and deploy applications.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "hetzner",
+      "digitalocean",
+      "aws",
+      "vps-provisioning",
+      "dns"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "code-review",
+    "description": "Review code for bugs, improvements, and best practices. Use when asked to review a file, PR, or codebase.",
+    "category": "development",
+    "maturity": "beta",
+    "tags": [
+      "pr-review",
+      "gh-cli",
+      "code-quality",
+      "bug-detection",
+      "review-checklist"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "codebase-navigator",
+    "description": "Rapidly understand any codebase: identify entry points, map architecture, find key patterns, summarize modules, trace data flow.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "code-navigation",
+      "dependency-map",
+      "entry-points",
+      "ripgrep",
+      "data-flow-trace"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "coding-agent",
+    "description": "Delegate coding tasks to Codex, Claude Code, or Pi agents via background process. Use when: (1) building/creating new features or apps, (2) reviewing PRs (spawn in temp dir), (3) refactoring large codebases, (4) iterative coding that needs file exploration. NOT for: simple one-liner fixes (just edit), reading code (use read tool), or any work in ~/clawd workspace (never spawn agents here). Requires a bash tool that supports pty:true.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "codex",
+      "claude-code",
+      "agent-delegation",
+      "background-process",
+      "git-worktree"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "cost-optimizer",
+    "description": "Track and optimize LLM token spend: estimate costs per task, recommend model tiers, monitor cumulative usage, suggest batching strategies.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "token-counting",
+      "llm-pricing",
+      "model-tier",
+      "usage-analysis",
+      "budget-estimation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "cron-dashboard",
+    "description": "Unified dashboard for all cron jobs, systemd services, and Docker containers. Shows schedules, health status, log freshness, errors, upcoming runs, and diagnostics. Use when checking what's scheduled, what's running, what failed, or managing cron jobs.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "cron",
+      "systemd",
+      "docker",
+      "health-monitoring",
+      "diagnostics"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "data-analysis",
+    "description": "Analyze data from CSV, JSON, SQLite, or APIs. Use when asked to analyze, summarize, or visualize data.",
+    "category": "data",
+    "maturity": "beta",
+    "tags": [
+      "csv",
+      "json",
+      "sqlite",
+      "matplotlib",
+      "summarization"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "data-pad",
+    "description": "Use when: the user provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it.",
+    "category": "data",
+    "maturity": "beta",
+    "tags": [
+      "csv",
+      "ndjson",
+      "sql",
+      "sqlite",
+      "exploration"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "data-pipeline",
+    "description": "ETL and data transformation: CSV, JSON, Parquet, NDJSON processing with filtering, mapping, joining, aggregating.",
+    "category": "data",
+    "maturity": "stable",
+    "tags": [
+      "etl",
+      "csv",
+      "parquet",
+      "ndjson",
+      "transform"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "data-validator",
+    "description": "Autonomous data quality validation — schema inference and validation, completeness/uniqueness/consistency checks, statistical anomaly detection, time-series gap detection, referential integrity, dataset comparison and drift detection. Supports CSV, JSON, SQLite, APIs. Use after any data pipeline work.",
+    "category": "data",
+    "maturity": "stable",
+    "tags": [
+      "data-quality",
+      "schema-inference",
+      "anomaly-detection",
+      "drift",
+      "integrity"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "database",
+    "description": "Manage PostgreSQL, SQLite, and Redis databases: create, migrate, backup, restore, query, optimize.",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "postgresql",
+      "sqlite",
+      "redis",
+      "migration",
+      "backup"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "deep-research",
+    "description": "Conduct thorough multi-source research on any topic. Use when the user needs in-depth analysis, comparison, or investigation of a subject.",
+    "category": "research",
+    "maturity": "beta",
+    "tags": [
+      "multi-source",
+      "web-search",
+      "wikipedia",
+      "synthesis",
+      "cross-reference"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "dep-audit",
+    "description": "Audit and update project dependencies: find outdated packages, check for vulnerabilities, auto-update safely with lockfile regeneration.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "dependencies",
+      "npm",
+      "pip",
+      "lockfile",
+      "outdated"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "design-critic",
+    "description": "Autonomous UI/UX review — screenshots every page at mobile/tablet/desktop (full-page scrolling), analyzes with vision models for layout bugs, checks accessibility (axe-core), audits contrast/colors/fonts/spacing for design system inconsistencies, detects dead buttons/links, overlapping elements hiding text/buttons, text truncation, broken links, and runs Lighthouse performance audits. Produces a prioritized report with severity scores and actionable fixes. Use before any launch, after major UI changes, or when the user asks to check/review a web app.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "ui-review",
+      "screenshots",
+      "accessibility",
+      "axe-core",
+      "lighthouse"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "design-system",
+    "description": "Enforce design consistency: component inventory, style token extraction, CSS consistency checking, spacing/color/typography auditing.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "design-tokens",
+      "css",
+      "component-inventory",
+      "style-audit",
+      "consistency"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "discord",
+    "description": "Discord ops via the message tool (channel=discord).",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "discord",
+      "messaging",
+      "channels",
+      "reactions",
+      "threads"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "doc-generator",
+    "description": "Auto-generate documentation from code: README files, JSDoc comments, API docs. Scans project structure, detects frameworks, and produces ready-to-use documentation.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "readme",
+      "jsdoc",
+      "api-docs",
+      "code-scanning",
+      "documentation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "doc-reader",
+    "description": "PDF/DOCX/XLSX/image document intelligence — text extraction, table parsing, OCR, financial statement analysis, contract clause detection, document classification, and format conversion. Use when reading, analyzing, extracting data from, or converting documents.",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "pdf-extraction",
+      "ocr",
+      "table-parsing",
+      "docx",
+      "document-intelligence"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "doc-verifier",
+    "description": "Ensures documentation is accurate, complete, and actually works — catches documentation rot before users hit it. Validates code examples, checks links, compares API/CLI docs against reality, detects stale docs, and scores completeness.",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "doc-validation",
+      "link-check",
+      "freshness",
+      "completeness-score",
+      "example-runner"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "docker",
+    "description": "Manage Docker containers and Compose stacks: build, run, stop, logs, exec, prune, multi-service orchestration.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "containers",
+      "docker-compose",
+      "orchestration",
+      "images",
+      "volumes"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "draft-queue",
+    "description": "Draft Queue Skill",
+    "category": "writing",
+    "maturity": "beta",
+    "tags": [
+      "approval-queue",
+      "drafts",
+      "json-payload",
+      "telegram-action"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "e2e-test-writer",
+    "description": "Generate end-to-end tests for web applications using Playwright. Create test files from user flow descriptions, page snapshots, or existing page analysis.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "playwright",
+      "e2e-tests",
+      "user-flows",
+      "test-generation",
+      "web-ui"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "economic-data-collector",
+    "description": "Collects and queries macroeconomic data — yield curves, central bank policy rates, forex rate differentials, FRED US economic indicators (CPI, GDP, NFP, unemployment), and the economic calendar. Use when fetching, storing, or querying interest rates, bond yields, rate diffs, or economic releases for trading and forex analysis.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "fred",
+      "yield-curve",
+      "central-bank-rates",
+      "rate-differentials",
+      "forex"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "data"
+    ]
+  },
+  {
+    "name": "eightctl",
+    "description": "Control Eight Sleep pods (status, temperature, alarms, schedules).",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "eight-sleep",
+      "smart-bed",
+      "temperature",
+      "alarms",
+      "cli-wrapper"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "email-manager",
+    "description": "Read, search, send, and manage email via IMAP/SMTP or API (Gmail, Outlook).",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "imap",
+      "smtp",
+      "gmail",
+      "email-send",
+      "inbox"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "error-monitor",
+    "description": "Monitor application logs and stderr in real-time for errors, crashes, and exceptions. Auto-capture stack traces, alert on new error patterns, track error rates.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "log-monitoring",
+      "stack-traces",
+      "crash-reports",
+      "error-rates",
+      "stderr"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "event-log",
+    "description": "An append-only structured JSONL event log giving Kite continuity across sessions — without reading every log file.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "jsonl",
+      "event-log",
+      "session-continuity",
+      "append-only",
+      "audit-trail"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "file-manager",
+    "description": "File operations — organize, search, backup, manage files and directories. Use for any file management task.",
+    "category": "system",
+    "maturity": "beta",
+    "tags": [
+      "file-operations",
+      "fd",
+      "ripgrep",
+      "trash",
+      "backup"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "flow-tester",
+    "description": "End-to-end user journey tester using Playwright. Tests multi-step flows (signup, checkout, CRUD) with screenshots at each step. Auto-generates flows from URLs or text descriptions. Use after integration work to verify complete user journeys work.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "playwright",
+      "e2e",
+      "user-journeys",
+      "browser-automation",
+      "screenshots"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "food-order",
+    "description": "Reorder Foodora orders + track ETA/status with ordercli. Never confirm without explicit user approval. Triggers: order food, reorder, track ETA.",
+    "category": "trading-finance",
+    "maturity": "beta",
+    "tags": [
+      "ordercli",
+      "foodora",
+      "reorder",
+      "eta-tracking",
+      "commerce"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "frontend-design",
+    "description": "Based on Anthropic's Frontend Aesthetics research. Adapted for OpenClaw with practical tooling additions.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "aesthetics",
+      "css",
+      "typography",
+      "design-direction",
+      "ui-design"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "frontend-inspector",
+    "description": "Analyze frontend screenshots using vision model analysis and automated checks: detect layout bugs, alignment issues, overflow, z-index problems, spacing inconsistencies, color contrast issues.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "screenshot-analysis",
+      "css-linting",
+      "layout-bugs",
+      "vision-model",
+      "visual-review"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "fundamental-research-engine",
+    "description": "Generates fundamental trading research per instrument (forex, metals, crypto, energy, indices) — rate differentials, COT positioning, retail sentiment, currency strength, central-bank rates, bond yields, Fear & Greed — plus an all-instrument daily market brief. Use when analyzing an instrument's fundamentals, checking rate differentials or COT/sentiment, or producing a daily macro brief.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "forex",
+      "cot",
+      "rate-differentials",
+      "instrument-analysis",
+      "daily-brief"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "data"
+    ]
+  },
+  {
+    "name": "gemini",
+    "description": "Gemini CLI for one-shot Q&A, summaries, and generation.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "gemini-cli",
+      "llm",
+      "one-shot",
+      "google-ai",
+      "generation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "gh-issues",
+    "description": "Fetch GitHub issues, spawn sub-agents to implement fixes and open PRs, then monitor and address PR review comments. Usage: /gh-issues [owner/repo] [--label bug] [--limit 5] [--milestone v1.0] [--assignee @me] [--fork user/repo] [--watch] [--interval 5] [--reviews-only] [--cron] [--dry-run] [--model glm-5] [--notify-channel <your-telegram-channel-id>]",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "github-api",
+      "issue-triage",
+      "pr-automation",
+      "sub-agents",
+      "code-review-handler"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "gifgrep",
+    "description": "Search GIF providers with CLI/TUI, download results, and extract stills/sheets.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "gif-search",
+      "tenor",
+      "giphy",
+      "download",
+      "frame-extraction"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "git-bisect-auto",
+    "description": "Automated git bisect to find the exact commit that introduced a bug. Run a test command against each bisect step, report the first bad commit with full context.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "git-bisect",
+      "regression-finding",
+      "binary-search",
+      "test-runner",
+      "regression-report"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "github-workflow",
+    "description": "Git and GitHub operations — clone, branch, commit, push, PRs, issues, CI status. Use for any git or GitHub task.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "gh-cli",
+      "git",
+      "pull-requests",
+      "issues",
+      "ci-status"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "gog",
+    "description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "google-workspace",
+      "gmail",
+      "calendar",
+      "drive",
+      "sheets"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "goplaces",
+    "description": "Query Google Places API (New) via the goplaces CLI for text search, place details, resolve, and reviews. Use for human-friendly place lookup or JSON output for scripts.",
+    "category": "home-iot",
+    "maturity": "stable",
+    "tags": [
+      "google-places",
+      "place-lookup",
+      "geosearch",
+      "reviews",
+      "location"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "health-check",
+    "description": "Quick system health check — services, disk, memory, processes. Use for periodic health monitoring.",
+    "category": "system",
+    "maturity": "beta",
+    "tags": [
+      "disk",
+      "memory",
+      "systemd",
+      "load-average",
+      "monitoring"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "healthcheck",
+    "description": "Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS).",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "hardening",
+      "firewall",
+      "ssh",
+      "risk-posture",
+      "openclaw-audit"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "himalaya",
+    "description": "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIME Meta Language).",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "email",
+      "imap",
+      "smtp",
+      "cli",
+      "mime-mml"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "hypothesis-tester",
+    "description": "Hypothesis Tester Skill",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "debate",
+      "tradeoff-analysis",
+      "subagents",
+      "synthesis",
+      "decision-support"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "imsg",
+    "description": "iMessage/SMS CLI for listing chats, history, and sending messages via Messages.app.",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "imessage",
+      "sms",
+      "macos",
+      "messages-app",
+      "cli"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "kanban-agent",
+    "description": "Persistent task board backed by SQLite. Survives across sessions. Supports priorities (p0-p3), statuses (backlog → todo → in-progress → review → done), deadlines, dependencies, projects, tags, and ...",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "kanban",
+      "task-board",
+      "sqlite",
+      "priorities",
+      "standup"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "knowledge-base",
+    "description": "Knowledge Base Skill",
+    "category": "writing",
+    "maturity": "beta",
+    "tags": [
+      "ingestion",
+      "sqlite-fts5",
+      "bm25",
+      "pdf",
+      "search"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "knowledge-graph",
+    "description": "SQLite-backed entity-relationship store. Entities (people, projects, decisions, tools, rules) connected by typed relations (decided-by, depends-on, supersedes, etc.). Full-text search, path finding...",
+    "category": "writing",
+    "maturity": "stable",
+    "tags": [
+      "entity-relationship",
+      "sqlite",
+      "fts5",
+      "path-finding",
+      "graph"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "latex-doc",
+    "description": "Converts Markdown → LaTeX → PDF. Handles Mermaid diagrams, math, tables, citations, figures.",
+    "category": "writing",
+    "maturity": "stable",
+    "tags": [
+      "latex",
+      "pdf",
+      "pandoc",
+      "mermaid",
+      "templates"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "assets"
+    ]
+  },
+  {
+    "name": "lighthouse-perf",
+    "description": "Run performance audits on web pages: Lighthouse scores, Core Web Vitals, resource analysis, bundle size tracking, performance budgets.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "lighthouse",
+      "core-web-vitals",
+      "performance-budget",
+      "resource-analysis",
+      "web-page"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "log-analyzer",
+    "description": "Parse and analyze application logs: pattern matching, error extraction, correlation with timestamps, frequency analysis, anomaly detection. Use when: diagnosing production issues, finding error pat...",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "log-parsing",
+      "error-aggregation",
+      "anomaly-detection",
+      "correlation",
+      "syslog"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "macro-briefing",
+    "description": "SKILL_DIR=\\\"$(dirname \\\"$(realpath \\\"$0\\\")\\\")/..\\\"  # resolve from scripts/",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "yfinance",
+      "economic-calendar",
+      "yield-curve",
+      "vix",
+      "sqlite"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "market-data-engine",
+    "description": "Collects and queries financial market data (OHLCV bars, price snapshots, currency strength rankings) for forex, currency indices, equity indices, metals, energy, and crypto via yfinance and TradingView into a SQLite database. Use when fetching prices, collecting/backfilling market or OHLCV data, computing currency strength, or querying stored quotes across timeframes (1m to weekly).",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "forex",
+      "ohlcv",
+      "yfinance",
+      "currency-strength",
+      "sqlite"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "data"
+    ]
+  },
+  {
+    "name": "market-monitor",
+    "description": "Market Monitor Skill",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "url-monitoring",
+      "content-diff",
+      "release-watch",
+      "hiring-signal",
+      "cron"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "mcp-hub",
+    "description": "MCP server integration hub — standardized tool access to databases, filesystems, memory, reasoning, and 100s of third-party services via Model Context Protocol. Use when querying databases, structured file ops, knowledge graph memory, step-by-step reasoning, or when the user asks about MCP servers.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "mcp",
+      "model-context-protocol",
+      "mcporter",
+      "knowledge-graph",
+      "filesystem"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "mcporter",
+    "description": "Use the mcporter CLI to list, configure, auth, and call MCP servers/tools directly (HTTP or stdio), including ad-hoc servers, config edits, and CLI/type generation.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "mcp",
+      "cli",
+      "stdio",
+      "oauth",
+      "codegen"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "media-fetch",
+    "description": "Download video/audio from 1000+ sites (YouTube, Twitter/X, Spotify, TikTok, etc.), extract audio, download subtitles, transcribe speech to text, and search for videos. Use when asked to download, summarize, or transcribe any video/audio URL, or when asked to search YouTube.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "yt-dlp",
+      "ffmpeg",
+      "whisper",
+      "transcription",
+      "youtube"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "memory-search",
+    "description": "Semantic memory search across all agent memories and conversation history. Use BEFORE answering questions about prior work, decisions, dates, people, preferences, projects, or past conversations. Also use when asked \"do you remember\", \"what did we discuss\", \"when did we\", etc.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "semantic-search",
+      "rag",
+      "embeddings",
+      "cross-agent",
+      "vector"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "meta-analyst",
+    "description": "Self-reflection and auto-improvement skill — analyzes session logs, tracks patterns, produces efficiency reports",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "session-analysis",
+      "self-reflection",
+      "efficiency-report",
+      "event-tracking",
+      "patterns"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "migration-planner",
+    "description": "Plan and execute framework, language, or infrastructure migrations safely: version upgrades, framework swaps, API changes.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "migration",
+      "upgrade",
+      "breaking-changes",
+      "rollback",
+      "checklist"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "mock-server",
+    "description": "Spin up mock API servers for frontend development and testing: static responses, record/replay real API calls, dynamic response generation.",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "mock-api",
+      "record-replay",
+      "openapi",
+      "rest",
+      "stubbing"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "model-router",
+    "description": "Model Router Skill",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "model-routing",
+      "tier-selection",
+      "cost",
+      "classifier",
+      "subagents"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "model-usage",
+    "description": "Use CodexBar CLI local cost usage to summarize per-model usage for Codex or Claude, including the current (most recent) model or a full model breakdown. Trigger when asked for model-level usage/cost data from codexbar, or when you need a scriptable per-model summary from codexbar cost JSON.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "codexbar",
+      "cost",
+      "per-model-usage",
+      "cli",
+      "macos"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "morning-briefing",
+    "description": "Generate a morning briefing with weather, market overview, system health, and upcoming tasks. Use for daily briefings.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "daily-briefing",
+      "weather",
+      "system-health",
+      "github",
+      "telegram"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "nano-banana-pro",
+    "description": "Generate or edit images via Gemini 3 Pro Image (Nano Banana Pro).",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "image-generation",
+      "gemini",
+      "image-editing",
+      "ai-images"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "nano-pdf",
+    "description": "Edit PDFs with natural-language instructions using the nano-pdf CLI.",
+    "category": "media",
+    "maturity": "beta",
+    "tags": [
+      "pdf-editing",
+      "natural-language",
+      "cli",
+      "document-editing"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "nginx-caddy",
+    "description": "Nginx & Caddy Skill",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "reverse-proxy",
+      "ssl",
+      "certbot",
+      "load-balancing",
+      "caddyfile"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "notion",
+    "description": "Notion API for creating and managing pages, databases, and blocks.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "notion-api",
+      "pages",
+      "databases",
+      "blocks",
+      "data-sources"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "ntfy",
+    "description": "Send push notifications to phones/desktops via ntfy. Use when the user wants to send alerts, reminders, or notifications.",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "push-notifications",
+      "ntfy",
+      "alerts",
+      "curl",
+      "reminders"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "obsidian",
+    "description": "Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "obsidian",
+      "markdown-notes",
+      "obsidian-cli",
+      "vault",
+      "wikilinks"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "ocr-document",
+    "description": "Extracts text and tables from PDFs and images using PyMuPDF, pdfplumber, and Tesseract OCR (Norwegian/English), with auto/text/ocr/hybrid methods and page selection. Use when reading, OCR-ing, or extracting text/tables from a PDF, scanned document, or image.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "ocr",
+      "tesseract",
+      "pdf-extraction",
+      "pymupdf",
+      "norwegian"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "data"
+    ]
+  },
+  {
+    "name": "openai-image-gen",
+    "description": "Batch-generate images via OpenAI Images API. Random prompt sampler + `index.html` gallery.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "image-generation",
+      "openai",
+      "dall-e",
+      "gpt-image",
+      "gallery"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "openai-whisper",
+    "description": "Local speech-to-text with the Whisper CLI (no API key).",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "whisper",
+      "transcription",
+      "speech-to-text",
+      "local",
+      "audio"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "openai-whisper-api",
+    "description": "Transcribe audio via OpenAI Audio Transcriptions API (Whisper).",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "whisper",
+      "transcription",
+      "openai-api",
+      "speech-to-text",
+      "audio"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "openhue",
+    "description": "Control Philips Hue lights and scenes via the OpenHue CLI.",
+    "category": "home-iot",
+    "maturity": "stable",
+    "tags": [
+      "philips-hue",
+      "lights",
+      "scenes",
+      "smart-home",
+      "brightness"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "opportunity-scanner",
+    "description": "Scans markets across technical, fundamental, macro, and sentiment engines to surface high-conviction trade opportunities with conviction scores and Telegram alerts. Use when asked to scan for opportunities, find trade setups, get a trade alert, decide what to trade, or schedule recurring pre-market opportunity scans via cron.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "trade-scanner",
+      "opportunity-scan",
+      "market-signals",
+      "conviction-score",
+      "cron"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "data"
+    ]
+  },
+  {
+    "name": "oracle",
+    "description": "Best practices for using the oracle CLI (prompt + file bundling, engines, sessions, and file attachment patterns).",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "llm-cli",
+      "gpt-5",
+      "one-shot",
+      "file-bundling",
+      "sessions"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "ordercli",
+    "description": "Foodora-only CLI for checking past orders and active order status (Deliveroo WIP).",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "foodora",
+      "food-delivery",
+      "ordering",
+      "commerce",
+      "order-tracking"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "peekaboo",
+    "description": "Capture and automate macOS UI with the Peekaboo CLI.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "macos",
+      "screenshot",
+      "ui-automation",
+      "screen-capture",
+      "accessibility"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "perf-profiler",
+    "description": "Runtime performance analysis beyond Lighthouse — bundle size analysis, memory leak detection, HTTP load testing, resource optimization audit, and runtime CPU profiling. Use before launch or when investigating performance issues.",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "load-testing",
+      "bundle-size",
+      "memory-leak",
+      "cpu-profiling",
+      "playwright"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "pipeline-runner",
+    "description": "Execute multi-step pipelines defined in JSON with:",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "pipeline",
+      "workflow-orchestration",
+      "dependency-graph",
+      "retries",
+      "json"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "post-mortem",
+    "description": "Generate structured post-mortems after incidents or failures: root cause analysis, timeline, impact assessment, prevention steps.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "incident-response",
+      "root-cause-analysis",
+      "timeline",
+      "blameless",
+      "retrospective"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "pr-monitor",
+    "description": "PR / CI Monitor Skill",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "github",
+      "ci-monitoring",
+      "pull-requests",
+      "cron",
+      "alerts"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "project-brief",
+    "description": "Project Brief Skill",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "project-status",
+      "brief",
+      "goals",
+      "blockers",
+      "tracking"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "project-index",
+    "description": "Kite's project registry — a structured JSON index of all active projects.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "project-registry",
+      "status-tracking",
+      "json-index",
+      "cron",
+      "metadata"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "project-planner",
+    "description": "Project Planner Skill",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "task-planning",
+      "dependency-graph",
+      "subtasks",
+      "impact-analysis",
+      "orchestration"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "project-scaffold",
+    "description": "Scaffold new projects from templates: Node.js, Python, React, API server, CLI tool, monorepo.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "scaffolding",
+      "boilerplate",
+      "templates",
+      "config-generation",
+      "project-setup"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "prompt-library",
+    "description": "Library of tested prompt patterns for sub-agent orchestration: task decomposition, verification, error recovery, chain-of-thought.",
+    "category": "writing",
+    "maturity": "stable",
+    "tags": [
+      "prompt-patterns",
+      "sub-agent-orchestration",
+      "templates",
+      "task-decomposition",
+      "anti-patterns"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "react-frontend",
+    "description": "Opinionated guide for building data-heavy React applications — dashboards, trading UIs, analytics tools. Based on the 2025/2026 React ecosystem and our actual stack (React 19 + Vite + TypeScript + ...",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "react",
+      "vite",
+      "typescript",
+      "tailwind",
+      "dashboards"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "refactor",
+    "description": "Large-scale codebase restructuring: rename, extract, inline, move modules, update imports. Use when: restructuring project layout, extracting components/functions, renaming across files, splitting ...",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "dead-code",
+      "import-updater",
+      "dependency-graph",
+      "code-restructuring",
+      "monolith-splitting"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "release-manager",
+    "description": "Manage releases: semantic versioning, changelog generation, GitHub releases, git tags, version bumping.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "semver",
+      "changelog",
+      "git-tags",
+      "github-releases",
+      "version-bump"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "research-pipeline",
+    "description": "[TODO: 1-2 sentences explaining what this skill enables]",
+    "category": "research",
+    "maturity": "experimental",
+    "tags": [
+      "research",
+      "pipeline",
+      "template-stub",
+      "synthesis",
+      "multi-source"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "research-reporter",
+    "description": "Research Reporter Skill",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "findings",
+      "confidence-scoring",
+      "report-compilation",
+      "sessions",
+      "multi-source"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "research-synthesizer",
+    "description": "Synthesizes technical, fundamental, macro, and sentiment signals into conviction-scored trade ideas across forex, stocks, and crypto. Use when scanning markets for opportunities, ranking trade ideas by conviction, deciding what to trade, or asking for a buy/sell signal or setup on an instrument.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "trade-ideas",
+      "conviction-scoring",
+      "technical-analysis",
+      "fundamentals",
+      "opportunity-scan"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "data"
+    ]
+  },
+  {
+    "name": "responsive-checker",
+    "description": "Test responsive design across viewport sizes: capture screenshots at mobile/tablet/desktop breakpoints, detect overflow issues, flag breakpoint problems.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "responsive",
+      "breakpoints",
+      "overflow-detection",
+      "screenshots",
+      "media-queries"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "rss-digest",
+    "description": "RSS Digest Skill",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "rss",
+      "feeds",
+      "keywords",
+      "digest",
+      "cron"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "sag",
+    "description": "ElevenLabs text-to-speech with mac-style say UX.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "tts",
+      "elevenlabs",
+      "audio",
+      "voice",
+      "speech-synthesis"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "scheduler",
+    "description": "Natural language task scheduling for Kite. Create, list, and cancel scheduled jobs in plain English with a human-readable registry of what's running and why.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "cron",
+      "crontab",
+      "scheduling",
+      "natural-language",
+      "registry"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "schema-analyzer",
+    "description": "Analyze database schemas: generate ERD diagrams, detect normalization issues, suggest indexes, find missing foreign keys, audit schema quality.",
+    "category": "backend",
+    "maturity": "stable",
+    "tags": [
+      "erd",
+      "schema-audit",
+      "indexes",
+      "foreign-keys",
+      "normalization"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "secret-vault",
+    "description": "Encrypted credential store — AES-256-GCM secured tokens and secrets in one place.",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "aes-256-gcm",
+      "credential-store",
+      "encryption",
+      "cli",
+      "node"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "secrets-manager",
+    "description": "Manage secrets and environment variables securely: .env files, encrypted vaults, key rotation, secret scanning. Use when: setting up environment variables, managing API keys, rotating secrets, scan...",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "dotenv",
+      "secret-scanning",
+      "key-rotation",
+      "credentials",
+      "leak-detection"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "sector-rotation",
+    "description": "cd /path/to/sector-rotation",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "relative-strength",
+      "yfinance",
+      "business-cycle",
+      "money-flow",
+      "etf"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "security-audit",
+    "description": "Security auditing: vulnerability scanning, dependency checking, port scanning, permission review. Use when: auditing project security, scanning for CVEs in dependencies, checking open ports, review...",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "vulnerability-scan",
+      "port-scan",
+      "dependency-audit",
+      "permission-audit",
+      "http-headers"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "security-auditor",
+    "description": "Automated security testing — HTTP header audit, injection testing (SQL/XSS/SSRF/command), secret scanning in source code, auth bypass testing, dependency vulnerability scanning. Pen-test-style checks with safe mode default. Use before any launch or security review.",
+    "category": "security",
+    "maturity": "stable",
+    "tags": [
+      "pentest",
+      "injection-testing",
+      "secret-scanning",
+      "auth-bypass",
+      "cvss"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "seed-data",
+    "description": "Generate realistic test and seed data for any database schema: users, products, orders, time series, financial data.",
+    "category": "data",
+    "maturity": "stable",
+    "tags": [
+      "test-data",
+      "fixtures",
+      "timeseries",
+      "faker",
+      "schema"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "self-skill",
+    "description": "Meta-skill for detecting when a solved problem is worth packaging as a reusable skill, then scaffolding it. Runs automatically after completing any non-trivial task. Also use when explicitly asked to create, draft, or propose a new skill from something just built.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "skill-scaffolding",
+      "self-tooling",
+      "heuristics",
+      "draft-skill",
+      "automation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "sentiment-engine",
+    "description": "Collects and queries market sentiment data — Myfxbook retail long/short forex positioning, CFTC COT institutional net positions, and crypto/equity Fear & Greed indices — for contrarian trading signals. Use when analyzing retail positioning, COT data, fear and greed, sentiment extremes, or contrarian setups for forex, metals, energy, or crypto.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "cot",
+      "myfxbook",
+      "fear-greed",
+      "retail-positioning",
+      "contrarian"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "data"
+    ]
+  },
+  {
+    "name": "session-logs",
+    "description": "Search and analyze your own session logs (older/parent conversations) using jq.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "jsonl",
+      "jq",
+      "conversation-history",
+      "transcript-search",
+      "cost-tracking"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "shared-clipboard",
+    "description": "Cross-session key-value clipboard for sharing snippets, code, URLs, configs, and notes between agents, sessions, and devices. Use when storing, retrieving, or sharing text snippets, when piping data between commands, or when the user says \"save this\", \"remember this snippet\", \"clipboard\", \"clip\", or \"scratchpad\".",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "clipboard",
+      "scratchpad",
+      "sqlite",
+      "snippets",
+      "cross-session"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "sherpa-onnx-tts",
+    "description": "Local text-to-speech via sherpa-onnx (offline, no cloud)",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "tts",
+      "text-to-speech",
+      "offline",
+      "onnx",
+      "piper"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "skill-creator",
+    "description": "Create or update AgentSkills. Use when designing, structuring, or packaging skills with scripts, references, and assets.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "agentskills",
+      "scaffolding",
+      "progressive-disclosure",
+      "packaging",
+      "skill-design"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "skill-index",
+    "description": "Query Claudex's own skill catalog by category, tag, or capability. Use when asked \"what skills exist for X\", \"do we have a skill for Y\", \"list all backend skills\", or when planning multi-step work that might benefit from a skill you didn't load.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "skill-catalog",
+      "jq",
+      "discovery",
+      "self-tooling",
+      "frontmatter"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "slack",
+    "description": "Use when you need to control Slack from OpenClaw via the slack tool, including reacting to messages or pinning/unpinning items in Slack channels or DMs.",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "slack",
+      "messaging",
+      "reactions",
+      "pins",
+      "bot-token"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "songsee",
+    "description": "Generate spectrograms and feature-panel visualizations from audio with the songsee CLI.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "audio",
+      "spectrogram",
+      "visualization",
+      "ffmpeg",
+      "cli"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "sonoscli",
+    "description": "Control Sonos speakers (discover/status/play/volume/group).",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "sonos",
+      "speakers",
+      "playback",
+      "local-network",
+      "ssdp"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "source-scorer",
+    "description": "Source Credibility Scorer Skill",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "credibility",
+      "source-scoring",
+      "domain-tier",
+      "verification",
+      "cli"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "spotify-player",
+    "description": "Terminal Spotify playback/search via spogo (preferred) or spotify_player.",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "spotify",
+      "playback",
+      "music",
+      "spogo",
+      "cli"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "sql-query",
+    "description": "Build and execute complex SQL queries for analytics: joins, window functions, CTEs, aggregations, pivots.",
+    "category": "data",
+    "maturity": "stable",
+    "tags": [
+      "sql",
+      "analytics",
+      "window-functions",
+      "cte",
+      "query-optimization"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "ssh-remote",
+    "description": "SSH into remote servers, execute commands, transfer files via SCP/rsync, manage SSH keys and configs, tunnel ports.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "ssh",
+      "scp",
+      "rsync",
+      "tunnels",
+      "key-management"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "summarize",
+    "description": "Summarize or extract text/transcripts from URLs, podcasts, and local files (great fallback for “transcribe this YouTube/video”).",
+    "category": "research",
+    "maturity": "stable",
+    "tags": [
+      "summarization",
+      "transcript-extraction",
+      "youtube",
+      "url-summary",
+      "cli"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "system-admin",
+    "description": "System administration — manage services, processes, cron, systemd, networking. Use for any sysadmin task.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "systemd",
+      "cron",
+      "process-management",
+      "networking",
+      "journalctl"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "systemd-manager",
+    "description": "Systemd Manager Skill",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "systemd",
+      "timers",
+      "journalctl",
+      "unit-files",
+      "daemons"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "task-queue",
+    "description": "Skill: task-queue",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "task-queue",
+      "scheduling",
+      "cron",
+      "pipelines",
+      "job-runner"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "technical-analysis-engine",
+    "description": "Computes technical indicators (RSI, MACD, EMA, Bollinger Bands, ATR, Stochastic), scans forex/instruments for trade setups (momentum, reversal, squeeze, trend-pullback), and analyzes market structure (BOS/CHoCH, support/resistance, order blocks, fair value gaps, regime). Use when doing technical analysis, screening for setups, swing trades, multi-timeframe analysis, or checking indicators on a ticker.",
+    "category": "trading-finance",
+    "maturity": "stable",
+    "tags": [
+      "technical-analysis",
+      "indicators",
+      "forex",
+      "screener",
+      "market-structure"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts",
+      "references",
+      "data"
+    ]
+  },
+  {
+    "name": "test-critic",
+    "description": "Evaluates test quality — coverage analysis, mutation testing (do tests actually catch bugs?), test gap detection, and test code quality scoring. Supports Jest, Vitest, pytest. Use after writing tests to verify they're meaningful.",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "test-quality",
+      "mutation-testing",
+      "coverage",
+      "jest",
+      "pytest"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "test-runner",
+    "description": "Run and interpret test suites across frameworks: Jest, Vitest, pytest, Mocha, tap. Use when: running tests, debugging test failures, generating coverage reports, writing test fixtures, or setting u...",
+    "category": "development",
+    "maturity": "stable",
+    "tags": [
+      "test-execution",
+      "coverage",
+      "flaky-tests",
+      "framework-detection",
+      "pytest"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "things-mac",
+    "description": "Manage Things 3 via the `things` CLI on macOS (add/update projects+todos via URL scheme; read/search/list from the local Things database). Use when a user asks OpenClaw to add a task to Things, list inbox/today/upcoming, search tasks, or inspect projects/areas/tags.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "things3",
+      "tasks",
+      "todos",
+      "macos",
+      "url-scheme"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "tmux",
+    "description": "Remote-control tmux sessions for interactive CLIs by sending keystrokes and scraping pane output.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "tmux",
+      "session-control",
+      "keystrokes",
+      "pane-capture",
+      "automation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "trello",
+    "description": "Manage Trello boards, lists, and cards via the Trello REST API.",
+    "category": "productivity",
+    "maturity": "stable",
+    "tags": [
+      "trello",
+      "kanban",
+      "boards",
+      "cards",
+      "rest-api"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "video-frames",
+    "description": "Extract frames or short clips from videos using ffmpeg.",
+    "category": "media",
+    "maturity": "beta",
+    "tags": [
+      "ffmpeg",
+      "video",
+      "frame-extraction",
+      "thumbnails",
+      "clips"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "visual-review",
+    "description": "Screenshot comparison and visual regression detection: pixel diffing, before/after overlays, threshold-based change detection.",
+    "category": "frontend",
+    "maturity": "stable",
+    "tags": [
+      "visual-regression",
+      "screenshot-diff",
+      "pixel-diffing",
+      "overlay",
+      "ui-testing"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "visualize",
+    "description": "Generate charts and visualizations: line, bar, scatter, heatmap, candlestick. Output as PNG/SVG for Telegram or web.",
+    "category": "data",
+    "maturity": "stable",
+    "tags": [
+      "charts",
+      "matplotlib",
+      "candlestick",
+      "csv",
+      "plotting"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "voice-call",
+    "description": "Start voice calls via the OpenClaw voice-call plugin.",
+    "category": "comms",
+    "maturity": "beta",
+    "tags": [
+      "voice",
+      "twilio",
+      "telnyx",
+      "phone-calls",
+      "plugin"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "vuln-scanner",
+    "description": "Vulnerability Scanner Skill",
+    "category": "security",
+    "maturity": "beta",
+    "tags": [
+      "vulnerability-scanning",
+      "npm-audit",
+      "cve",
+      "cron",
+      "alerts"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": []
+  },
+  {
+    "name": "wacli",
+    "description": "Send WhatsApp messages to other people or search/sync WhatsApp history via the wacli CLI (not for normal user chats).",
+    "category": "comms",
+    "maturity": "stable",
+    "tags": [
+      "whatsapp",
+      "messaging",
+      "wacli",
+      "history-search",
+      "send"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "watchdog",
+    "description": "Monitor system health — check services, disk usage, processes, logs. Use when asked about system status or health.",
+    "category": "system",
+    "maturity": "stable",
+    "tags": [
+      "systemd",
+      "disk-usage",
+      "process-monitoring",
+      "journalctl",
+      "health-check"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "weather",
+    "description": "Get current weather and forecasts. Use when the user asks about weather, temperature, or forecasts for any location.",
+    "category": "home-iot",
+    "maturity": "beta",
+    "tags": [
+      "wttr",
+      "forecast",
+      "curl",
+      "oslo",
+      "temperature"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "web-monitor",
+    "description": "Monitor websites for changes, stock availability, price drops. Use when asked to watch a URL or check for changes.",
+    "category": "research",
+    "maturity": "beta",
+    "tags": [
+      "url-watch",
+      "price-drop",
+      "stock-alert",
+      "cron",
+      "ntfy"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "web-search",
+    "description": "Search the web and fetch content from URLs. Use for research, fact-checking, news, or any web lookup.",
+    "category": "research",
+    "maturity": "beta",
+    "tags": [
+      "duckduckgo",
+      "url-fetch",
+      "text-extraction",
+      "lynx",
+      "fact-checking"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
+    "name": "webhook-receiver",
+    "description": "Lightweight background HTTP server that receives webhooks from external services (GitHub, ntfy, Stripe, any HTTP POST) and runs configured shell commands in response. Use when setting up webhook integrations, receiving GitHub push/PR/issue events, triggering scripts from external services, or exposing a local endpoint for testing. Switches from polling to event-driven: things happen the moment they're triggered, not on the next cron cycle.",
+    "category": "meta",
+    "maturity": "stable",
+    "tags": [
+      "http-server",
+      "hmac-sha256",
+      "github-events",
+      "event-driven",
+      "node"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": true,
+    "support_dirs": [
+      "scripts",
+      "references"
+    ]
+  },
+  {
+    "name": "website-screenshot",
+    "description": "Take a headless Chromium screenshot of any URL and send/save the result. Use when the user asks for a screenshot, snapshot, or visual of a website, webpage, or URL — including requests like \"show me what X looks like\", \"capture the homepage of Y\", or \"screenshot this URL\". Supports viewport vs full-page, mobile emulation, dark mode, and configurable wait strategies.",
+    "category": "media",
+    "maturity": "stable",
+    "tags": [
+      "playwright",
+      "chromium",
+      "headless",
+      "full-page",
+      "mobile-emulation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  }
+]

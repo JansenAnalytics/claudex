@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: comms
+maturity: stable
+tags: [email, imap, smtp, cli, mime-mml]
 ---
 
 # Himalaya Email CLI

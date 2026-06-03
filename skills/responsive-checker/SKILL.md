@@ -1,6 +1,9 @@
 ---
 name: responsive-checker
 description: "Test responsive design across viewport sizes: capture screenshots at mobile/tablet/desktop breakpoints, detect overflow issues, flag breakpoint problems."
+category: frontend
+maturity: stable
+tags: [responsive, breakpoints, overflow-detection, screenshots, media-queries]
 ---
 
 # responsive-checker

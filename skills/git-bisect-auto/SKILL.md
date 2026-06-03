@@ -1,6 +1,9 @@
 ---
 name: git-bisect-auto
 description: "Automated git bisect to find the exact commit that introduced a bug. Run a test command against each bisect step, report the first bad commit with full context."
+category: development
+maturity: stable
+tags: [git-bisect, regression-finding, binary-search, test-runner, regression-report]
 ---
 
 # git-bisect-auto

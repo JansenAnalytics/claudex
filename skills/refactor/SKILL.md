@@ -1,6 +1,9 @@
 ---
 name: refactor
 description: "Large-scale codebase restructuring: rename, extract, inline, move modules, update imports. Use when: restructuring project layout, extracting components/functions, renaming across files, splitting ..."
+category: development
+maturity: stable
+tags: [dead-code, import-updater, dependency-graph, code-restructuring, monolith-splitting]
 ---
 
 # refactor

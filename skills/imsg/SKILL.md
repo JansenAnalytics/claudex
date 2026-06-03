@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: comms
+maturity: stable
+tags: [imessage, sms, macos, messages-app, cli]
 ---
 
 # imsg

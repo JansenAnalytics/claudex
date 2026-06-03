@@ -1,0 +1,37 @@
+# .sync-exclude — patterns to exclude when syncing workspace → showcase repo
+# Read by scripts/sync-to-repo.sh (Phase 5 deliverable; honored preemptively).
+#
+# Rules:
+#   - One pattern per line (literal path-fragment match against the workspace path)
+#   - Lines starting with # are comments
+#   - Lines starting with ! are NEGATIONS (force-include — overrides earlier excludes)
+#   - Patterns are matched against paths relative to ~/.claude-agent/
+#
+# Defense in depth: any skill with `private: true` in its SKILL.md frontmatter
+# is ALSO excluded by the sync script regardless of whether it appears here.
+# The two gates are independent — frontmatter is the source of truth, this file
+# is a safety net for things that aren't skills (data, logs, secrets).
+
+# ─── Private skills (named explicitly, AND filtered by `private: true` frontmatter) ──
+.claude/skills/cre-due-diligence/
+.claude/skills/prop-hedge/
+
+# ─── Workspace data + transient state ───────────────────────────────────────
+data/
+logs/
+node_modules/
+
+# ─── Per-skill backup files from migrations ─────────────────────────────────
+.claude/skills/*/SKILL.md.pre-*.bak
+
+# ─── Audit/migration log artifacts ──────────────────────────────────────────
+logs/migrate-*.log
+logs/skill-audit-*.log
+
+# ─── Personal memory + research ─────────────────────────────────────────────
+memory/
+research/
+
+# ─── Local auth / OAuth state ───────────────────────────────────────────────
+.claude/auth/
+.env

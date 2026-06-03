@@ -27,6 +27,9 @@ metadata:
           ],
       },
   }
+category: trading-finance
+maturity: stable
+tags: [foodora, food-delivery, ordering, commerce, order-tracking]
 ---
 
 # ordercli

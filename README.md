@@ -285,6 +285,9 @@ Available sub-agents in this setup:
 | `analyst` | Opus | Data analysis and market research |
 | `sysadmin` | Opus | Infrastructure and ops tasks |
 | `writer` | Opus | Documentation, reports, plans |
+| `tester` | Opus | Run test suites, parse failures, propose fixes |
+| `incident-responder` | Opus | Diagnose incidents from logs/metrics, root-cause, post-mortem |
+| `documentarian` | Opus | Inline docs, READMEs, and API references after code changes |
 
 ### Telegram Integration
 
@@ -640,20 +643,32 @@ claudex/
 │   ├── subagents.md                #   Custom sub-agents and teams
 │   ├── claude-md-guide.md          #   Writing an effective CLAUDE.md
 │   ├── mcp-servers.md              #   MCP server configuration
-│   └── inbox.md                    #   Task inbox — full guide and API
+│   ├── inbox.md                    #   Task inbox — full guide and API
+│   ├── commands-guide.md           #   Slash commands — anatomy + the 12 shipped
+│   ├── hooks-guide.md              #   Lifecycle hooks — events, wiring, examples
+│   ├── mcp-guide.md                #   MCP registry — configs + install
+│   ├── plugins-guide.md            #   Marketplace plugins that pair with Claudex
+│   └── skill-anatomy.md            #   SKILL.md schema — categories, maturity, tags
 ├── skills/                         # 160 production-tested skill modules
 │   ├── weather/SKILL.md
 │   ├── github-workflow/SKILL.md
 │   ├── memory-search/SKILL.md
 │   ├── watchdog/SKILL.md
 │   └── ... (160 total)
-├── agents/                         # Custom sub-agent definitions
+├── agents/                         # Custom sub-agent definitions (9)
 │   ├── researcher.md
 │   ├── coder.md
 │   ├── reviewer.md
 │   ├── analyst.md
 │   ├── sysadmin.md
-│   └── writer.md
+│   ├── writer.md
+│   ├── tester.md
+│   ├── incident-responder.md
+│   └── documentarian.md
+├── commands/                       # 12 slash commands (/audit, /ship, /recap, …)
+├── hooks/                          # 4 lifecycle hook scripts
+├── mcp/                            # MCP server registry + configs + install.sh
+├── plugins/                        # Recommended marketplace plugins
 ├── rules/                          # Global behavior rules
 │   ├── safety.md
 │   └── telegram.md
@@ -675,7 +690,9 @@ claudex/
 │   ├── stop-claudex.sh             #   Stop agent
 │   ├── restart-claudex.sh          #   Restart agent
 │   ├── status-claudex.sh           #   Status check (all layers + health)
-│   └── watchdog-claudex.sh         #   Auto-restart watchdog
+│   ├── watchdog-claudex.sh         #   Auto-restart watchdog
+│   ├── skill-audit.sh              #   Audit SKILL.md frontmatter + path leaks
+│   └── skill-index.sh              #   Generate skill-index.json + skills-catalog.md
 ├── systemd/                        # Systemd user service
 │   └── claudex.service
 └── examples/                       # Complete workspace example
@@ -690,7 +707,7 @@ claudex/
 ├── .claude/
 │   ├── settings.json               # Permissions, hooks, env vars
 │   ├── skills/                     # 160 skill modules (copied from repo)
-│   ├── agents/                     # 6 sub-agent definitions
+│   ├── agents/                     # 9 sub-agent definitions
 │   └── rules/                      # Safety + Telegram formatting rules
 ├── data/
 │   └── memory.sqlite               # Vector RAG database (auto-created)
@@ -822,7 +839,7 @@ See [agents/](agents/) for specialized sub-agent definitions.
 
 ## Origins
 
-This system was built by Aksel Jansen ([@JansenAnalytics](https://github.com/JansenAnalytics)) with Kite (an OpenClaw-based AI agent) as a way to replicate and extend OpenClaw's autonomous agent capabilities using Claude Code's native features.
+This system was built by [@JansenAnalytics](https://github.com/JansenAnalytics) with Kite (an OpenClaw-based AI agent) as a way to replicate and extend OpenClaw's autonomous agent capabilities using Claude Code's native features.
 
 The goal: prove that a persistent, Telegram-connected, skill-equipped, self-healing AI agent can be built entirely on Claude Code's subscription model — no custom gateway, no API billing, no infrastructure beyond a Linux box.
 

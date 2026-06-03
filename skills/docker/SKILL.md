@@ -1,6 +1,9 @@
 ---
 name: docker
 description: "Manage Docker containers and Compose stacks: build, run, stop, logs, exec, prune, multi-service orchestration."
+category: system
+maturity: stable
+tags: [containers, docker-compose, orchestration, images, volumes]
 ---
 
 # Docker Skill

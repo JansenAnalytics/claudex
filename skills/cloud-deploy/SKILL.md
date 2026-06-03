@@ -1,6 +1,9 @@
 ---
 name: cloud-deploy
 description: "Provision and manage cloud servers on Hetzner, DigitalOcean, or AWS. Set up infrastructure, firewalls, DNS, and deploy applications."
+category: system
+maturity: stable
+tags: [hetzner, digitalocean, aws, vps-provisioning, dns]
 ---
 
 # cloud-deploy

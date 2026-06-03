@@ -8,6 +8,9 @@ triggers:
   - api review
   - api critic
   - backend test
+category: backend
+maturity: stable
+tags: [rest-api, endpoint-testing, injection-testing, auth, severity-scoring]
 ---
 
 # api-critic — Autonomous API Testing & Evaluation
@@ -81,13 +84,13 @@ api-critic http://localhost:3000 --compare /tmp/api-critic-previous
 
 ```bash
 # Just discover
-node ~/openclaw/skills/api-critic/scripts/discover.cjs https://api.example.com --out-dir /tmp/out
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/api-critic/scripts/discover.cjs https://api.example.com --out-dir /tmp/out
 
 # Just probe (needs discovered-endpoints.json)
-node ~/openclaw/skills/api-critic/scripts/probe.cjs https://api.example.com --out-dir /tmp/out
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/api-critic/scripts/probe.cjs https://api.example.com --out-dir /tmp/out
 
 # Just report (needs probe-results.json)
-node ~/openclaw/skills/api-critic/scripts/report.cjs --out-dir /tmp/out
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/api-critic/scripts/report.cjs --out-dir /tmp/out
 ```
 
 ## Dependencies

@@ -5,6 +5,9 @@ metadata:
   {
     "openclaw": { "emoji": "🧩", "requires": { "anyBins": ["claude", "codex", "opencode", "pi"] } },
   }
+category: development
+maturity: stable
+tags: [codex, claude-code, agent-delegation, background-process, git-worktree]
 ---
 
 # Coding Agent (bash-first)

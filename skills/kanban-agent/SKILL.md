@@ -11,6 +11,9 @@ triggers:
   - project status
   - overdue
   - blocked
+category: productivity
+maturity: stable
+tags: [kanban, task-board, sqlite, priorities, standup]
 ---
 
 # Kanban Agent Skill
@@ -22,7 +25,7 @@ Persistent task board backed by SQLite. Survives across sessions. Supports prior
 ## Script
 
 ```bash
-node ~/openclaw/skills/kanban-agent/scripts/kanban.cjs <command> [args]
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/kanban-agent/scripts/kanban.cjs <command> [args]
 ```
 
 ## Commands
@@ -58,7 +61,7 @@ kanban export [--format json|markdown]
 ## Agent Behavior
 
 ### Auto-creating tasks
-When Aksel mentions something to do, track, or remember — create a task:
+When the user mentions something to do, track, or remember — create a task:
 ```bash
 node kanban.cjs add "Wire onTokenSelect in Market Dashboard" --project brewboard --priority p2 --tags "frontend"
 ```
@@ -73,7 +76,7 @@ node kanban.cjs done 5 --note "Implemented and tested"
 ```
 
 ### Priority Guide
-- **p0** 🔴 Critical — blocking Aksel or production
+- **p0** 🔴 Critical — blocking the user or production
 - **p1** 🟠 High — should do today/tomorrow
 - **p2** 🟡 Normal — this week
 - **p3** ⚪ Nice-to-have — when time permits

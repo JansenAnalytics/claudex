@@ -1,18 +1,21 @@
 ---
 name: adr-manager
 description: ADR Manager Skill
+category: writing
+maturity: beta
+tags: [adr, decision-records, architecture-decisions, documentation]
 ---
 
 # ADR Manager Skill
 
 Use when: making a non-trivial technical decision — choosing between options, committing to an architecture, or accepting a tradeoff. Record it so future sessions don't have to guess.
 
-Trigger: any time you make a design decision, choose between tools/approaches, or Aksel asks "why did we do it this way?"
+Trigger: any time you make a design decision, choose between tools/approaches, or the user asks "why did we do it this way?"
 
 ## Create an ADR
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs new \
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs new \
   --project <project-name> \
   --title "Decision title" \
   --context "Why this decision was needed" \
@@ -25,31 +28,31 @@ node /home/ajans/projects/adr-manager/adr.cjs new \
 ## List ADRs for a project
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs list --project <name>
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs list --project <name>
 ```
 
 ## List all ADRs across all projects
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs list
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs list
 ```
 
 ## View an ADR
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs view ADR-001 --project <name>
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs view ADR-001 --project <name>
 ```
 
 ## Search
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs search "query"
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs search "query"
 ```
 
 ## Update status
 
 ```
-node /home/ajans/projects/adr-manager/adr.cjs status ADR-001 Superseded --project <name>
+node ${ADR_MANAGER_HOME:-$HOME/projects/adr-manager}/adr.cjs status ADR-001 Superseded --project <name>
 ```
 
 ## ADR files location
@@ -61,4 +64,4 @@ node /home/ajans/projects/adr-manager/adr.cjs status ADR-001 Superseded --projec
 - Choosing a database, language, or framework
 - Deciding between build vs. buy
 - Accepting a known tradeoff (e.g. no concurrency for simplicity)
-- Any decision Aksel or future-Kite might question later
+- Any decision the user or future-Kite might question later

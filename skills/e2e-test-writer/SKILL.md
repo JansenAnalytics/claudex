@@ -1,6 +1,9 @@
 ---
 name: e2e-test-writer
 description: "Generate end-to-end tests for web applications using Playwright. Create test files from user flow descriptions, page snapshots, or existing page analysis."
+category: frontend
+maturity: stable
+tags: [playwright, e2e-tests, user-flows, test-generation, web-ui]
 ---
 
 # e2e-test-writer

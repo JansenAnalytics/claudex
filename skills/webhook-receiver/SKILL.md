@@ -1,6 +1,9 @@
 ---
 name: webhook-receiver
 description: "Lightweight background HTTP server that receives webhooks from external services (GitHub, ntfy, Stripe, any HTTP POST) and runs configured shell commands in response. Use when setting up webhook integrations, receiving GitHub push/PR/issue events, triggering scripts from external services, or exposing a local endpoint for testing. Switches from polling to event-driven: things happen the moment they're triggered, not on the next cron cycle."
+category: meta
+maturity: stable
+tags: [http-server, hmac-sha256, github-events, event-driven, node]
 ---
 
 # Webhook Receiver
@@ -8,9 +11,9 @@ description: "Lightweight background HTTP server that receives webhooks from ext
 A persistent Node.js HTTP server that listens for incoming POST requests, validates
 optional HMAC-SHA256 signatures, and executes shell commands per route.
 
-**Project location:** `~/projects/webhook-receiver/`
-**Config:** `~/projects/webhook-receiver/config.json` (live-reloaded, no restart needed)
-**Log:** `~/projects/webhook-receiver/logs/webhook.log`
+**Project location:** `${WEBHOOK_RECEIVER_HOME:-$HOME/projects/webhook-receiver}/`
+**Config:** `${WEBHOOK_RECEIVER_HOME:-$HOME/projects/webhook-receiver}/config.json` (live-reloaded, no restart needed)
+**Log:** `${WEBHOOK_RECEIVER_HOME:-$HOME/projects/webhook-receiver}/logs/webhook.log`
 **Port:** 9876 (localhost only — expose via nginx/ngrok/Tailscale for real webhooks)
 
 ---
@@ -19,20 +22,20 @@ optional HMAC-SHA256 signatures, and executes shell commands per route.
 
 ```bash
 # Start
-bash /home/ajans/openclaw/skills/webhook-receiver/scripts/start.sh
+bash ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/webhook-receiver/scripts/start.sh
 
 # Stop
-bash /home/ajans/openclaw/skills/webhook-receiver/scripts/stop.sh
+bash ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/webhook-receiver/scripts/stop.sh
 
 # Status + recent log
-bash /home/ajans/openclaw/skills/webhook-receiver/scripts/status.sh
+bash ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/webhook-receiver/scripts/status.sh
 ```
 
 ---
 
 ## Adding a Route
 
-Edit `~/projects/webhook-receiver/config.json` directly — changes take effect immediately, no restart:
+Edit `${WEBHOOK_RECEIVER_HOME:-$HOME/projects/webhook-receiver}/config.json` directly — changes take effect immediately, no restart:
 
 ```json
 {
@@ -40,7 +43,7 @@ Edit `~/projects/webhook-receiver/config.json` directly — changes take effect 
     {
       "path": "/github",
       "secret": "your-github-webhook-secret",
-      "command": "bash /home/ajans/scripts/handle-github.sh",
+      "command": "bash $HOME/scripts/handle-github.sh",
       "description": "GitHub events"
     },
     {

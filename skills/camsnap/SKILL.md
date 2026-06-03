@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: beta
+tags: [rtsp, onvif, ip-camera, snapshot, ffmpeg]
 ---
 
 # camsnap

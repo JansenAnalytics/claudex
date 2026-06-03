@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [macos, screenshot, ui-automation, screen-capture, accessibility]
 ---
 
 # Peekaboo

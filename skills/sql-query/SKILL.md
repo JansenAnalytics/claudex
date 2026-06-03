@@ -1,6 +1,9 @@
 ---
 name: sql-query
 description: "Build and execute complex SQL queries for analytics: joins, window functions, CTEs, aggregations, pivots."
+category: data
+maturity: stable
+tags: [sql, analytics, window-functions, cte, query-optimization]
 ---
 
 # sql-query

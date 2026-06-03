@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: research
+maturity: stable
+tags: [summarization, transcript-extraction, youtube, url-summary, cli]
 ---
 
 # Summarize

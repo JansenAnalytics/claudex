@@ -8,6 +8,9 @@ triggers:
   - knowledge graph memory
   - mcp tool
   - add mcp server
+category: meta
+maturity: stable
+tags: [mcp, model-context-protocol, mcporter, knowledge-graph, filesystem]
 ---
 
 # MCP Hub — Model Context Protocol Integration
@@ -37,16 +40,16 @@ Controlled file access to project directories, workspace, skills, and /tmp.
 
 ```bash
 # List directory
-mcporter call filesystem.list_directory path=/home/ajans/projects
+mcporter call filesystem.list_directory path=$HOME/projects
 
 # Read a file
-mcporter call filesystem.read_file path=/home/ajans/projects/forex-factory-scraper/README.md
+mcporter call filesystem.read_file path=${FOREX_FACTORY_SCRAPER_HOME:-$HOME/projects/forex-factory-scraper}/README.md
 
 # Search files by name
-mcporter call filesystem.search_files path=/home/ajans/projects pattern="*.py"
+mcporter call filesystem.search_files path=$HOME/projects pattern="*.py"
 
 # Get file info
-mcporter call filesystem.get_file_info path=/home/ajans/projects/forex-factory-scraper/scraper.py
+mcporter call filesystem.get_file_info path=${FOREX_FACTORY_SCRAPER_HOME:-$HOME/projects/forex-factory-scraper}/scraper.py
 
 # Write a file
 mcporter call filesystem.write_file path=/tmp/test.txt content="hello world"
@@ -55,7 +58,7 @@ mcporter call filesystem.write_file path=/tmp/test.txt content="hello world"
 mcporter call filesystem.move_file source=/tmp/old.txt destination=/tmp/new.txt
 ```
 
-**Allowed directories:** `/home/ajans/projects`, `/home/ajans/.openclaw-poe/workspace`, `/home/ajans/openclaw/skills`, `/tmp`
+**Allowed directories:** `$HOME/projects`, `$HOME/.openclaw-poe/workspace`, `$HOME/openclaw/skills`, `/tmp`
 
 **14 tools:** read_file, read_text_file, read_multiple_files, write_file, edit_file, create_directory, list_directory, directory_tree, move_file, search_files, get_file_info, list_allowed_directories, read_image_file, tree
 
@@ -81,13 +84,13 @@ mcporter call sqlite.write_query query="INSERT INTO tasks (title, status) VALUES
 
 ```bash
 # Switch to meta-analyst DB
-node ~/openclaw/skills/mcp-hub/scripts/switch-db.cjs ~/.meta-analyst/events.db
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/mcp-hub/scripts/switch-db.cjs ~/.meta-analyst/events.db
 
 # Switch to knowledge graph DB  
-node ~/openclaw/skills/mcp-hub/scripts/switch-db.cjs ~/.knowledge-graph/kg.db
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/mcp-hub/scripts/switch-db.cjs ~/.knowledge-graph/kg.db
 
 # Switch back to kanban
-node ~/openclaw/skills/mcp-hub/scripts/switch-db.cjs ~/.kanban/tasks.db
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/mcp-hub/scripts/switch-db.cjs ~/.kanban/tasks.db
 ```
 
 **6 tools:** read_query, write_query, create_table, list_tables, describe_table, append_insight
@@ -97,22 +100,22 @@ Persistent entity-relationship store. Stores facts as entities with observations
 
 ```bash
 # Create entities
-mcporter call memory.create_entities entities='[{"name":"Aksel","entityType":"person","observations":["Uses Telegram","Timezone Europe/Oslo"]}]'
+mcporter call memory.create_entities entities='[{"name":"the user","entityType":"person","observations":["Uses Telegram","Timezone Europe/Oslo"]}]'
 
 # Create relations
-mcporter call memory.create_relations relations='[{"from":"Poe","to":"Aksel","relationType":"assists"}]'
+mcporter call memory.create_relations relations='[{"from":"Poe","to":"the user","relationType":"assists"}]'
 
 # Search by query
 mcporter call memory.search_nodes query="forex"
 
 # Open specific nodes
-mcporter call memory.open_nodes names='["Aksel","Poe"]'
+mcporter call memory.open_nodes names='["the user","Poe"]'
 
 # Read entire graph
 mcporter call memory.read_graph
 
 # Add observations to existing entity
-mcporter call memory.add_observations observations='[{"entityName":"Aksel","contents":["Prefers CET times over UTC"]}]'
+mcporter call memory.add_observations observations='[{"entityName":"the user","contents":["Prefers CET times over UTC"]}]'
 
 # Delete entities
 mcporter call memory.delete_entities entityNames='["test"]'
@@ -242,7 +245,7 @@ mcporter call my-server.some_tool arg=value
 3. **Brave Search MCP** — alternative to SearXNG
 4. **Sentry MCP** — if we deploy production services
 5. **Docker MCP** — manage containers programmatically
-6. **Notion/Linear MCP** — if Aksel uses these for project management
+6. **Notion/Linear MCP** — if the user uses these for project management
 
 ---
 

@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [things3, tasks, todos, macos, url-scheme]
 ---
 
 # Things 3 CLI

@@ -1,6 +1,9 @@
 ---
 name: research-reporter
 description: Research Reporter Skill
+category: research
+maturity: stable
+tags: [findings, confidence-scoring, report-compilation, sessions, multi-source]
 ---
 
 # Research Reporter Skill
@@ -12,7 +15,7 @@ Use when: doing multi-source research and want findings saved as a structured re
 1. For each source found, add a finding:
 
    ```
-   node /home/ajans/projects/research-reporter/add-finding.cjs \
+   node ${RESEARCH_REPORTER_HOME:-$HOME/projects/research-reporter}/add-finding.cjs \
      --session "topic-slug" \
      --source "Source Name" \
      --url "https://..." \
@@ -23,7 +26,7 @@ Use when: doing multi-source research and want findings saved as a structured re
 
 2. When done researching, compile:
    ```
-   node /home/ajans/projects/research-reporter/compile.cjs \
+   node ${RESEARCH_REPORTER_HOME:-$HOME/projects/research-reporter}/compile.cjs \
      --session "topic-slug" \
      --title "Report Title" \
      --send
@@ -43,13 +46,13 @@ Use kebab-case slugs: "stripe-webhooks", "gpt-4o-pricing", "competitor-analysis-
 ## List sessions
 
 ```
-node /home/ajans/projects/research-reporter/list-sessions.cjs
+node ${RESEARCH_REPORTER_HOME:-$HOME/projects/research-reporter}/list-sessions.cjs
 ```
 
 ## List saved reports
 
 ```
-node /home/ajans/projects/research-reporter/list-reports.cjs
+node ${RESEARCH_REPORTER_HOME:-$HOME/projects/research-reporter}/list-reports.cjs
 ```
 
 ## Reports are saved to

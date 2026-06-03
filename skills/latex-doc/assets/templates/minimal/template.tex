@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\usepackage[english]{babel}
+\usepackage{microtype}
+\usepackage[a4paper, margin=30mm]{geometry}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.7em}
+
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{333333}
+
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing{\section}{0pt}{12pt}{4pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx,float,caption}
+\usepackage[export]{adjustbox}
+% Auto-clamp ALL \includegraphics calls to text width — prevents figures bleeding off-page.
+\let\OrigIncludeGraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \OrigIncludeGraphics[max width=\linewidth, max totalheight=0.85\textheight, keepaspectratio, #1]{#2}%
+}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{booktabs,longtable,array}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,backgroundcolor=\color{gray!8}}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black}
+\usepackage[backend=biber,style=apa]{biblatex}
+$if(bibliography)$
+\addbibresource{$bibliography$}
+$endif$
+\usepackage{enumitem}
+\setlist{topsep=2pt,itemsep=1pt}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% ── Syntax highlighting (pandoc-generated) ─────────────────────────────────────
+$highlighting-macros$
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries $title$}\\[0.5em]
+$if(subtitle)${\large $subtitle$}\\[0.3em]$endif$
+{\normalsize $for(author)$$author$$sep$, $endfor$}\\[0.2em]
+{\small $if(date)$$date$$else$\today$endif$}
+\end{center}
+
+$if(abstract)$
+\bigskip
+\begin{center}
+\begin{minipage}{0.88\textwidth}
+\small\textit{\textbf{Abstract.} $abstract$}
+\end{minipage}
+\end{center}
+\bigskip
+$endif$
+
+$if(toc)$\tableofcontents\newpage$endif$
+
+$body$
+
+$if(bibliography)$
+\printbibliography[title={References}]
+$endif$
+
+\end{document}

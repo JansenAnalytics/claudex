@@ -1,6 +1,9 @@
 ---
 name: scheduler
 description: "Natural language task scheduling for Kite. Create, list, and cancel scheduled jobs in plain English with a human-readable registry of what's running and why."
+category: system
+maturity: stable
+tags: [cron, crontab, scheduling, natural-language, registry]
 ---
 
 # Scheduler Skill
@@ -21,40 +24,40 @@ Natural language task scheduling for Kite. Create, list, and cancel scheduled jo
 ## Files
 
 - **Registry:** `~/.openclaw/schedule.json` — human-readable source of truth
-- **CLI:** `~/projects/scheduler/scheduler.cjs` — manages registry + crontab
-- **Skill copy:** `~/openclaw/skills/scheduler/scripts/scheduler.cjs`
+- **CLI:** `${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs` — manages registry + crontab
+- **Skill copy:** `${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/scheduler/scripts/scheduler.cjs`
 
 ## Usage
 
 ```bash
 # Add a recurring task
-node ~/projects/scheduler/scheduler.cjs add \
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs add \
   --name "Morning brief" \
   --every "9am Monday-Friday" \
-  --command "/usr/bin/node /home/ajans/scripts/brief.cjs" \
+  --command "/usr/bin/node $HOME/scripts/brief.cjs" \
   --why "Daily summary of overnight events"
 
 # Add a one-shot reminder
-node ~/projects/scheduler/scheduler.cjs add \
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs add \
   --name "Check deployment" \
   --at "2026-02-21 18:00" \
-  --command "/usr/bin/node /home/ajans/scripts/check-deploy.cjs" \
+  --command "/usr/bin/node $HOME/scripts/check-deploy.cjs" \
   --why "Verify prod deploy went smoothly"
 
 # List all tasks
-node ~/projects/scheduler/scheduler.cjs list
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs list
 
 # See what's in crontab vs registry
-node ~/projects/scheduler/scheduler.cjs status
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs status
 
 # Remove a task
-node ~/projects/scheduler/scheduler.cjs remove morning-brief
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs remove morning-brief
 
 # Fix drift (sync registry → crontab)
-node ~/projects/scheduler/scheduler.cjs sync
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs sync
 
 # Show all supported time formats
-node ~/projects/scheduler/scheduler.cjs help-times
+node ${SCHEDULER_HOME:-$HOME/projects/scheduler}/scheduler.cjs help-times
 ```
 
 ## How It Works
@@ -70,7 +73,7 @@ Scheduler entries look like this in crontab:
 
 ```
 # [scheduler] id=morning-brief name="Morning Brief"
-0 9 * * 1-5 /usr/bin/node /home/ajans/scripts/brief.cjs
+0 9 * * 1-5 /usr/bin/node $HOME/scripts/brief.cjs
 ```
 
 The comment tag lets the CLI track its own entries without touching others.

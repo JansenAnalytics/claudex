@@ -9,6 +9,9 @@ triggers:
   - complexity check
   - dead code
   - arch critic
+category: development
+maturity: stable
+tags: [static-analysis, complexity, dead-code, dependency-graph, duplication]
 ---
 
 # Architecture Critic
@@ -25,12 +28,12 @@ arch-critic /path/to/project
 arch-critic /path/to/project --quick
 
 # Individual analyzers
-node ~/openclaw/skills/architecture-critic/scripts/complexity.cjs /path/to/project
-node ~/openclaw/skills/architecture-critic/scripts/deadcode.cjs /path/to/project
-node ~/openclaw/skills/architecture-critic/scripts/deps.cjs /path/to/project
-node ~/openclaw/skills/architecture-critic/scripts/patterns.cjs /path/to/project
-node ~/openclaw/skills/architecture-critic/scripts/errors.cjs /path/to/project
-node ~/openclaw/skills/architecture-critic/scripts/duplication.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/complexity.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/deadcode.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/deps.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/patterns.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/errors.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/architecture-critic/scripts/duplication.cjs /path/to/project
 ```
 
 ## Scripts

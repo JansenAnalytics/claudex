@@ -1,6 +1,9 @@
 ---
 name: post-mortem
 description: "Generate structured post-mortems after incidents or failures: root cause analysis, timeline, impact assessment, prevention steps."
+category: system
+maturity: stable
+tags: [incident-response, root-cause-analysis, timeline, blameless, retrospective]
 ---
 
 # post-mortem

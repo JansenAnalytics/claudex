@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [apple-reminders, remindctl, macos, todos, due-dates]
 ---
 
 # Apple Reminders CLI (remindctl)

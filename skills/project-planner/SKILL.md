@@ -1,19 +1,22 @@
 ---
 name: project-planner
 description: Project Planner Skill
+category: productivity
+maturity: stable
+tags: [task-planning, dependency-graph, subtasks, impact-analysis, orchestration]
 ---
 
 # Project Planner Skill
 
 Use at the START of every significant project before any sub-agent is spawned or any code is written.
-Also use when: Aksel asks for project status, before making a change that might affect other tasks, when a task fails.
+Also use when: the user asks for project status, before making a change that might affect other tasks, when a task fails.
 
 ## Workflow for a new project
 
 ### Step 1: Create the plan
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs new \
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs new \
   --project <project-slug> \
   --description "What this project delivers"
 ```
@@ -22,14 +25,14 @@ node /home/ajans/projects/project-planner/plan.cjs new \
 
 ```
 # Write tasks.json with full task list, then:
-node /home/ajans/projects/project-planner/plan.cjs import \
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs import \
   --project <project-slug> \
   --file tasks.json
 ```
 
 ```
 # Or add tasks one by one:
-node /home/ajans/projects/project-planner/plan.cjs add \
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs add \
   --project <project-slug> \
   --id task-01 \
   --name "Task name" \
@@ -45,39 +48,39 @@ node /home/ajans/projects/project-planner/plan.cjs add \
 ### Step 3: Check what can start
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs next --project <slug>
-node /home/ajans/projects/project-planner/plan.cjs parallel --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs next --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs parallel --project <slug>
 ```
 
 ### Step 4: Before starting a task
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs start --task task-01 --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs start --task task-01 --project <slug>
 ```
 
 ### Step 5: Before changing anything — check impact first
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs impact --task task-01 --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs impact --task task-01 --project <slug>
 ```
 
 ### Step 6: After completing a task (verify criteria first!)
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs done --task task-01 --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs done --task task-01 --project <slug>
 ```
 
 ### Step 7: Status at any time
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs status --project <slug>
-node /home/ajans/projects/project-planner/plan.cjs graph --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs status --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs graph --project <slug>
 ```
 
-### Step 8: Send report to Aksel
+### Step 8: Send report to the user
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs report --project <slug> --send
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs report --project <slug> --send
 ```
 
 ## Key rules
@@ -129,7 +132,7 @@ Use subtasks for any task that:
 ### Add subtasks to a task
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs subtask import \
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs subtask import \
   --project <slug> --task <task-id> --file subtasks.json
 ```
 
@@ -142,25 +145,25 @@ node /home/ajans/projects/project-planner/plan.cjs subtask import \
 ### Show subtask status
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs subtask list --task <id> --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs subtask list --task <id> --project <slug>
 ```
 
 ### Next runnable subtasks
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs subtask next --task <id> --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs subtask next --task <id> --project <slug>
 ```
 
 ### Parallel execution plan within a task
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs subtask parallel --task <id> --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs subtask parallel --task <id> --project <slug>
 ```
 
 ### Impact analysis for a subtask
 
 ```
-node /home/ajans/projects/project-planner/plan.cjs subtask impact --task <id> --id <st-id> --project <slug>
+node ${PROJECT_PLANNER_HOME:-$HOME/projects/project-planner}/plan.cjs subtask impact --task <id> --id <st-id> --project <slug>
 ```
 
 ### Subtask lifecycle

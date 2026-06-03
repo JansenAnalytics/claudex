@@ -1,6 +1,9 @@
 ---
 name: release-manager
 description: "Manage releases: semantic versioning, changelog generation, GitHub releases, git tags, version bumping."
+category: development
+maturity: stable
+tags: [semver, changelog, git-tags, github-releases, version-bump]
 ---
 
 # release-manager

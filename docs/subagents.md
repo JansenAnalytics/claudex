@@ -1,332 +1,100 @@
-# Sub-agents Guide
+# Subagents
 
-Sub-agents let Claude Code delegate work to specialized helpers that run in parallel, use different models, and have different instructions from the main agent. They're one of the most powerful features for handling complex, multi-step, or high-volume tasks.
+Claudex can delegate multi-step work to specialized subagents. Each runs in its **own context window** with a focused system prompt — useful when a task is big enough to pollute the main thread, or benefits from a narrow, opinionated persona. Agent definitions live in `$HOME/.claude-agent/.claude/agents/<name>.md` (frontmatter: `name`, `description`, `model`; body = the agent's system prompt).
 
----
+All 9 agents currently run on `claude-opus-4-7`.
 
-## What Sub-agents Are
+## The 9 agents
 
-A sub-agent is a **separate Claude instance** spawned by the main agent to handle a specific piece of work. The main agent describes the task, hands it off, and gets back a result — without blocking or using its own context for the heavy lifting.
+- **analyst** — Data analysis and market research. Reads files/DBs (trade-journal.db, brewboard tokens), runs stats, visualizes, synthesizes. Outputs Summary / Key Findings / Methodology / Caveats; flags small samples and correlation-vs-causation. **Use for:** "analyze this data", "what do the numbers say".
 
-Sub-agents are useful for:
-- **Parallel work** — research three topics simultaneously instead of sequentially
-- **Specialization** — use a cheap fast model for exploration, a powerful model for synthesis
-- **Isolation** — give the sub-agent a different set of instructions, rules, and permissions
-- **Context preservation** — keep the main agent's context clean while the sub-agent does deep work
+- **coder** — Feature implementation, bug fixes, tests, refactors. Reads existing code first, plans, implements to existing conventions, runs tests, commits with conventional messages on a feature branch (never main). **Use for:** any code-writing task.
 
-The main agent spawns sub-agents with the `Task` tool. Results are returned automatically when the sub-agent completes.
+- **researcher** — Deep, multi-source research. Searches broadly (`web_search`), reads deeply (`web_fetch`), cross-references, flags conflicts and uncertainty. Outputs Summary / Key Findings (cited) / Confidence per finding / Sources. **Use for:** "research X thoroughly", anything needing more than one source.
 
----
+- **reviewer** — Code/PR review. Reads the full diff, then checks bugs, security, performance, readability, and test coverage. Outputs severity-tagged issues (🔴 Critical / 🟡 Warning / 🔵 Suggestion) and a verdict (APPROVE / REQUEST CHANGES / NEEDS DISCUSSION) with file:line refs. **Use for:** reviewing a PR or diff before merge.
 
-## Built-in Agents
+- **sysadmin** — Ops/infra on the user's WSL2 box. Assesses current state, plans, executes one step at a time, verifies, documents. Knows systemd user services, cron, gh. `trash` over `rm`, backs up configs, never touches `/etc` without sudo confirmation. **Use for:** services, deploys, infra troubleshooting.
 
-Claude Code ships with two built-in sub-agent types you can invoke without any configuration:
+- **writer** — Technical writing and content. Identifies audience, outlines, writes concise prose with concrete numbers, formats for medium (Telegram bullets / markdown / formal PDF via LaTeX). Handles docs, business plans, reports, pitches, READMEs. **Use for:** anything prose-heavy meant for a human reader.
 
-### Explore
-A **fast, read-only agent** powered by Claude Haiku. Use it for reconnaissance — understanding a codebase, summarizing files, mapping a directory structure — before the main agent acts. Because it's read-only and uses a cheaper model, it's low-risk and low-cost.
+- **tester** — Runs test suites and makes them *meaningful*, not just green. Detects the framework from config (no assumptions), runs, classifies failures (flaky vs real, test-bug vs code-bug), proposes fixes, re-runs, and flags meaningless or missing tests. Never `.only()`s or deletes a test to force a pass. **Use for:** running tests, failing CI, verifying a change beyond static review.
 
-Best for: *"What does this codebase do?"* / *"Map out the file structure of this repo"* / *"Summarize these 20 log files"*
+- **incident-responder** — Diagnoses production incidents for **root cause, not first-plausible cause**. Gathers signals before theorizing (logs, metrics, health checks), builds a timeline against `git log`/deploys, forms ≥2 ranked hypotheses, tests the leading one with a minimal repro (read-only first), proposes the smallest-blast-radius fix, writes a 5-line post-mortem. Never restarts as a first move; "transient issue" without evidence is banned. **Use for:** a service that's broken, erroring, or behaving oddly.
 
-### Plan
-A **research-before-acting agent** that gathers information and produces a structured plan before taking any action. It won't write code or run commands — it thinks, outlines, and returns a recommended approach for the main agent to execute.
+- **documentarian** — Writes/updates inline docs, READMEs, API refs **after** a code change. Reads the surrounding module (not just the diff), matches the project's existing doc style, documents the *why* when non-obvious, updates rather than accumulating contradictory docs, verifies examples still run, and flags code too complex to document as a refactor signal. **Use for:** docs catching up to code, or an undocumented module.
 
-Best for: *"How should I approach refactoring this module?"* / *"Research options for deploying this service"*
+### Quick picker
 
----
-
-## Custom Agents
-
-You can define your own agents in `.claude/agents/`. Each agent is a single markdown file with YAML frontmatter:
-
-```
-.claude/
-└── agents/
-    ├── researcher.md
-    ├── coder.md
-    ├── reviewer.md
-    ├── analyst.md
-    ├── sysadmin.md
-    └── writer.md
-```
-
-### Frontmatter Fields
-
-```yaml
----
-name: agent-name
-description: When to use this agent — what tasks it handles, what triggers it.
-model: opus   # or opus, haiku
----
-```
-
-| Field | Purpose |
-|---|---|
-| `name` | Identifier used to spawn the agent |
-| `description` | When to use this agent — used for auto-selection |
-| `model` | Which Claude model to use (default: opus on Max subscription) |
-
-The body is the system prompt for that agent. Write it as instructions in second person (*"You are a..."*).
-
-### Model Selection
-
-- **`haiku`** — Fastest, cheapest. Good for exploration, summarization, simple lookups.
-- **`opus`** — Full reasoning power. Use on Max subscription where there's no per-token cost.
-- **`opus`** — Most powerful. Use for complex reasoning, hard problems, high-stakes decisions.
-
-On Max subscription, use `opus` for all agents — there is no per-token cost, so there is no reason to downgrade. On API billing, consider `sonnet` or `haiku` for sub-agents to save cost.
+- Numbers → **analyst**. Prose → **writer**. Facts from the web → **researcher**.
+- Write code → **coder**. Judge code → **reviewer**. Exercise code → **tester**.
+- Server's on fire → **incident-responder**. Server needs changing → **sysadmin**.
+- Code shipped, docs lag → **documentarian**.
 
 ---
 
-## Agent Design Patterns
+## Skill vs Subagent vs Slash Command vs Hook
 
-These six patterns cover most use cases. Each is a complete, working agent definition.
+Four extension types, four different jobs. The fastest way to pick: ask **who triggers it** and **whether it needs its own context**.
 
-### 1. Researcher
+| Type | Triggered by | Runs in | Core question it answers |
+|---|---|---|---|
+| **Skill** | the model, on demand | the current context | "I need domain knowledge/a procedure to do this well" |
+| **Subagent** | the model, by delegation | a fresh context window | "This is big enough that I want it off my main thread" |
+| **Slash command** | the user, by name | the current context | "I run this exact prompt often enough to name it" |
+| **Hook** | the harness, on an event | a shell process (no model) | "This must happen automatically and deterministically" |
 
-A broad, multi-source research agent that synthesizes findings into structured output.
+*(Table is for the docs file — Telegram replies use bullets instead.)*
 
-```markdown
----
-name: researcher
-description: Deep research tasks — web search, multi-source analysis, report writing. Use for any research request that requires thoroughness.
-model: opus
----
+### SKILL — reusable knowledge the model loads on demand
 
-You are a research agent. Given a topic:
+A skill is a folder of instructions/scripts the model **chooses** to pull in when a task matches its description. It does not get its own context window; it augments the current one. Think "expertise on tap."
 
-1. Search multiple sources for information
-2. Cross-reference findings
-3. Identify key facts, numbers, and insights
-4. Synthesize into a clear, structured summary
-5. Note any conflicting information or uncertainty
+- **Reach for it when:** the same *procedure or domain knowledge* recurs (how to query a database, how to format a morning briefing, how to drive a project-specific CLI), and you want the model to apply it inline.
+- **Don't use it for:** one-off prompts (slash command), heavyweight delegated work (subagent), or anything that must fire without the model deciding (hook).
+- **Examples here:** `memory-search`, `data-analysis`, `morning-briefing`, `cron-dashboard`, `skill-index`. 160 of them under `.claude/skills/`.
 
-Be thorough but concise. Cite sources when possible. Flag when you're uncertain about something.
-```
+### SUBAGENT — delegated multi-step work in its own context
 
-### 2. Coder
+A subagent is a *whole separate run* with its own system prompt and **its own context window**. The main thread hands off a task, the subagent works in isolation, and only its final report comes back. This keeps large or noisy work from bloating the main conversation.
 
-A disciplined implementation agent that reads before writing and verifies before declaring done.
+- **Reach for it when:** the work is multi-step and self-contained (review a 30-file PR, research a topic across many sources, refactor a module, diagnose an incident). Especially when you'd otherwise burn the main context on intermediate file reads and dead ends.
+- **Parallelism:** independent subagents can run concurrently — fan out a researcher + an analyst + a reviewer at once.
+- **Don't use it for:** a quick edit or single file read (just do it inline — spawning a context is overhead), or anything the *user* should trigger by name (that's a slash command).
+- **Verify the output.** House rule: don't trust a subagent's self-reported success — test it yourself.
+- **Examples here:** the 9 agents above.
 
-```markdown
----
-name: coder
-description: Code implementation tasks — write features, fix bugs, write tests, refactor. Use for any coding task.
-model: opus
----
+### SLASH COMMAND — a fixed prompt the user triggers by name
 
-You are a coding agent. When given a task:
+A slash command is a saved prompt in `.claude/commands/<name>.md`, invoked by the **user** typing `/name`. The body is sent to the model as the prompt; `$ARGUMENTS` / `$1`, `$2` carry user input. Same context as the conversation — it's just a named, reusable prompt with declared `allowed-tools`.
 
-1. Read relevant existing code first
-2. Plan the approach before writing
-3. Implement with clean, well-structured code
-4. Test your changes (run the test suite if one exists)
-5. Commit with a descriptive message using conventional commits
+- **Reach for it when:** *you (the user)* run the same request repeatedly and want a one-word trigger — `/audit`, `/handoff`, `/status`. The trigger is human; the steps are fixed.
+- **Vs skill:** a skill is knowledge the *model* loads when relevant; a slash command is a prompt the *user* fires deliberately. A slash command can (and often does) tell the model to invoke skills or spawn subagents.
+- **Don't use it for:** behavior that must happen automatically (hook) or knowledge the model should reach for on its own (skill).
+- **Examples here:** `/audit` (composite health report), `/handoff` (write a memory file + Telegram summary).
 
-Rules:
-- Feature branches only, never push to main
-- Verify your code runs before reporting done
-- Use existing patterns and conventions from the codebase
-- Prefer simple solutions over clever ones
-```
+### HOOK — deterministic automation the harness runs on an event
 
-### 3. Reviewer
+A hook is a shell command the **Claude Code harness** runs on a lifecycle event (e.g. before a tool call, on session start/stop, on file write). It is **not the model** — it's deterministic plumbing configured in `settings.json`. It always fires; it can't "decide" not to.
 
-A critical-eye agent for code and PR review, with structured severity levels.
+- **Reach for it when:** something must happen *every time*, reliably, without depending on the model remembering — auto-format on write, block edits to a protected path, run an indexer after a session, append to the event log on a tool call.
+- **Vs everything else:** the other three involve the model's judgment. A hook removes judgment on purpose — that's the point. "From now on, whenever X happens, do Y" without exception = hook, not a memory note.
+- **Don't use it for:** anything requiring reasoning or natural-language output (that needs the model → skill/subagent/slash command).
+- **Note:** the model cannot author hooks for itself ad hoc; hooks are configured via the harness (`update-config` skill / `settings.json`).
 
-```markdown
----
-name: reviewer
-description: Code and PR reviewer — analyzes code quality, finds bugs, suggests improvements. Use for code review requests.
-model: opus
----
-
-You are a code reviewer. When given code or a PR to review:
+### One-line decision tree
 
-1. **Read all changed files** before commenting
-2. **Check for bugs** — logic errors, edge cases, null handling
-3. **Check for security** — injection, auth, data exposure
-4. **Check for performance** — N+1 queries, unnecessary loops, memory leaks
-5. **Check for readability** — naming, complexity, dead code
-6. **Check for testing** — are critical paths tested?
+1. **Must it fire automatically, every time, no reasoning?** → **Hook**.
+2. **Does the *user* trigger it by name with a fixed set of steps?** → **Slash command**.
+3. **Is it big, multi-step, self-contained, and worth isolating from the main thread?** → **Subagent**.
+4. **Is it recurring knowledge/a procedure the model should apply inline?** → **Skill**.
+5. **None of the above (small, one-off, in-context)?** → just do it directly — no extension needed.
 
-Output format for each issue:
-- 🔴 **Critical**: Must fix before merge
-- 🟡 **Warning**: Should fix, acceptable to defer
-- 🔵 **Suggestion**: Nice to have improvement
+### Worked examples
 
-End with a summary: APPROVE / REQUEST CHANGES / NEEDS DISCUSSION
-
-Be specific — include file:line references and suggested fixes.
-```
-
-### 4. Analyst
-
-A data-focused agent that answers questions with numbers and structured evidence.
-
-```markdown
----
-name: analyst
-description: Data analyst and researcher — analyzes data, creates reports, market research. Use for analysis tasks.
-model: opus
----
-
-You are a data analyst. When given an analysis task:
-
-1. **Understand the question** — what decision does this inform?
-2. **Gather data** — read files, query databases, fetch from APIs
-3. **Analyze** — statistics, trends, patterns, anomalies
-4. **Visualize** if helpful — use matplotlib/python for charts
-5. **Synthesize** — answer the original question with evidence
-
-Output format:
-- **Summary** (3-5 sentences, the answer)
-- **Key Findings** (bullet points with numbers)
-- **Methodology** (brief, how you got there)
-- **Caveats** (limitations, confidence level)
-
-Always distinguish correlation from causation. Flag small sample sizes.
-```
-
-### 5. Sysadmin
-
-An infrastructure-focused agent with explicit safety rules built in.
-
-```markdown
----
-name: sysadmin
-description: System administrator — manages services, deploys, troubleshoots infrastructure. Use for ops/infra tasks.
-model: opus
----
-
-You are a systems administrator. When given a task:
-
-1. **Assess current state** — check what's running, what's configured
-2. **Plan the change** — outline steps before acting
-3. **Execute carefully** — one step at a time, verify each
-4. **Verify** — confirm the change worked
-5. **Document** — update memory/notes if significant
-
-Safety rules:
-- Always `trash` over `rm`
-- Backup configs before editing
-- Test changes before making permanent
-- Never modify /etc without sudo confirmation
-- Use `systemctl --user` for user services
-```
-
-### 6. Writer
-
-An audience-aware writing agent with multiple style modes.
-
-```markdown
----
-name: writer
-description: Technical writer and content creator — documentation, reports, business plans. Use for writing tasks.
-model: opus
----
-
-You are a technical writer. When given a writing task:
-
-1. **Understand the audience** — who reads this, what do they need?
-2. **Outline first** — structure before prose
-3. **Write concisely** — every sentence earns its place
-4. **Use concrete examples** — numbers, specifics, not vague claims
-5. **Format for medium** — Telegram needs bullet points, PDF needs headers
-
-Writing styles available:
-- **Technical docs**: Clear, precise, code examples
-- **Business plans**: Professional, data-driven, conservative projections
-- **Reports**: Executive summary → findings → methodology
-- **Pitches**: Problem → solution → traction → ask
-- **READMEs**: What → why → how → examples
-```
-
----
-
-## Agent Teams (Experimental)
-
-Enable agent teams with the environment variable:
-
-```bash
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-```
-
-With teams enabled, **multiple agents can collaborate on a shared task list** — picking up items, passing outputs to each other, and working in parallel without requiring the main agent to orchestrate every handoff.
-
-### How Teams Work
-
-A team is a group of named agents assigned to a task. They share a task queue and can communicate results directly:
-
-1. Main agent defines the overall goal and splits it into tasks
-2. Tasks go into a shared queue
-3. Agents pull tasks they're suited for (based on their description)
-4. Results flow back into the shared context
-5. Agents can spawn follow-up tasks based on what they find
-
-### When to Use Teams
-
-**Use teams when:**
-- The task has many independent parallel subtasks (research 10 companies, review 5 PRs)
-- Agents need each other's outputs to proceed (analyst needs researcher's data)
-- You want automatic load-balancing across agent types
-- The task is exploratory — you don't know the exact steps upfront
-
-**Use individual sub-agents when:**
-- The task is well-defined and single-threaded
-- You need precise control over sequencing
-- The overhead of team coordination isn't worth it
-- You're debugging or iterating quickly
-
-### Example Team Setup
-
-```
-Task: "Research three competitors and write a comparison report"
-
-Agents spawned:
-- researcher → researches Company A
-- researcher → researches Company B  
-- researcher → researches Company C
-- analyst   → waits for all three, synthesizes comparison
-- writer    → takes analyst output, formats final report
-```
-
-Without teams, this would be five sequential sub-agent calls. With teams, the three research agents run in parallel, cutting total time roughly in half.
-
----
-
-## The Verification Rule
-
-**Always verify sub-agent work before reporting to the user.** This is non-negotiable.
-
-Sub-agents self-report success. They'll say *"Done! The tests pass and I've committed the changes."* That's not enough. Sub-agents can be wrong about their own output — they make mistakes, miss edge cases, and sometimes hallucinate success.
-
-### Verification Checklist
-
-After a sub-agent completes:
-
-1. **Run the scripts** — don't just `ls` the files. Execute the actual commands.
-2. **Test critical paths** — happy path + at least one realistic edge case.
-3. **Check infrastructure** — cron entries added? Services restarted? Config deployed?
-4. **Check side effects** — git pushed? Permissions set? Dependencies installed?
-5. **Fix silently if broken** — don't report the failure; fix it, then report the success.
-6. **Only then report** — *"it's done"* means you verified it, not that a sub-agent said so.
-
-### Why This Matters
-
-The cost of verification is low — a few extra commands. The cost of shipping a silent failure is high. Users trust the main agent's word. If you relay a sub-agent's self-assessment without checking, you're laundering uncertainty into confidence.
-
-Do the verification. Every time.
-
----
-
-## Quick Reference
-
-| Task | How |
-|---|---|
-| Use built-in Explore agent | Ask Claude Code to use Explore for read-only recon |
-| Add a custom agent | Create `.claude/agents/<name>.md` |
-| Use cheaper model for sub-agent | Set `model: haiku` or `model: sonnet` (API billing only) in frontmatter |
-| Use powerful model for hard tasks | Set `model: opus` |
-| Enable agent teams | `export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` |
-| Verify sub-agent output | Run their commands yourself before reporting done |
-| Auto-select agents | Write trigger-rich `description` fields |
+- *"Every time I save a `.py` file, run black."* → **Hook** (deterministic, no model judgment).
+- *"Review this PR for security issues."* → **Subagent** (`reviewer` — multi-step, isolated context).
+- *"Give me the standard health audit."* → **Slash command** (`/audit` — user-triggered fixed prompt).
+- *"Summarize this CSV and chart the top categories."* → **Skill** (`data-analysis` — domain procedure the model loads).
+- *"Fix this one typo in line 12."* → none — just **Edit** it inline.
+- *"Research the 2026 forex prop-firm landscape, then summarize."* → **Subagent** (`researcher`), optionally pulling the `deep-research` **skill**.

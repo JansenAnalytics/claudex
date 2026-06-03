@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [bear, grizzly-cli, macos, note-taking, tags]
 ---
 
 # Bear Notes

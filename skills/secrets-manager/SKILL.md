@@ -1,6 +1,9 @@
 ---
 name: secrets-manager
 description: "Manage secrets and environment variables securely: .env files, encrypted vaults, key rotation, secret scanning. Use when: setting up environment variables, managing API keys, rotating secrets, scan..."
+category: security
+maturity: stable
+tags: [dotenv, secret-scanning, key-rotation, credentials, leak-detection]
 ---
 
 # secrets-manager

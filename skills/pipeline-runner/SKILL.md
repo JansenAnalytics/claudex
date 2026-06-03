@@ -8,6 +8,9 @@ triggers:
   - multi-step
   - backtest and deploy
   - if this then that
+category: development
+maturity: stable
+tags: [pipeline, workflow-orchestration, dependency-graph, retries, json]
 ---
 
 # Pipeline Runner Skill
@@ -27,7 +30,7 @@ Execute multi-step pipelines defined in JSON with:
 ## Script
 
 ```bash
-node ~/openclaw/skills/pipeline-runner/scripts/pipeline.cjs <command> [args]
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/pipeline-runner/scripts/pipeline.cjs <command> [args]
 ```
 
 ## Commands
@@ -99,7 +102,7 @@ Each step's stdout is available to subsequent steps as:
 ## Agent Workflow
 
 ### Creating pipelines on the fly
-When Aksel asks for a multi-step workflow, write a JSON pipeline file and run it:
+When the user asks for a multi-step workflow, write a JSON pipeline file and run it:
 
 ```bash
 # Write pipeline
@@ -125,7 +128,7 @@ node pipeline.cjs run pipeline.json --dry-run
 
 ## Examples
 
-See `~/openclaw/skills/pipeline-runner/examples/`:
+See `${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/pipeline-runner/examples/`:
 - `test-pipeline.json` — basic test with all features
 - `backtest-pipeline.json` — prop-hedge backtest → analyze → commit → push
 

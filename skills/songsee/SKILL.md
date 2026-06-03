@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [audio, spectrogram, visualization, ffmpeg, cli]
 ---
 
 # songsee

@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: beta
+tags: [pdf-editing, natural-language, cli, document-editing]
 ---
 
 # nano-pdf

@@ -1,11 +1,14 @@
 ---
 name: morning-briefing
 description: Generate a morning briefing with weather, market overview, system health, and upcoming tasks. Use for daily briefings.
+category: productivity
+maturity: stable
+tags: [daily-briefing, weather, system-health, github, telegram]
 ---
 
 # Morning Briefing Skill
 
-Generate a concise daily briefing for Aksel covering:
+Generate a concise daily briefing for the user covering:
 
 ## 1. Weather (Oslo)
 ```bash
@@ -51,7 +54,7 @@ fi
 ## 5. Trade System Status
 ```bash
 # Last trade from journal
-sqlite3 ~/projects/prop-hedge-agents/data/trade-journal.db \
+sqlite3 ${PROP_HEDGE_AGENTS_HOME:-$HOME/projects/prop-hedge-agents}/data/trade-journal.db \
     "SELECT date, strategy_type, outcome FROM trades ORDER BY id DESC LIMIT 1;" 2>/dev/null || echo "No trades"
 ```
 

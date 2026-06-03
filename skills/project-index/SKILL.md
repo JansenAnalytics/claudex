@@ -1,6 +1,9 @@
 ---
 name: project-index
 description: "Kite's project registry — a structured JSON index of all active projects."
+category: productivity
+maturity: stable
+tags: [project-registry, status-tracking, json-index, cron, metadata]
 ---
 
 # project-index
@@ -10,13 +13,13 @@ Always know what's running, what state it's in, and what comes next.
 
 ## Data file
 
-`~/projects/index.json` — shared across all projects, one source of truth.
+`${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/../index.json` (default: `~/projects/index.json`) — shared across all projects, one source of truth.
 
 ## CLI location
 
-`/home/ajans/projects/project-index/index.cjs`
+`${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs`
 
-Alias: `alias pj="node /home/ajans/projects/project-index/index.cjs"`
+Alias: `alias pj="node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs"`
 
 ## When to use
 
@@ -33,36 +36,36 @@ Use this skill whenever the user (or Kite internally) asks about:
 
 ```bash
 # List all projects
-node /home/ajans/projects/project-index/index.cjs list
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs list
 
 # Filter by status
-node /home/ajans/projects/project-index/index.cjs list --status active
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs list --status active
 
 # Show full detail
-node /home/ajans/projects/project-index/index.cjs show web-monitor
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs show web-monitor
 
 # Add a new project
-node /home/ajans/projects/project-index/index.cjs add \
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs add \
   --id my-tool \
   --name "My Tool" \
-  --path ~/projects/my-tool \
+  --path ~/projects/<your-tool> \
   --github JansenAnalytics/my-tool \
   --desc "Does something cool" \
   --tags monitoring,cron \
   --cron "*/15 * * * *"
 
 # Update a project
-node /home/ajans/projects/project-index/index.cjs update web-monitor \
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs update web-monitor \
   --status active \
   --last-action "Fixed regex check" \
   --next "Add Slack notification"
 
 # Append a note (timestamped)
-node /home/ajans/projects/project-index/index.cjs note web-monitor "Added BTC price check"
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs note web-monitor "Added BTC price check"
 
 # Mark done / archive
-node /home/ajans/projects/project-index/index.cjs done stock-watcher
-node /home/ajans/projects/project-index/index.cjs archive stock-watcher
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs done stock-watcher
+node ${PROJECT_INDEX_HOME:-$HOME/projects/project-index}/index.cjs archive stock-watcher
 ```
 
 ## Kite behaviour
@@ -80,7 +83,7 @@ When the user asks about project status, Kite should:
 {
   "id": "web-monitor",
   "name": "Web Monitor",
-  "path": "/home/ajans/projects/web-monitor",
+  "path": "$HOME/projects/web-monitor",
   "github": "JansenAnalytics/web-monitor",
   "status": "active",
   "description": "Configurable URL/content monitor",

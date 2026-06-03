@@ -1,6 +1,9 @@
 ---
 name: prompt-library
 description: "Library of tested prompt patterns for sub-agent orchestration: task decomposition, verification, error recovery, chain-of-thought."
+category: writing
+maturity: stable
+tags: [prompt-patterns, sub-agent-orchestration, templates, task-decomposition, anti-patterns]
 ---
 
 # prompt-library

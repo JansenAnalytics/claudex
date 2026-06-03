@@ -1,6 +1,9 @@
 ---
 description: "Converts Markdown → LaTeX → PDF. Handles Mermaid diagrams, math, tables, citations, figures."
 name: latex-doc
+category: writing
+maturity: stable
+tags: [latex, pdf, pandoc, mermaid, templates]
 ---
 
 # latex-doc
@@ -16,7 +19,7 @@ Converts Markdown → LaTeX → PDF. Handles Mermaid diagrams, math, tables, cit
 ## Quick build
 
 ```bash
-python3 ~/openclaw/skills/latex-doc/scripts/build.py input.md \
+python3 ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/latex-doc/scripts/build.py input.md \
   --template whitepaper \
   --output output.pdf
 ```
@@ -63,7 +66,7 @@ bibliography: refs.bib # optional
 ## Mermaid diagrams
 
 Fenced ` ```mermaid ``` ` blocks are automatically rendered to PNG before compilation.
-Requires `mmdc` — install once with `bash ~/openclaw/skills/latex-doc/scripts/setup.sh`.
+Requires `mmdc` — install once with `bash ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/latex-doc/scripts/setup.sh`.
 
 ## Math
 
@@ -79,7 +82,7 @@ With `--bib refs.bib`, use `[@key2021]` in the markdown. Output uses APA style.
 ## First-time setup (if tools not installed)
 
 ```bash
-bash ~/openclaw/skills/latex-doc/scripts/setup.sh
+bash ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/latex-doc/scripts/setup.sh
 ```
 
 Installs: `texlive-xetex`, `texlive-latex-extra`, `biber`, `pandoc`, `@mermaid-js/mermaid-cli`.

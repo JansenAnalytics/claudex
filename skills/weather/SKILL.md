@@ -1,6 +1,9 @@
 ---
 name: weather
 description: Get current weather and forecasts. Use when the user asks about weather, temperature, or forecasts for any location.
+category: home-iot
+maturity: beta
+tags: [wttr, forecast, curl, oslo, temperature]
 ---
 
 # Weather Skill
@@ -18,6 +21,6 @@ curl -s "wttr.in/LOCATION?format=v2"
 curl -s "wttr.in/LOCATION?format=j1"
 ```
 
-Default location: **Oslo** (Aksel's location)
+Default location: **Oslo** (the user's location)
 
 Format the response naturally — don't dump raw output.

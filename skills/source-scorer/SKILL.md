@@ -1,6 +1,9 @@
 ---
 name: source-scorer
 description: Source Credibility Scorer Skill
+category: research
+maturity: stable
+tags: [credibility, source-scoring, domain-tier, verification, cli]
 ---
 
 # Source Credibility Scorer Skill
@@ -10,26 +13,26 @@ Use when: evaluating whether a source is trustworthy, comparing multiple sources
 ## Score a single source
 
 ```
-node /home/ajans/projects/source-scorer/score.cjs --url "https://..." [--content "text"] [--claim "specific claim"]
+node ${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/score.cjs --url "https://..." [--content "text"] [--claim "specific claim"]
 ```
 
 ## Score with JSON output (for piping)
 
 ```
-node /home/ajans/projects/source-scorer/score.cjs --url "https://..." --json
+node ${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/score.cjs --url "https://..." --json
 ```
 
 ## Score multiple URLs
 
 ```
 echo -e "https://url1\nhttps://url2" > /tmp/urls.txt
-node /home/ajans/projects/source-scorer/score-batch.cjs --urls-file /tmp/urls.txt
+node ${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/score-batch.cjs --urls-file /tmp/urls.txt
 ```
 
 ## Check domain tier
 
 ```
-node /home/ajans/projects/source-scorer/domain-tier.cjs example.com
+node ${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/domain-tier.cjs example.com
 ```
 
 ## Auto-integration
@@ -65,7 +68,7 @@ The credibility score is saved with the finding and confidence is averaged with 
 
 ## Files
 
-- `~/projects/source-scorer/score.cjs` — single URL scorer
-- `~/projects/source-scorer/score-batch.cjs` — batch scorer from file
-- `~/projects/source-scorer/domain-tier.cjs` — domain tier lookup
-- `~/projects/source-scorer/tiers.json` — tier classification data
+- `${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/score.cjs` — single URL scorer
+- `${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/score-batch.cjs` — batch scorer from file
+- `${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/domain-tier.cjs` — domain tier lookup
+- `${SOURCE_SCORER_HOME:-$HOME/projects/source-scorer}/tiers.json` — tier classification data

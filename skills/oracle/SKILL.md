@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: meta
+maturity: stable
+tags: [llm-cli, gpt-5, one-shot, file-bundling, sessions]
 ---
 
 # oracle — best use

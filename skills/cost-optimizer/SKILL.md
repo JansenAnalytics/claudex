@@ -1,6 +1,9 @@
 ---
 name: cost-optimizer
 description: "Track and optimize LLM token spend: estimate costs per task, recommend model tiers, monitor cumulative usage, suggest batching strategies."
+category: meta
+maturity: beta
+tags: [token-counting, llm-pricing, model-tier, usage-analysis, budget-estimation]
 ---
 
 # cost-optimizer

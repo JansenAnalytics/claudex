@@ -10,6 +10,9 @@ metadata:
         "requires": { "config": ["plugins.entries.voice-call.enabled"] },
       },
   }
+category: comms
+maturity: beta
+tags: [voice, twilio, telnyx, phone-calls, plugin]
 ---
 
 # Voice Call

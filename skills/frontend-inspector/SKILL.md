@@ -1,6 +1,9 @@
 ---
 name: frontend-inspector
 description: "Analyze frontend screenshots using vision model analysis and automated checks: detect layout bugs, alignment issues, overflow, z-index problems, spacing inconsistencies, color contrast issues."
+category: frontend
+maturity: stable
+tags: [screenshot-analysis, css-linting, layout-bugs, vision-model, visual-review]
 ---
 
 # frontend-inspector

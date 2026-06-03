@@ -29,12 +29,30 @@ description: When to use this skill — what triggers it, what tasks it covers.
 Instructions, commands, context, rules...
 ```
 
-### Frontmatter Fields
+### Frontmatter Fields (v2 schema)
+
+**Required:**
 
 | Field | Purpose |
 |---|---|
-| `name` | Unique identifier for the skill (matches the directory name) |
-| `description` | Trigger description — used for auto-selection (see below) |
+| `name` | Unique identifier for the skill (must match the directory name) |
+| `description` | Trigger description — used for auto-selection (see below). Pack with synonyms. |
+
+**Recommended (becomes required in Phase 3):**
+
+| Field | Purpose |
+|---|---|
+| `category` | One of the 15 controlled categories (see `docs/skill-anatomy.md`) |
+| `maturity` | One of: `experimental`, `beta`, `stable`, `deprecated` |
+
+**Optional:**
+
+| Field | Purpose |
+|---|---|
+| `tags` | Inline array of free-form tags for finer search: `[git, github, ci]` |
+| `external_deps` | Array of external project names this skill depends on. Triggers `INSTALL.md` requirement. |
+
+Full schema reference: [`docs/skill-anatomy.md`](skill-anatomy.md).
 
 The body is plain markdown. You can use headers, bullet lists, code blocks, tables — whatever communicates the skill best.
 
@@ -64,22 +82,92 @@ The good version has 10+ trigger terms. The weak version has 2.
 
 ## Directory Structure
 
-Skills live under `.claude/skills/` in your project or workspace. Each skill gets its own directory:
+Skills live under `.claude/skills/` in your project or workspace. Each skill gets its own directory. **The skills root is flat — never nest categories as subdirectories.** Claude Code's skill auto-loader expects `skills/<name>/SKILL.md` and breaks on deeper nesting. Categorization is metadata-only via the `category:` frontmatter field.
+
+### Minimal skill
 
 ```
-.claude/
-└── skills/
-    ├── weather/
-    │   └── SKILL.md
-    ├── github-workflow/
-    │   └── SKILL.md
-    └── watchdog/
-        └── SKILL.md
+.claude/skills/
+├── weather/
+│   └── SKILL.md
+├── github-workflow/
+│   └── SKILL.md
+└── watchdog/
+    └── SKILL.md
 ```
 
-The directory name should match the `name` field in the frontmatter. This makes skills easy to find, enable, disable (by removing the directory), and version-control.
+### Full anatomy (v2)
 
-You can also nest support files alongside `SKILL.md` — scripts, reference data, templates. Claude Code can read and execute these when the skill instructs it to.
+```
+.claude/skills/<name>/
+├── SKILL.md         REQUIRED — the skill
+├── scripts/         OPTIONAL — bash/python/node scripts the skill executes
+├── references/      OPTIONAL — reference data, schemas, fixtures
+├── assets/          OPTIONAL — templates, prompts, static files
+├── data/            OPTIONAL — small bundled data
+├── tests/           OPTIONAL — smoke tests for the skill itself
+└── INSTALL.md       OPTIONAL — required if external_deps is non-empty
+```
+
+The directory name must match the `name` field. This makes skills easy to find, enable, disable (by removing the directory), and version-control.
+
+Bundled support files (`scripts/`, `references/`, etc.) are referenced from `SKILL.md` via the `$CLAUDE_SKILLS_DIR` convention — see Path Conventions below.
+
+---
+
+## Path Conventions
+
+External path references in `SKILL.md` bodies are a portability bug. The audit script (`scripts/skill-audit.sh`) flags them.
+
+### `$CLAUDE_SKILLS_DIR` for own-directory references
+
+For skills that have their own `scripts/` or `references/` subdir, refer to them via:
+
+```bash
+SKILL_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/<skill-name>"
+$SKILL_DIR/scripts/do-the-thing.sh
+```
+
+- `$CLAUDE_SKILLS_DIR` is set in `settings.json` env block and propagates to all bash tool calls.
+- The `:-default` fallback keeps the skill working if the env var isn't set (e.g. fresh clone).
+- Use the literal skill name, not a derived value — bash heredocs in SKILL.md bodies don't have `$0` set usefully.
+
+### Per-project env vars for external dependencies
+
+For skills that wrap a standalone project (e.g. `task-queue`), use a per-project env var with a sensible default:
+
+```bash
+TASK_QUEUE_HOME="${TASK_QUEUE_HOME:-$HOME/projects/task-queue}"
+node "$TASK_QUEUE_HOME/cli.cjs" --add "..."
+```
+
+Document the env var and its default in `INSTALL.md` for that skill.
+
+### Never hardcode `/home/<user>/...`
+
+That path is meaningless on any machine that isn't yours. The audit script catches these.
+
+---
+
+## Migrating an existing skill to v2
+
+For each pre-v2 skill (no `category`, no `maturity`, possibly hardcoded paths):
+
+1. **Pick a category** from the 15 in `docs/skill-anatomy.md`.
+2. **Pick a maturity** — be honest. Bugs you know about → `beta`. Hasn't broken in months → `stable`. Half-finished → `experimental`. Slated for removal → `deprecated`.
+3. **Add `tags`** — 3–6 free-form tags beyond what the name conveys.
+4. **Fix hardcoded paths:**
+   - Skill-shaped support (small, purpose-built scripts) → vendor into `scripts/<skill-name>/scripts/` and reference via `$CLAUDE_SKILLS_DIR`.
+   - Standalone-project deps → use a per-project env var with default, document in `INSTALL.md`.
+5. **Add `external_deps`** if the skill needs an external project.
+6. **Create `INSTALL.md`** if `external_deps` is non-empty or hardcoded paths can't be removed.
+7. **Validate:**
+   ```bash
+   bash scripts/skill-audit.sh --skill <name>
+   ```
+   Should report 0 warnings, 0 errors.
+
+---
 
 ---
 
@@ -141,40 +229,11 @@ When porting these skills, replace OpenClaw tool calls with shell-based equivale
 
 ## Skill Categories
 
-This repo ships with 160 skills covering virtually every common agent use case. Here's an overview by category:
+This repo ships **160 skills** across the 15 controlled categories. Rather than duplicate the full list here (and let it drift), see the **auto-generated, always-current catalog**:
 
-### Development
-`github-workflow` · `github` · `gh-issues` · `code-review` · `ci-cd` · `docker` · `test-runner` · `test-critic` · `e2e-test-writer` · `refactor` · `coding-agent` · `codebase-navigator` · `project-scaffold` · `project-planner` · `release-manager` · `git-bisect-auto` · `migration-planner` · `api-tester` · `api-critic` · `mock-server` · `dep-audit` · `perf-profiler` · `lighthouse-perf` · `react-frontend` · `responsive-checker` · `flow-tester` · `pr-monitor` · `pipeline-runner` · `a11y-audit` · `arch-diagram` · `architecture-critic` · `design-system` · `frontend-design` · `frontend-inspector` · `security-audit` · `security-auditor` · `vuln-scanner` · `error-monitor` · `log-analyzer` · `post-mortem`
+➡️ **[`docs/skills-catalog.md`](skills-catalog.md)** — every skill grouped by category, with its maturity, description, and tags.
 
-### Research
-`deep-research` · `web-monitor` · `hypothesis-tester` · `research-pipeline` · `research-reporter` · `research-synthesizer` · `source-scorer` · `blogwatcher` · `rss-digest` · `doc-reader` · `doc-verifier` · `economic-data-collector` · `fundamental-research-engine` · `opportunity-scanner` · `macro-briefing`
-
-### System
-`watchdog` · `system-admin` · `backup-restore` · `systemd-manager` · `ssh-remote` · `healthcheck` · `cron-dashboard` · `tmux` · `nginx-caddy` · `cloud-deploy` · `secret-vault` · `secrets-manager`
-
-### Communication
-`ntfy` · `slack` · `discord` · `email-manager` · `himalaya` · `imsg` · `bluebubbles` · `wacli`
-
-### Data
-`sql-query` · `data-pipeline` · `data-pad` · `visualize` · `data-validator` · `schema-analyzer` · `seed-data` · `database`
-
-### Writing & Documentation
-`doc-generator` · `latex-doc` · `project-brief` · `summarize` · `draft-queue` · `knowledge-base` · `knowledge-graph` · `prompt-library` · `adr-manager`
-
-### Trading & Finance
-`market-monitor` · `technical-analysis-engine` · `market-data-engine` · `meta-analyst` · `sector-rotation` · `sentiment-engine` · `cre-due-diligence` · `ordercli` · `opportunity-scanner`
-
-### Media & AI
-`openai-image-gen` · `openai-whisper` · `openai-whisper-api` · `gemini` · `sag` · `video-frames` · `gifgrep` · `ocr-document` · `media-fetch` · `nano-pdf` · `nano-banana-pro` · `website-screenshot` · `camsnap` · `peekaboo` · `visual-review`
-
-### Productivity & Notes
-`apple-notes` · `apple-reminders` · `bear-notes` · `obsidian` · `notion` · `trello` · `kanban-agent` · `calendar-manager` · `things-mac` · `shared-clipboard` · `task-queue` · `scheduler` · `event-log` · `session-logs`
-
-### Home & IoT
-`openhue` · `sonoscli` · `spotify-player` · `food-order` · `goplaces`
-
-### Meta & Tooling
-`self-skill` · `skill-creator` · `model-router` · `model-usage` · `mcporter` · `mcp-hub` · `clawhub` · `canvas` · `voice-call` · `webhook-receiver` · `cost-optimizer` · `oracle`
+Regenerate it any time the skill set changes with `bash scripts/skill-index.sh`.
 
 ---
 
@@ -203,7 +262,7 @@ curl -s "wttr.in/LOCATION?format=v2"
 curl -s "wttr.in/LOCATION?format=j1"
 \`\`\`
 
-Default location: **Oslo** (Aksel's location)
+Default location: **Oslo** (the user's location)
 
 Format the response naturally — don't dump raw output.
 ```

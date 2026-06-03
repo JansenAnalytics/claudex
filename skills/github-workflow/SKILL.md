@@ -1,6 +1,9 @@
 ---
 name: github-workflow
 description: Git and GitHub operations — clone, branch, commit, push, PRs, issues, CI status. Use for any git or GitHub task.
+category: development
+maturity: stable
+tags: [gh-cli, git, pull-requests, issues, ci-status]
 ---
 
 # GitHub Workflow

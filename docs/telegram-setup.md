@@ -188,7 +188,7 @@ The file structure looks like this:
 
 ```json
 {
-  "allowFrom": ["687053516"],
+  "allowFrom": ["<your-telegram-user-id>"],
   "policy": "allowlist"
 }
 ```

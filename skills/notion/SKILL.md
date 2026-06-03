@@ -7,6 +7,9 @@ metadata:
     "openclaw":
       { "emoji": "📝", "requires": { "env": ["NOTION_API_KEY"] }, "primaryEnv": "NOTION_API_KEY" },
   }
+category: productivity
+maturity: stable
+tags: [notion-api, pages, databases, blocks, data-sources]
 ---
 
 # notion

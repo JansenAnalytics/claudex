@@ -1,6 +1,9 @@
 ---
 name: ssh-remote
 description: "SSH into remote servers, execute commands, transfer files via SCP/rsync, manage SSH keys and configs, tunnel ports."
+category: system
+maturity: stable
+tags: [ssh, scp, rsync, tunnels, key-management]
 ---
 
 # ssh-remote

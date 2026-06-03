@@ -27,6 +27,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [gif-search, tenor, giphy, download, frame-extraction]
 ---
 
 # gifgrep

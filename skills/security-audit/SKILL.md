@@ -1,6 +1,9 @@
 ---
 name: security-audit
 description: "Security auditing: vulnerability scanning, dependency checking, port scanning, permission review. Use when: auditing project security, scanning for CVEs in dependencies, checking open ports, review..."
+category: security
+maturity: stable
+tags: [vulnerability-scan, port-scan, dependency-audit, permission-audit, http-headers]
 ---
 
 # security-audit

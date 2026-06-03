@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/economic-data-collector/scripts"
+description: "Collects and queries macroeconomic data — yield curves, central bank policy rates, forex rate differentials, FRED US economic indicators (CPI, GDP, NFP, unemployment), and the economic calendar. Use when fetching, storing, or querying interest rates, bond yields, rate diffs, or economic releases for trading and forex analysis."
 name: economic-data-collector
 triggers:
   - economic data
@@ -8,6 +8,9 @@ triggers:
   - central bank rates
   - FRED data
   - economic calendar
+category: trading-finance
+maturity: stable
+tags: [fred, yield-curve, central-bank-rates, rate-differentials, forex]
 ---
 
 # Economic Data Collector
@@ -15,7 +18,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/economic-data-collector/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/economic-data-collector/scripts
 
 # Collect yield curves (US + major economies)
 python3 $SKILL/collect-yields.py --n-bars 60

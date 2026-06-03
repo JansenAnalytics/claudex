@@ -8,6 +8,9 @@ triggers:
   - flow test
   - user journey
   - integration test
+category: frontend
+maturity: stable
+tags: [playwright, e2e, user-journeys, browser-automation, screenshots]
 ---
 
 # flow-tester — End-to-End User Journey Tester
@@ -118,5 +121,4 @@ Results go to `~/.flow-tester/results/<timestamp>/`:
 
 ## Dependencies
 
-- `playwright-core` (from ~/openclaw/node_modules/)
-- Chromium at `/usr/bin/chromium-browser`
+- `playwright-core` + a Chromium binary — see INSTALL.md for setup

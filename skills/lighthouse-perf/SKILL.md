@@ -1,6 +1,9 @@
 ---
 name: lighthouse-perf
 description: "Run performance audits on web pages: Lighthouse scores, Core Web Vitals, resource analysis, bundle size tracking, performance budgets."
+category: frontend
+maturity: stable
+tags: [lighthouse, core-web-vitals, performance-budget, resource-analysis, web-page]
 ---
 
 # lighthouse-perf

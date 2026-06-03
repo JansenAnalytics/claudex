@@ -1,6 +1,9 @@
 ---
 name: data-pipeline
 description: "ETL and data transformation: CSV, JSON, Parquet, NDJSON processing with filtering, mapping, joining, aggregating."
+category: data
+maturity: stable
+tags: [etl, csv, parquet, ndjson, transform]
 ---
 
 # data-pipeline

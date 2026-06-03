@@ -1,11 +1,14 @@
 ---
 name: hypothesis-tester
 description: Hypothesis Tester Skill
+category: research
+maturity: stable
+tags: [debate, tradeoff-analysis, subagents, synthesis, decision-support]
 ---
 
 # Hypothesis Tester Skill
 
-Use when: Aksel asks an analytical question with multiple valid answers, tradeoffs between options, or when you want to avoid confirmation bias in your analysis.
+Use when: the user asks an analytical question with multiple valid answers, tradeoffs between options, or when you want to avoid confirmation bias in your analysis.
 
 Trigger phrases: "which is better", "compare options", "what's the risk", "tradeoffs", "should we", "evaluate", "debate"
 
@@ -14,7 +17,7 @@ Trigger phrases: "which is better", "compare options", "what's the risk", "trade
 ### 1. Create debate session
 
 ```bash
-node /home/ajans/projects/hypothesis-tester/new-debate.cjs \
+node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/new-debate.cjs \
   --question "Full question here" \
   --positions "option-a,option-b,option-c" \
   [--context "Relevant context: metrics, constraints, goals"]
@@ -24,7 +27,7 @@ node /home/ajans/projects/hypothesis-tester/new-debate.cjs \
 
 Read the output from step 1. For each position:
 
-- Read the prompt file content: `cat /home/ajans/projects/hypothesis-tester/sessions/<id>/prompt-<position>.md`
+- Read the prompt file content: `cat ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/sessions/<id>/prompt-<position>.md`
 - Use the subagent spawning mechanism with that content as the task
 - Sub-agent will write its analysis to the output file automatically
 
@@ -41,18 +44,18 @@ subagents.spawn(
 ### 3. After all sub-agents complete, synthesize
 
 ```bash
-node /home/ajans/projects/hypothesis-tester/synthesize.cjs --session <id> --send
+node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/synthesize.cjs --session <id> --send
 ```
 
 ## Commands
 
 | Command                                                                                                       | Purpose                       |
 | ------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `node /home/ajans/projects/hypothesis-tester/new-debate.cjs --question "..." --positions "a,b,c"`             | Start a new debate            |
-| `node /home/ajans/projects/hypothesis-tester/list-debates.cjs`                                                | List all sessions             |
-| `node /home/ajans/projects/hypothesis-tester/synthesize.cjs --session <id>`                                   | Synthesize results            |
-| `node /home/ajans/projects/hypothesis-tester/synthesize.cjs --session <id> --send`                            | Synthesize + send to Telegram |
-| `node /home/ajans/projects/hypothesis-tester/add-position.cjs --session <id> --position <slug> --file <path>` | Manually add a position       |
+| `node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/new-debate.cjs --question "..." --positions "a,b,c"`             | Start a new debate            |
+| `node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/list-debates.cjs`                                                | List all sessions             |
+| `node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/synthesize.cjs --session <id>`                                   | Synthesize results            |
+| `node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/synthesize.cjs --session <id> --send`                            | Synthesize + send to Telegram |
+| `node ${HYPOTHESIS_TESTER_HOME:-$HOME/projects/hypothesis-tester}/add-position.cjs --session <id> --position <slug> --file <path>` | Manually add a position       |
 
 ## Reports saved to
 

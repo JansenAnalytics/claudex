@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/ocr-document/scripts"
+description: "Extracts text and tables from PDFs and images using PyMuPDF, pdfplumber, and Tesseract OCR (Norwegian/English), with auto/text/ocr/hybrid methods and page selection. Use when reading, OCR-ing, or extracting text/tables from a PDF, scanned document, or image."
 name: ocr-document
 triggers:
   - PDF
@@ -8,6 +8,9 @@ triggers:
   - extract text
   - scan
   - read document
+category: media
+maturity: stable
+tags: [ocr, tesseract, pdf-extraction, pymupdf, norwegian]
 ---
 
 # OCR Document Skill
@@ -15,7 +18,7 @@ triggers:
 ## Extract text from PDF/image
 
 ```bash
-SKILL=~/openclaw/skills/ocr-document/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/ocr-document/scripts
 
 # Auto-detect best method (text vs OCR)
 python3 $SKILL/extract.py document.pdf
@@ -43,7 +46,7 @@ python3 $SKILL/extract.py photo.jpg --lang nor+eng
 python3 $SKILL/telegram_file.py --file-id <id> --output file.pdf
 
 # Get most recent document from a chat
-python3 $SKILL/telegram_file.py --chat-id 687053516 --recent --output file.pdf
+python3 $SKILL/telegram_file.py --chat-id <your-telegram-user-id> --recent --output file.pdf
 ```
 
 ## Methods

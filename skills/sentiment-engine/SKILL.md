@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/sentiment-engine/scripts"
+description: "Collects and queries market sentiment data — Myfxbook retail long/short forex positioning, CFTC COT institutional net positions, and crypto/equity Fear & Greed indices — for contrarian trading signals. Use when analyzing retail positioning, COT data, fear and greed, sentiment extremes, or contrarian setups for forex, metals, energy, or crypto."
 name: sentiment-engine
 triggers:
   - sentiment
@@ -7,6 +7,9 @@ triggers:
   - COT data
   - fear greed
   - positioning
+category: trading-finance
+maturity: stable
+tags: [cot, myfxbook, fear-greed, retail-positioning, contrarian]
 ---
 
 # Sentiment Engine
@@ -14,7 +17,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/sentiment-engine/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/sentiment-engine/scripts
 
 # Retail sentiment (Myfxbook — 54 forex pairs)
 python3 $SKILL/collect-retail.py

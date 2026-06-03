@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: meta
+maturity: stable
+tags: [mcp, cli, stdio, oauth, codegen]
 ---
 
 # mcporter

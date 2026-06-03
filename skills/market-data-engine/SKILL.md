@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/market-data-engine/scripts"
+description: "Collects and queries financial market data (OHLCV bars, price snapshots, currency strength rankings) for forex, currency indices, equity indices, metals, energy, and crypto via yfinance and TradingView into a SQLite database. Use when fetching prices, collecting/backfilling market or OHLCV data, computing currency strength, or querying stored quotes across timeframes (1m to weekly)."
 name: market-data-engine
 triggers:
   - market data
@@ -7,6 +7,9 @@ triggers:
   - currency strength
   - collect data
   - fetch prices
+category: trading-finance
+maturity: stable
+tags: [forex, ohlcv, yfinance, currency-strength, sqlite]
 ---
 
 # Market Data Engine
@@ -14,7 +17,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/market-data-engine/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/market-data-engine/scripts
 
 # Collect daily data for all instruments
 python3 $SKILL/collect.py --interval 1d

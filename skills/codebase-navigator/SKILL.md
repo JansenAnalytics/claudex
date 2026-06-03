@@ -1,6 +1,9 @@
 ---
 name: codebase-navigator
 description: "Rapidly understand any codebase: identify entry points, map architecture, find key patterns, summarize modules, trace data flow."
+category: development
+maturity: stable
+tags: [code-navigation, dependency-map, entry-points, ripgrep, data-flow-trace]
 ---
 
 # codebase-navigator

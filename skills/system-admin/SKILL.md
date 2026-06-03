@@ -1,6 +1,9 @@
 ---
 name: system-admin
 description: System administration — manage services, processes, cron, systemd, networking. Use for any sysadmin task.
+category: system
+maturity: stable
+tags: [systemd, cron, process-management, networking, journalctl]
 ---
 
 # System Administration

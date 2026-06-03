@@ -1,0 +1,151 @@
+\documentclass[11pt,a4paper]{article}
+
+% ── Core ──────────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Adventor}
+\setmonofont{TeX Gyre Cursor}
+\usepackage[english]{babel}
+\usepackage{microtype}
+
+% ── Page layout ───────────────────────────────────────────────────────────────
+\usepackage[a4paper, top=25mm, bottom=25mm, left=28mm, right=28mm]{geometry}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.6em}
+\usepackage{setspace}
+\setstretch{1.3}
+
+% ── Colour palette ────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1A1A2E}
+\definecolor{accentlight}{HTML}{16213E}
+\definecolor{rulecol}{HTML}{CCCCCC}
+\definecolor{codelightbg}{HTML}{F5F5F5}
+
+% ── Section styling ───────────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries\sffamily\color{accent}}{}{0em}{}[\color{rulecol}\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\sffamily\color{accentlight}}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\itshape\sffamily}{}{0em}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+% ── Headers & footers ─────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{gray} $if(title)$$title$$endif$}
+\fancyhead[R]{\small\sffamily\color{gray} $if(date)$$date$$endif$}
+\fancyfoot[C]{\small\sffamily\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ── Math ──────────────────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb,amsthm,bm,mathtools}
+
+% ── Images ────────────────────────────────────────────────────────────────────
+\usepackage{graphicx,float,wrapfig,caption,subcaption}
+\usepackage[export]{adjustbox}
+% Auto-clamp ALL \includegraphics calls to text width — prevents figures bleeding off-page.
+% Wraps every call so even bare \includegraphics{path} (pandoc output) is safe.
+\let\OrigIncludeGraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \OrigIncludeGraphics[max width=\linewidth, max totalheight=0.85\textheight, keepaspectratio, #1]{#2}%
+}
+\captionsetup{font=small,labelfont=bf}
+
+% ── Tables ────────────────────────────────────────────────────────────────────
+\usepackage{booktabs,longtable,array,multirow}
+
+% ── Code ──────────────────────────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=tb,
+  backgroundcolor=\color{codelightbg},
+  rulecolor=\color{rulecol},
+  aboveskip=8pt, belowskip=8pt,
+}
+
+% ── Links ─────────────────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=accent,citecolor=accent,urlcolor=accent}
+
+% ── Bibliography ──────────────────────────────────────────────────────────────
+\usepackage[backend=biber,style=apa,urldate=short]{biblatex}
+$if(bibliography)$
+\addbibresource{$bibliography$}
+$endif$
+
+% ── Enumeration ───────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist{topsep=2pt,itemsep=2pt,parsep=0pt}
+
+% ── Pandoc compatibility ───────────────────────────────────────────────────────
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% ── Syntax highlighting (pandoc-generated) ─────────────────────────────────────
+$highlighting-macros$
+
+% ── TikZ ─────────────────────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+\pagenumbering{arabic}
+
+% ── Cover block ───────────────────────────────────────────────────────────────
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[accent] (current page.north west) rectangle ([yshift=-52mm]current page.north east);
+\end{tikzpicture}
+
+\vspace*{14mm}
+$if(logo)$
+\begin{flushright}
+\includegraphics[height=14mm]{$logo$}
+\end{flushright}
+$endif$
+
+\vspace{10mm}
+{\fontsize{26}{32}\selectfont\bfseries\sffamily\color{white} $title$\par}
+\vspace{4mm}
+$if(subtitle)$
+{\large\sffamily\color{white!80!accent} $subtitle$\par}
+\vspace{4mm}
+$endif$
+{\normalsize\sffamily\color{white!70!accent}
+$for(author)$$author$$sep$ \textbullet{} $endfor$
+\hfill $if(date)$$date$$else$\today$endif$}
+
+\vspace{20mm}
+
+% ── Abstract ─────────────────────────────────────────────────────────────────
+$if(abstract)$
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\small\setstretch{1.2}
+\textbf{Abstract.} $abstract$
+\end{minipage}}
+\end{center}
+\vspace{6mm}
+$endif$
+
+% ── TOC (optional) ───────────────────────────────────────────────────────────
+$if(toc)$
+\tableofcontents
+\newpage
+$endif$
+
+% ── Body ─────────────────────────────────────────────────────────────────────
+$body$
+
+% ── Bibliography ─────────────────────────────────────────────────────────────
+$if(bibliography)$
+\printbibliography[heading=bibintoc,title={References}]
+$endif$
+
+\end{document}

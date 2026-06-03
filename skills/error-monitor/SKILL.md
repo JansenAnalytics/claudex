@@ -1,6 +1,9 @@
 ---
 name: error-monitor
 description: "Monitor application logs and stderr in real-time for errors, crashes, and exceptions. Auto-capture stack traces, alert on new error patterns, track error rates."
+category: system
+maturity: stable
+tags: [log-monitoring, stack-traces, crash-reports, error-rates, stderr]
 ---
 
 # error-monitor

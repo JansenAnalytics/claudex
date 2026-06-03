@@ -1,6 +1,9 @@
 ---
 name: deep-research
 description: Conduct thorough multi-source research on any topic. Use when the user needs in-depth analysis, comparison, or investigation of a subject.
+category: research
+maturity: beta
+tags: [multi-source, web-search, wikipedia, synthesis, cross-reference]
 ---
 
 # Deep Research Skill

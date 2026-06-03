@@ -6,6 +6,9 @@ description: "[TODO: 1-2 sentences explaining what this skill enables]"
     file types,
     or tasks that trigger it.,
   ]
+category: research
+maturity: experimental
+tags: [research, pipeline, template-stub, synthesis, multi-source]
 ---
 
 # Research Pipeline

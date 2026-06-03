@@ -14,13 +14,16 @@ triggers:
   - podcast
   - search youtube
   - watch this
+category: media
+maturity: stable
+tags: [yt-dlp, ffmpeg, whisper, transcription, youtube]
 ---
 
 # Media Fetch
 
 Download, extract, and transcribe media from 1000+ sites. Built on yt-dlp + ffmpeg + Whisper.
 
-**Scripts:** `~/openclaw/skills/media-fetch/scripts/`
+**Scripts:** `${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/media-fetch/scripts/`
 **Downloads:** `~/.media-fetch/downloads/`
 **Transcripts:** `~/.media-fetch/transcripts/`
 **Metadata:** `~/.media-fetch/metadata/`
@@ -28,7 +31,7 @@ Download, extract, and transcribe media from 1000+ sites. Built on yt-dlp + ffmp
 ## Quick Reference
 
 ```bash
-S=~/openclaw/skills/media-fetch/scripts
+S=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/media-fetch/scripts
 
 # Download video (best quality)
 python3 $S/fetch.py URL
@@ -115,7 +118,7 @@ Transcription methods (in `--transcribe-method`):
 ```bash
 python3 fetch.py --search "forex trading NFP strategy"
 python3 fetch.py --search "react server components tutorial"
-python3 fetch.py --search "prop firm funded account" --json
+python3 fetch.py --search "home espresso machine review" --json
 ```
 
 ### Clip Extraction

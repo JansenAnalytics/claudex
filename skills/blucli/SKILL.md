@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: beta
+tags: [bluos, bluesound, audio-playback, speaker-control, tunein]
 ---
 
 # blucli (blu)

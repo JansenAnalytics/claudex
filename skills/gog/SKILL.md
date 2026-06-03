@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [google-workspace, gmail, calendar, drive, sheets]
 ---
 
 # gog

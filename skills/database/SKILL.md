@@ -1,6 +1,9 @@
 ---
 name: database
 description: "Manage PostgreSQL, SQLite, and Redis databases: create, migrate, backup, restore, query, optimize."
+category: backend
+maturity: stable
+tags: [postgresql, sqlite, redis, migration, backup]
 ---
 
 # database

@@ -7,6 +7,9 @@ triggers:
   - track event
   - meta analysis
   - self-improvement report
+category: meta
+maturity: stable
+tags: [session-analysis, self-reflection, efficiency-report, event-tracking, patterns]
 ---
 
 # Meta-Analyst
@@ -17,26 +20,26 @@ Self-reflection skill that analyzes your session logs, tracks events, and produc
 
 ### Track an event
 ```bash
-node ~/openclaw/skills/meta-analyst/scripts/track.cjs <type> "message" [--category CAT] [--duration DUR] [--source SRC]
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/track.cjs <type> "message" [--category CAT] [--duration DUR] [--source SRC]
 ```
 Types: `error`, `success`, `retry`, `improvement`, `lesson`
 
 Examples:
 ```bash
-node ~/openclaw/skills/meta-analyst/scripts/track.cjs error "cloudscraper failed" --category scraping
-node ~/openclaw/skills/meta-analyst/scripts/track.cjs success "built kanban skill" --duration 45m --category skill-building
-node ~/openclaw/skills/meta-analyst/scripts/track.cjs retry "web_search failed, used searxng" --category search
-node ~/openclaw/skills/meta-analyst/scripts/track.cjs lesson "always verify sub-agent output" --category workflow
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/track.cjs error "cloudscraper failed" --category scraping
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/track.cjs success "built kanban skill" --duration 45m --category skill-building
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/track.cjs retry "web_search failed, used searxng" --category search
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/track.cjs lesson "always verify sub-agent output" --category workflow
 ```
 
 ### Generate a report
 ```bash
-node ~/openclaw/skills/meta-analyst/scripts/report.cjs [--period week|month|all] [--format markdown|json] [--out-file PATH]
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/report.cjs [--period week|month|all] [--format markdown|json] [--out-file PATH]
 ```
 
 ### Raw analysis (JSON)
 ```bash
-node ~/openclaw/skills/meta-analyst/scripts/analyze.cjs [--period week|month|all]
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/meta-analyst/scripts/analyze.cjs [--period week|month|all]
 ```
 
 ## Data Sources

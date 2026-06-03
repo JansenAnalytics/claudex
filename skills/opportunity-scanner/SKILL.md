@@ -1,11 +1,14 @@
 ---
-description: "SKILL=~/openclaw/skills/opportunity-scanner/scripts"
+description: "Scans markets across technical, fundamental, macro, and sentiment engines to surface high-conviction trade opportunities with conviction scores and Telegram alerts. Use when asked to scan for opportunities, find trade setups, get a trade alert, decide what to trade, or schedule recurring pre-market opportunity scans via cron."
 name: opportunity-scanner
 triggers:
   - scan opportunities
   - trade alert
   - what should I trade
   - opportunity
+category: trading-finance
+maturity: stable
+tags: [trade-scanner, opportunity-scan, market-signals, conviction-score, cron]
 ---
 
 # Opportunity Scanner
@@ -13,7 +16,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/opportunity-scanner/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/opportunity-scanner/scripts
 
 # Full scan with Telegram output
 python3 $SKILL/scan.py --telegram
@@ -33,10 +36,10 @@ python3 $SKILL/scan.py --json
 For daily scans before market sessions:
 ```bash
 # Europe open (07:00 CET)
-0 6 * * 1-5 cd ~/openclaw/skills/opportunity-scanner && python3 scripts/scan.py --refresh --telegram > /tmp/scan.txt 2>/dev/null
+0 6 * * 1-5 cd ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/opportunity-scanner && python3 scripts/scan.py --refresh --telegram > /tmp/scan.txt 2>/dev/null
 
 # US open (14:30 CET)  
-30 13 * * 1-5 cd ~/openclaw/skills/opportunity-scanner && python3 scripts/scan.py --telegram > /tmp/scan.txt 2>/dev/null
+30 13 * * 1-5 cd ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/opportunity-scanner && python3 scripts/scan.py --telegram > /tmp/scan.txt 2>/dev/null
 ```
 
 ## Depends On

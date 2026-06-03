@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: stable
+tags: [philips-hue, lights, scenes, smart-home, brightness]
 ---
 
 # OpenHue CLI

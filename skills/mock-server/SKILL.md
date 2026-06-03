@@ -1,6 +1,9 @@
 ---
 name: mock-server
 description: "Spin up mock API servers for frontend development and testing: static responses, record/replay real API calls, dynamic response generation."
+category: backend
+maturity: stable
+tags: [mock-api, record-replay, openapi, rest, stubbing]
 ---
 
 # mock-server

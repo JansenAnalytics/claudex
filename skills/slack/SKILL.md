@@ -2,6 +2,9 @@
 name: slack
 description: Use when you need to control Slack from OpenClaw via the slack tool, including reacting to messages or pinning/unpinning items in Slack channels or DMs.
 metadata: { "openclaw": { "emoji": "💬", "requires": { "config": ["channels.slack"] } } }
+category: comms
+maturity: stable
+tags: [slack, messaging, reactions, pins, bot-token]
 ---
 
 # Slack Actions

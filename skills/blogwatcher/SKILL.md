@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: research
+maturity: beta
+tags: [rss, atom, feed-monitoring, blogs, updates]
 ---
 
 # blogwatcher

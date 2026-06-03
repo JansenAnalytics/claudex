@@ -1,6 +1,9 @@
 ---
 name: systemd-manager
 description: Systemd Manager Skill
+category: system
+maturity: stable
+tags: [systemd, timers, journalctl, unit-files, daemons]
 ---
 
 # Systemd Manager Skill

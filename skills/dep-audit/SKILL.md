@@ -1,6 +1,9 @@
 ---
 name: dep-audit
 description: "Audit and update project dependencies: find outdated packages, check for vulnerabilities, auto-update safely with lockfile regeneration."
+category: development
+maturity: stable
+tags: [dependencies, npm, pip, lockfile, outdated]
 ---
 
 # dep-audit

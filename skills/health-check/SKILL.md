@@ -1,6 +1,9 @@
 ---
 name: health-check
 description: Quick system health check — services, disk, memory, processes. Use for periodic health monitoring.
+category: system
+maturity: beta
+tags: [disk, memory, systemd, load-average, monitoring]
 ---
 
 # Health Check

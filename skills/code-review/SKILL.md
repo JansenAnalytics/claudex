@@ -1,6 +1,9 @@
 ---
 name: code-review
 description: Review code for bugs, improvements, and best practices. Use when asked to review a file, PR, or codebase.
+category: development
+maturity: beta
+tags: [pr-review, gh-cli, code-quality, bug-detection, review-checklist]
 ---
 
 # Code Review

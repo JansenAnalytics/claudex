@@ -8,6 +8,9 @@ triggers:
   - test coverage
   - mutation testing
   - test critic
+category: development
+maturity: stable
+tags: [test-quality, mutation-testing, coverage, jest, pytest]
 ---
 
 # test-critic
@@ -24,11 +27,11 @@ test-critic /path/to/project --full
 test-critic /path/to/project --quick
 
 # Individual scripts
-node ~/openclaw/skills/test-critic/scripts/coverage.cjs /path/to/project
-node ~/openclaw/skills/test-critic/scripts/gaps.cjs /path/to/project
-node ~/openclaw/skills/test-critic/scripts/quality.cjs /path/to/project
-node ~/openclaw/skills/test-critic/scripts/mutate.cjs /path/to/project --limit 50
-node ~/openclaw/skills/test-critic/scripts/report.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/test-critic/scripts/coverage.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/test-critic/scripts/gaps.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/test-critic/scripts/quality.cjs /path/to/project
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/test-critic/scripts/mutate.cjs /path/to/project --limit 50
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/test-critic/scripts/report.cjs /path/to/project
 ```
 
 ## Options

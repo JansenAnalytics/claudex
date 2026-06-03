@@ -1,6 +1,9 @@
 ---
 name: memory-search
 description: Semantic memory search across all agent memories and conversation history. Use BEFORE answering questions about prior work, decisions, dates, people, preferences, projects, or past conversations. Also use when asked "do you remember", "what did we discuss", "when did we", etc.
+category: meta
+maturity: stable
+tags: [semantic-search, rag, embeddings, cross-agent, vector]
 ---
 
 # Memory Search — Semantic RAG
@@ -16,7 +19,7 @@ You have a vector memory search system that indexes:
 - Prior work, decisions, or conversations
 - Dates, timelines, project history
 - People, preferences, or context from past sessions
-- Anything Aksel says "remember" or "we discussed"
+- Anything the user says "remember" or "we discussed"
 - Cross-agent context ("what has Argus been working on?")
 
 ## How to Search

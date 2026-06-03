@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/technical-analysis-engine/scripts"
+description: "Computes technical indicators (RSI, MACD, EMA, Bollinger Bands, ATR, Stochastic), scans forex/instruments for trade setups (momentum, reversal, squeeze, trend-pullback), and analyzes market structure (BOS/CHoCH, support/resistance, order blocks, fair value gaps, regime). Use when doing technical analysis, screening for setups, swing trades, multi-timeframe analysis, or checking indicators on a ticker."
 name: technical-analysis-engine
 triggers:
   - technical analysis
@@ -9,6 +9,9 @@ triggers:
   - squeeze
   - setup
   - swing trade
+category: trading-finance
+maturity: stable
+tags: [technical-analysis, indicators, forex, screener, market-structure]
 ---
 
 # Technical Analysis Engine
@@ -16,7 +19,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/technical-analysis-engine/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/technical-analysis-engine/scripts
 
 # Full analysis on any instrument
 python3 $SKILL/analyze.py EURUSD

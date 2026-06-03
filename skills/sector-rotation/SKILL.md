@@ -1,6 +1,9 @@
 ---
 description: "cd /path/to/sector-rotation"
 name: sector-rotation
+category: trading-finance
+maturity: stable
+tags: [relative-strength, yfinance, business-cycle, money-flow, etf]
 ---
 
 # Sector Rotation Tracker

@@ -12,19 +12,22 @@ triggers:
   - stale docs
   - doc health
   - documentation completeness
+category: research
+maturity: stable
+tags: [doc-validation, link-check, freshness, completeness-score, example-runner]
 ---
 
 # Doc Verifier
 
 Catches documentation rot before users hit it. Validates everything: code examples actually run, links resolve, API docs match reality, CLI flags exist, and docs stay fresh.
 
-**Scripts:** `~/openclaw/skills/doc-verifier/scripts/`
+**Scripts:** `${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/doc-verifier/scripts/`
 **Binary:** `~/bin/doc-verifier`
 
 ## Quick Reference
 
 ```bash
-S=~/openclaw/skills/doc-verifier/scripts
+S=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/doc-verifier/scripts
 
 # Full review of a project
 doc-verifier ~/my-project

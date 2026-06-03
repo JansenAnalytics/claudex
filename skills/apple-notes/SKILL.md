@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: productivity
+maturity: stable
+tags: [apple-notes, memo-cli, macos, note-taking, export]
 ---
 
 # Apple Notes CLI

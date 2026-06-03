@@ -1,6 +1,9 @@
 ---
 name: doc-generator
 description: "Auto-generate documentation from code: README files, JSDoc comments, API docs. Scans project structure, detects frameworks, and produces ready-to-use documentation."
+category: development
+maturity: stable
+tags: [readme, jsdoc, api-docs, code-scanning, documentation]
 ---
 
 # doc-generator

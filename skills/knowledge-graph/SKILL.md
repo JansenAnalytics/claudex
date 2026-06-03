@@ -11,6 +11,9 @@ triggers:
   - design decision
   - link this to
   - what superseded
+category: writing
+maturity: stable
+tags: [entity-relationship, sqlite, fts5, path-finding, graph]
 ---
 
 # Knowledge Graph Skill
@@ -19,12 +22,12 @@ triggers:
 
 SQLite-backed entity-relationship store. Entities (people, projects, decisions, tools, rules) connected by typed relations (decided-by, depends-on, supersedes, etc.). Full-text search, path finding, timeline, and auto-ingestion from markdown files.
 
-**Why this over flat files**: "What sizing rules did Aksel decide for prop-hedge?" → one query returns the decision, who made it, when, what it superseded, and what it relates to. With flat files, that's 5 greps across MEMORY.md and daily logs.
+**Why this over flat files**: "Which database did we choose for web-platform, who decided it, and what did it supersede?" → one query returns the decision, who made it, when, what it superseded, and what it relates to. With flat files, that's 5 greps across MEMORY.md and daily logs.
 
 ## Script
 
 ```bash
-KG=~/openclaw/skills/knowledge-graph/scripts/kg.cjs
+KG=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/knowledge-graph/scripts/kg.cjs
 node $KG <command> [args]
 ```
 
@@ -32,11 +35,11 @@ node $KG <command> [args]
 
 | Type | Emoji | Use For |
 |------|-------|---------|
-| `person` | 👤 | People (Aksel, Poe, Kite) |
-| `project` | 📁 | Projects (prop-hedge-agents, BrewBoard) |
+| `person` | 👤 | People (the tech lead, a teammate) |
+| `project` | 📁 | Projects (web-platform, mobile-app) |
 | `decision` | ⚖️ | Design decisions, choices made |
 | `tool` | 🔧 | Tools, services, libraries |
-| `account` | 💰 | API accounts, trading accounts, credentials |
+| `account` | 💰 | API accounts, service accounts, credentials |
 | `concept` | 💡 | Ideas, concepts, mental models |
 | `rule` | 📏 | Rules, constraints, invariants |
 | `event` | 📅 | Events, meetings, incidents |
@@ -70,46 +73,46 @@ node $KG <command> [args]
 
 ```bash
 # Add entities
-node $KG add decision "Funded account always 0.5x base" \
-  --desc "Funded ALWAYS trades at 0.5x in P2vF" \
-  --tags "sizing,fundamental" \
+node $KG add decision "Use Postgres for primary store" \
+  --desc "Chosen over SQLite for concurrent writes in production" \
+  --tags "architecture,database" \
   --date 2026-03-02 \
-  --source "DESIGN.md:§4"
+  --source "ADR-012"
 
-node $KG add project "prop-hedge-agents" --desc "Multi-account hedge strategy" --tags "trading"
-node $KG add person "Aksel" --desc "Product owner" --tags "human"
+node $KG add project "web-platform" --desc "Customer-facing web app" --tags "product"
+node $KG add person "Maintainer" --desc "Tech lead" --tags "human"
 
 # Link entities
-node $KG link "Funded account always 0.5x base" decided-by Aksel --note "Fundamental rule"
-node $KG link "Funded account always 0.5x base" belongs-to prop-hedge-agents
+node $KG link "Use Postgres for primary store" decided-by Maintainer --note "Architecture call"
+node $KG link "Use Postgres for primary store" belongs-to web-platform
 
 # Supersede (auto-marks old as superseded)
-node $KG add decision "SL_FRACTION 0.25%" --desc "Tighter stops" --date 2026-03-05
-node $KG link "SL_FRACTION 0.25%" supersedes "SL_FRACTION 0.50%"
-# → SL_FRACTION 0.50% automatically marked 🔴 superseded
+node $KG add decision "Cache layer: Redis" --desc "Add a caching tier" --date 2026-03-05
+node $KG link "Cache layer: Redis" supersedes "Cache layer: in-process"
+# → "Cache layer: in-process" automatically marked 🔴 superseded
 ```
 
 ### Querying
 
 ```bash
 # Full-text search (uses FTS5 — fast and fuzzy)
-node $KG search "funded account sizing" --related
-node $KG search "sizing" --type decision --limit 10
+node $KG search "database choice" --related
+node $KG search "cache" --type decision --limit 10
 
 # Show entity with all relations + history
-node $KG show "prop-hedge-agents" --depth 2
+node $KG show "web-platform" --depth 2
 
 # Find all related entities
-node $KG related Aksel --depth 2 --type decision
+node $KG related Maintainer --depth 2 --type decision
 
 # Find path between two entities (BFS shortest path)
-node $KG path SearXNG "Funded account always 0.5x base"
+node $KG path Redis "Use Postgres for primary store"
 
 # Timeline of dated entities
-node $KG timeline --type decision --project prop-hedge-agents
+node $KG timeline --type decision --project web-platform
 
 # List by type/tag/date
-node $KG list --type decision --tag sizing
+node $KG list --type decision --tag database
 node $KG list --since 2026-03-01
 ```
 
@@ -117,10 +120,10 @@ node $KG list --since 2026-03-01
 
 ```bash
 # Update entity
-node $KG update "SL_FRACTION 0.25%" --status superseded --desc "Now using 0.20%"
+node $KG update "Cache layer: Redis" --status superseded --desc "Now using Memcached"
 
 # Merge duplicate entities (keeps all relations)
-node $KG merge "prop-hedge" "prop-hedge-agents"
+node $KG merge "web platform" "web-platform"
 
 # Delete
 node $KG delete 42
@@ -158,7 +161,7 @@ node $KG stats   # Entity/relation counts, most connected nodes, recent updates
 ### When to add knowledge
 
 **Immediately** when:
-- Aksel makes a design decision → `add decision` + `link decided-by Aksel` + `link belongs-to <project>`
+- The team makes a design decision → `add decision` + `link decided-by <person>` + `link belongs-to <project>`
 - A new rule/constraint is established → `add rule`
 - Something supersedes an old decision → `link X supersedes Y`
 - A new tool/service is set up → `add tool` + `link implements <decision>`

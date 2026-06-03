@@ -1,6 +1,9 @@
 ---
 name: log-analyzer
 description: "Parse and analyze application logs: pattern matching, error extraction, correlation with timestamps, frequency analysis, anomaly detection. Use when: diagnosing production issues, finding error pat..."
+category: system
+maturity: stable
+tags: [log-parsing, error-aggregation, anomaly-detection, correlation, syslog]
 ---
 
 # log-analyzer

@@ -1,6 +1,9 @@
 ---
 name: project-scaffold
 description: "Scaffold new projects from templates: Node.js, Python, React, API server, CLI tool, monorepo."
+category: development
+maturity: stable
+tags: [scaffolding, boilerplate, templates, config-generation, project-setup]
 ---
 
 # project-scaffold

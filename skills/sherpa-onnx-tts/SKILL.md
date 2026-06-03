@@ -55,6 +55,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [tts, text-to-speech, offline, onnx, piper]
 ---
 
 # sherpa-onnx-tts

@@ -1,6 +1,9 @@
 ---
 name: api-tester
 description: "Systematic REST and GraphQL API endpoint testing: happy path, error cases, auth flows, rate limits, schema validation. Use when: testing backend APIs, validating endpoint responses, checking error ..."
+category: backend
+maturity: stable
+tags: [rest-api, graphql, endpoint-testing, auth-flows, schema-validation]
 ---
 
 # api-tester

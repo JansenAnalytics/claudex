@@ -1,6 +1,9 @@
 ---
 name: website-screenshot
 description: Take a headless Chromium screenshot of any URL and send/save the result. Use when the user asks for a screenshot, snapshot, or visual of a website, webpage, or URL — including requests like "show me what X looks like", "capture the homepage of Y", or "screenshot this URL". Supports viewport vs full-page, mobile emulation, dark mode, and configurable wait strategies.
+category: media
+maturity: stable
+tags: [playwright, chromium, headless, full-page, mobile-emulation]
 ---
 
 # Website Screenshot
@@ -10,7 +13,7 @@ Uses playwright-core + system Chromium to capture screenshots headlessly. Prints
 ## Script
 
 ```
-/home/ajans/openclaw/skills/website-screenshot/scripts/screenshot.cjs
+${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/website-screenshot/scripts/screenshot.cjs
 ```
 
 > **Note:** The `.cjs` extension is required — OpenClaw's `package.json` has `"type": "module"`, which breaks `.js` files using `require`.
@@ -44,9 +47,9 @@ The URL scheme is auto-added if missing (`example.com` → `https://example.com`
 ### Standard pattern
 
 ```bash
-OUTFILE=/home/ajans/.openclaw/workspace/screenshot-$(date +%s).png
+OUTFILE=$HOME/.openclaw/workspace/screenshot-$(date +%s).png
 
-node /home/ajans/openclaw/skills/website-screenshot/scripts/screenshot.cjs \
+node ${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/website-screenshot/scripts/screenshot.cjs \
   "https://example.com" \
   --output "$OUTFILE" \
   --wait domcontentloaded

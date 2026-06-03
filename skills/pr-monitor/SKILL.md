@@ -1,6 +1,9 @@
 ---
 name: pr-monitor
 description: PR / CI Monitor Skill
+category: development
+maturity: stable
+tags: [github, ci-monitoring, pull-requests, cron, alerts]
 ---
 
 # PR / CI Monitor Skill
@@ -9,15 +12,15 @@ Use when: checking GitHub repo health, investigating why an alert fired, or addi
 
 ## Check status of all repos now
 
-node /home/ajans/projects/pr-monitor/status.cjs
+node ${PR_MONITOR_HOME:-$HOME/projects/pr-monitor}/status.cjs
 
 ## Run monitor now (dry run)
 
-node /home/ajans/projects/pr-monitor/monitor.cjs --dry-run
+node ${PR_MONITOR_HOME:-$HOME/projects/pr-monitor}/monitor.cjs --dry-run
 
 ## Run monitor and send real alerts if needed
 
-node /home/ajans/projects/pr-monitor/monitor.cjs
+node ${PR_MONITOR_HOME:-$HOME/projects/pr-monitor}/monitor.cjs
 
 ## Cron
 
@@ -40,11 +43,11 @@ All JansenAnalytics repos (auto-discovered). Exclusions in config.json.
 
 ## Config
 
-~/projects/pr-monitor/config.json
+${PR_MONITOR_HOME:-$HOME/projects/pr-monitor}/config.json
 
 ## Add a new repo (force-include)
 
-node /home/ajans/projects/pr-monitor/add-repo.cjs JansenAnalytics/some-new-repo
+node ${PR_MONITOR_HOME:-$HOME/projects/pr-monitor}/add-repo.cjs JansenAnalytics/some-new-repo
 
 ## Files
 

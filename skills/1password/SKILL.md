@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: security
+maturity: stable
+tags: [1password, op-cli, secrets, credential-vault, signin]
 ---
 
 # 1Password CLI

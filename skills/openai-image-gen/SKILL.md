@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [image-generation, openai, dall-e, gpt-image, gallery]
 ---
 
 # OpenAI Image Gen

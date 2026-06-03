@@ -21,6 +21,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: stable
+tags: [tts, elevenlabs, audio, voice, speech-synthesis]
 ---
 
 # sag
@@ -68,7 +71,7 @@ Confirm voice + speaker before long output.
 
 ## Chat voice responses
 
-When Peter asks for a "voice" reply (e.g., "crazy scientist voice", "explain in voice"), generate audio and send it:
+When the user asks for a "voice" reply (e.g., "crazy scientist voice", "explain in voice"), generate audio and send it:
 
 ```bash
 # Generate audio file
@@ -84,4 +87,4 @@ Voice character tips:
 - Calm: Use `[whispers]` or slower pacing
 - Dramatic: Use `[sings]` or `[shouts]` sparingly
 
-Default voice for Clawd: `lj2rcrvANS3gaWWnczSX` (or just `-v Clawd`)
+Default voice for Clawd: `<your-voice-id>` (or just `-v Clawd`)

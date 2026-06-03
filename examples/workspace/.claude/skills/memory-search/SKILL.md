@@ -16,7 +16,7 @@ You have a vector memory search system that indexes:
 - Prior work, decisions, or conversations
 - Dates, timelines, project history
 - People, preferences, or context from past sessions
-- Anything Aksel says "remember" or "we discussed"
+- Anything the user says "remember" or "we discussed"
 - Cross-agent context ("what has Argus been working on?")
 
 ## How to Search

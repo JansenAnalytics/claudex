@@ -1,6 +1,9 @@
 ---
 name: web-monitor
 description: Monitor websites for changes, stock availability, price drops. Use when asked to watch a URL or check for changes.
+category: research
+maturity: beta
+tags: [url-watch, price-drop, stock-alert, cron, ntfy]
 ---
 
 # Web Monitor

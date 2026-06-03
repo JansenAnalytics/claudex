@@ -1,16 +1,19 @@
 ---
 name: draft-queue
 description: Draft Queue Skill
+category: writing
+maturity: beta
+tags: [approval-queue, drafts, json-payload, telegram-action]
 ---
 
 # Draft Queue Skill
 
-Use when: you want to take an external action that requires Aksel's approval before executing.
+Use when: you want to take an external action that requires the user's approval before executing.
 
 ## Add a draft
 
 ```
-node /home/ajans/projects/draft-queue/add-draft.cjs \
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/add-draft.cjs \
   --type <type> \
   --desc "description" \
   --payload '<json>'
@@ -23,13 +26,13 @@ node /home/ajans/projects/draft-queue/add-draft.cjs \
 **telegram-message**
 
 ```json
-{ "chat_id": "687053516", "message": "text here" }
+{ "chat_id": "<your-telegram-user-id>", "message": "text here" }
 ```
 
 **shell-command**
 
 ```json
-{ "command": "echo hello", "cwd": "/home/ajans" }
+{ "command": "echo hello", "cwd": "$HOME" }
 ```
 
 **github-comment**
@@ -47,42 +50,42 @@ node /home/ajans/projects/draft-queue/add-draft.cjs \
 **file-write**
 
 ```json
-{ "path": "/home/ajans/some/file.txt", "content": "file contents" }
+{ "path": "/path/to/your/file.txt", "content": "file contents" }
 ```
 
-## Approve (when Aksel says "approve ID")
+## Approve (when the user says "approve ID")
 
 ```
-node /home/ajans/projects/draft-queue/approve.cjs <id>
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/approve.cjs <id>
 ```
 
-## Reject (when Aksel says "reject ID")
+## Reject (when the user says "reject ID")
 
 ```
-node /home/ajans/projects/draft-queue/reject.cjs <id>
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/reject.cjs <id>
 ```
 
 ## List pending
 
 ```
-node /home/ajans/projects/draft-queue/list-drafts.cjs
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/list-drafts.cjs
 ```
 
 ## List all
 
 ```
-node /home/ajans/projects/draft-queue/list-drafts.cjs --all
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/list-drafts.cjs --all
 ```
 
 ## List by status
 
 ```
-node /home/ajans/projects/draft-queue/list-drafts.cjs --status approved
+node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/list-drafts.cjs --status approved
 ```
 
 ## Notes
 
-- Drafts file: `/home/ajans/projects/draft-queue/drafts.json` (append-only)
-- Cron for expiry: `0 9 * * * /usr/bin/node /home/ajans/projects/draft-queue/expire-drafts.cjs >> /home/ajans/projects/draft-queue/draft-queue.log 2>&1`
+- Drafts file: `${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/drafts.json` (append-only)
+- Cron for expiry: `0 9 * * * /usr/bin/node ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/expire-drafts.cjs >> ${DRAFT_QUEUE_HOME:-$HOME/projects/draft-queue}/draft-queue.log 2>&1`
 - add-draft.cjs prints the draft ID to stdout on success
 - Default expiry: 24 hours. Override with `--expires 7d` etc.

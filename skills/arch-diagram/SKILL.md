@@ -1,6 +1,9 @@
 ---
 name: arch-diagram
 description: "Generate architecture diagrams from codebase analysis: Mermaid, PlantUML, or ASCII."
+category: development
+maturity: stable
+tags: [mermaid, plantuml, ascii-diagram, dependency-graph, architecture]
 ---
 
 # arch-diagram

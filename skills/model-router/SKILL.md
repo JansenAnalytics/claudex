@@ -1,6 +1,9 @@
 ---
 name: model-router
 description: Model Router Skill
+category: meta
+maturity: stable
+tags: [model-routing, tier-selection, cost, classifier, subagents]
 ---
 
 # Model Router Skill
@@ -10,13 +13,13 @@ Use EVERY TIME you are about to spawn a sub-agent or do significant work. Classi
 ## Step 1: Classify
 
 ```
-node /home/ajans/projects/model-router/classify.cjs "your task description here"
+node ${MODEL_ROUTER_HOME:-$HOME/projects/model-router}/classify.cjs "your task description here"
 ```
 
 Or get JSON for scripting:
 
 ```
-node /home/ajans/projects/model-router/classify.cjs --json "task description"
+node ${MODEL_ROUTER_HOME:-$HOME/projects/model-router}/classify.cjs --json "task description"
 ```
 
 ## Step 2: Spawn with the recommended model
@@ -28,7 +31,7 @@ sessions_spawn(task=..., model="<model from classifier>")
 ## Step 3: Log usage (optional but encouraged)
 
 ```
-node /home/ajans/projects/model-router/log-usage.cjs --task "..." --tier fast --model "..."
+node ${MODEL_ROUTER_HOME:-$HOME/projects/model-router}/log-usage.cjs --task "..." --tier fast --model "..."
 ```
 
 ## Tier guide
@@ -59,6 +62,6 @@ Powerful triggers: "analyze deeply", architecture, tradeoffs, debate, hypothesis
 ## Usage stats
 
 ```
-node /home/ajans/projects/model-router/usage-report.cjs
-node /home/ajans/projects/model-router/usage-report.cjs --days 30
+node ${MODEL_ROUTER_HOME:-$HOME/projects/model-router}/usage-report.cjs
+node ${MODEL_ROUTER_HOME:-$HOME/projects/model-router}/usage-report.cjs --days 30
 ```

@@ -20,6 +20,9 @@ metadata:
           ],
       },
   }
+category: media
+maturity: beta
+tags: [ffmpeg, video, frame-extraction, thumbnails, clips]
 ---
 
 # Video Frames (ffmpeg)

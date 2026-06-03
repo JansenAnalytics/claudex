@@ -1,6 +1,9 @@
 ---
 name: seed-data
 description: "Generate realistic test and seed data for any database schema: users, products, orders, time series, financial data."
+category: data
+maturity: stable
+tags: [test-data, fixtures, timeseries, faker, schema]
 ---
 
 # seed-data

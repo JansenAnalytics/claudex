@@ -1,5 +1,5 @@
 ---
-description: "SKILL=~/openclaw/skills/fundamental-research-engine/scripts"
+description: "Generates fundamental trading research per instrument (forex, metals, crypto, energy, indices) — rate differentials, COT positioning, retail sentiment, currency strength, central-bank rates, bond yields, Fear & Greed — plus an all-instrument daily market brief. Use when analyzing an instrument's fundamentals, checking rate differentials or COT/sentiment, or producing a daily macro brief."
 name: fundamental-research-engine
 triggers:
   - research
@@ -7,6 +7,9 @@ triggers:
   - daily brief
   - instrument analysis
   - rate differential
+category: trading-finance
+maturity: stable
+tags: [forex, cot, rate-differentials, instrument-analysis, daily-brief]
 ---
 
 # Fundamental Research Engine
@@ -14,7 +17,7 @@ triggers:
 ## Quick Start
 
 ```bash
-SKILL=~/openclaw/skills/fundamental-research-engine/scripts
+SKILL=${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/fundamental-research-engine/scripts
 
 # Instrument research (auto-detects asset class)
 python3 $SKILL/research.py EURUSD       # FX: rates + COT + retail + strength

@@ -8,6 +8,9 @@ triggers:
   - check data
   - data validator
   - schema validation
+category: data
+maturity: stable
+tags: [data-quality, schema-inference, anomaly-detection, drift, integrity]
 ---
 
 # data-validator
@@ -101,4 +104,4 @@ The quality score (0-100) is computed from:
 ## Dependencies
 
 - Node.js (built-in modules only, except better-sqlite3 for SQLite)
-- `node_modules` symlinked from `~/openclaw/skills/kanban-agent/node_modules`
+- `better-sqlite3` (only for SQLite sources) — shared from the kanban-agent skill's `node_modules` (`${CLAUDE_SKILLS_DIR:-$HOME/.claude-agent/.claude/skills}/kanban-agent/node_modules`). See INSTALL.md.

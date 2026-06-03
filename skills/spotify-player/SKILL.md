@@ -28,6 +28,9 @@ metadata:
           ],
       },
   }
+category: home-iot
+maturity: beta
+tags: [spotify, playback, music, spogo, cli]
 ---
 
 # spogo / spotify_player

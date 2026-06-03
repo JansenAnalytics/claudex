@@ -1,17 +1,20 @@
 ---
 name: data-pad
-description: "Use when: Aksel provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it."
+description: "Use when: the user provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it."
+category: data
+maturity: beta
+tags: [csv, ndjson, sql, sqlite, exploration]
 ---
 
 # Data Pad Skill
 
-Use when: Aksel provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it.
+Use when: the user provides a CSV, JSON, or NDJSON file and wants analysis, filtering, aggregation, or exploration. Also use when you have structured data from an API and want to query it.
 
 ## Load data
 
 ```
-node /home/ajans/projects/data-pad/load.cjs --file <path> [--table name] [--db name] [--overwrite]
-node /home/ajans/projects/data-pad/load.cjs --file data.csv --table customers --db analysis
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/load.cjs --file <path> [--table name] [--db name] [--overwrite]
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/load.cjs --file data.csv --table customers --db analysis
 ```
 
 ## Supported formats: .csv, .json, .ndjson
@@ -21,26 +24,26 @@ node /home/ajans/projects/data-pad/load.cjs --file data.csv --table customers --
 ## Run a query
 
 ```
-node /home/ajans/projects/data-pad/query.cjs "SQL here" [--db name]
-node /home/ajans/projects/data-pad/query.cjs "SELECT country, SUM(revenue) FROM customers GROUP BY country ORDER BY 2 DESC LIMIT 10"
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/query.cjs "SQL here" [--db name]
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/query.cjs "SELECT country, SUM(revenue) FROM customers GROUP BY country ORDER BY 2 DESC LIMIT 10"
 ```
 
 ## Explore schema
 
 ```
-node /home/ajans/projects/data-pad/describe.cjs [--db name]
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/describe.cjs [--db name]
 ```
 
 ## List all databases
 
 ```
-node /home/ajans/projects/data-pad/list-dbs.cjs
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/list-dbs.cjs
 ```
 
 ## Export results
 
 ```
-node /home/ajans/projects/data-pad/export.cjs "SELECT ..." --out results.csv [--db name]
+node ${DATA_PAD_HOME:-$HOME/projects/data-pad}/export.cjs "SELECT ..." --out results.csv [--db name]
 ```
 
 ## Output formats for query
@@ -67,4 +70,4 @@ SELECT c.name, SUM(o.amount) FROM customers c JOIN orders o ON c.id = o.customer
 
 ## Databases are stored at
 
-`~/projects/data-pad/databases/`
+`${DATA_PAD_HOME:-$HOME/projects/data-pad}/databases/`
