@@ -1,4 +1,5 @@
 {
+  "_comment": "Default Claudex config — defaultMode 'bypassPermissions' runs every tool call without prompting. This is required for a headless Telegram agent: there is no terminal where a human can approve prompts, so a prompting mode would hang the session. scripts/bootstrap.sh pre-approves the two one-time first-run gates for you (see README 'Permissions & Safety'). For the same setup WITH a deny safety net + inline docs, copy templates/settings.json.example instead.",
   "permissions": {
     "defaultMode": "bypassPermissions",
     "allow": [

@@ -65,9 +65,54 @@ fi
 # Copy settings.json
 if [ ! -f "$WORKSPACE/.claude/settings.json" ]; then
     cp "$REPO_DIR/templates/settings.json" "$WORKSPACE/.claude/settings.json"
-    echo "  ✅ settings.json copied"
+    echo "  ✅ settings.json copied (bypassPermissions — autonomous, no prompts)"
 else
     echo "  ⚠️  settings.json already exists — skipping"
+fi
+
+# ─── Pre-approve bypass mode + workspace trust (zero-click autonomous start) ───
+# bypassPermissions only runs prompt-free once two one-time gates are cleared:
+#   A) ~/.claude/settings.json -> skipDangerousModePermissionPrompt  (accept bypass mode)
+#   B) ~/.claude.json -> projects[<workspace>].hasTrustDialogAccepted (trust the dir)
+# Without these, the FIRST start stops on an interactive prompt — fatal for a
+# headless agent. We pre-seed both so a fresh install behaves like a long-running one.
+echo ""
+echo "▸ Pre-approving bypass mode + workspace trust (so the first start needs no clicks)..."
+if command -v node &>/dev/null; then
+    [ -f "$HOME/.claude/settings.json" ] && cp "$HOME/.claude/settings.json" "$HOME/.claude/settings.json.bak.$(date +%s)"
+    [ -f "$HOME/.claude.json" ] && cp "$HOME/.claude.json" "$HOME/.claude.json.bak.$(date +%s)"
+    WORKSPACE="$WORKSPACE" node - <<'NODE'
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const ws = process.env.WORKSPACE;
+
+function mergeJson(file, mutate) {
+  let data = {};
+  try { data = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { data = {}; }
+  mutate(data);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+}
+
+// Gate A — accept bypassPermissions mode (global user settings)
+mergeJson(path.join(os.homedir(), '.claude', 'settings.json'), d => {
+  d.skipDangerousModePermissionPrompt = true;
+});
+
+// Gate B — trust the workspace directory (per-project entry in ~/.claude.json)
+mergeJson(path.join(os.homedir(), '.claude.json'), d => {
+  d.projects = d.projects || {};
+  d.projects[ws] = d.projects[ws] || {};
+  d.projects[ws].hasTrustDialogAccepted = true;
+});
+NODE
+    echo "  ✅ bypass mode accepted   (~/.claude/settings.json: skipDangerousModePermissionPrompt)"
+    echo "  ✅ workspace trusted      (~/.claude.json: projects[$WORKSPACE].hasTrustDialogAccepted)"
+else
+    echo "  ⚠️  node not found — cannot pre-approve. The FIRST start will prompt once to:"
+    echo "       1) accept bypass-permissions mode, and 2) trust the workspace folder."
+    echo "      Approve both once interactively; subsequent auto-restarts run prompt-free."
 fi
 
 # Copy example skills

@@ -1,0 +1,70 @@
+{
+  "_comment": "Claudex settings.json — the DEFAULT autonomous config, annotated. Copy to ~/.claude-agent/.claude/settings.json. defaultMode 'bypassPermissions' runs every tool call WITHOUT prompting — this is intentional and required: Claudex is a headless agent driven over Telegram, so there is no terminal where a human could click 'yes'. A prompting mode would hang the agent mid-task. The deny list below is your safety net (it is enforced even in bypass mode). The _comment/_docs keys are documentation only — Claude Code ignores unknown keys, so keep or delete them.",
+  "_docs": {
+    "why_bypass": "An always-on agent has nobody at the keyboard. Any mode that prompts (default/acceptEdits/plan) will stall the session waiting for input that never comes. bypassPermissions is what makes Claudex act on Telegram messages instantly, like the maintainer runs it.",
+    "first_run_gates": "bypassPermissions only works prompt-free once two one-time gates are cleared. scripts/bootstrap.sh pre-approves both for you: (A) ~/.claude/settings.json -> skipDangerousModePermissionPrompt:true (accept bypass mode), and (B) ~/.claude.json -> projects['<your workspace>'].hasTrustDialogAccepted:true (trust the workspace dir). Without those, the FIRST start prompts once interactively.",
+    "deny_is_the_safety_net": "Rules evaluate deny -> ask -> allow, first match wins, and DENY ALWAYS WINS — it is enforced even under bypassPermissions ('rm -rf /' and 'rm -rf ~' additionally hard-prompt as a circuit breaker). Since bypass ignores allow/ask, the deny list is the ONLY guardrail that fires in autonomous mode. Add anything you never want run unattended here.",
+    "allow_ask_are_inert_under_bypass": "Under bypassPermissions the allow/ask lists are ignored (nothing prompts). They are kept below so they take effect immediately if you switch defaultMode to 'default' or 'acceptEdits'.",
+    "run_attended_instead": "Driving Claude Code by hand at a terminal instead of headless? Change defaultMode to 'default' (prompt on first use of each tool) or 'acceptEdits' (auto-approve edits, prompt for other Bash). Then the allow/ask lists govern what runs silently vs. prompts.",
+    "bash_syntax": "'Bash(cmd *)' matches a command prefix at a word boundary: 'Bash(ls *)' matches 'ls -la' but NOT 'lsof'. 'Bash(cmd:*)' is a trailing-only alias for 'Bash(cmd *)'.",
+    "modes": "default | acceptEdits | plan | dontAsk | auto (research preview) | bypassPermissions."
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Grep(*)",
+      "WebSearch(*)"
+    ],
+    "ask": [],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Write(/etc/*)",
+      "Write(/usr/*)",
+      "Edit(/etc/*)"
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/scripts/session-init.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && git add -A 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/scripts/session-shutdown.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

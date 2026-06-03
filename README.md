@@ -129,7 +129,19 @@ mkdir -p ~/.claude-agent/.claude/{skills,agents,rules}
 
 # Copy templates (customize CLAUDE.md with your identity)
 cp templates/CLAUDE.md.example ~/.claude-agent/CLAUDE.md
+
+# Permissions — bypassPermissions (autonomous, no prompts). Required for a headless
+# Telegram agent; there's no terminal to approve prompts. See "Permissions & Safety".
 cp templates/settings.json ~/.claude-agent/.claude/settings.json
+# Want the same setup with a deny safety net + inline docs (or to switch to a
+# prompting mode for attended use)? Use templates/settings.json.example instead.
+
+# Pre-approve the two one-time first-run gates so the first start needs no clicks
+# (scripts/bootstrap.sh does this for you; manual equivalent below):
+node -e 'const fs=require("fs"),os=require("os"),p=require("path");const ws=p.join(os.homedir(),".claude-agent");
+const m=(f,fn)=>{let d={};try{d=JSON.parse(fs.readFileSync(f,"utf8"))}catch(_){}; fn(d); fs.mkdirSync(p.dirname(f),{recursive:true}); fs.writeFileSync(f,JSON.stringify(d,null,2)+"\n")};
+m(p.join(os.homedir(),".claude","settings.json"),d=>d.skipDangerousModePermissionPrompt=true);
+m(p.join(os.homedir(),".claude.json"),d=>{d.projects=d.projects||{};d.projects[ws]=d.projects[ws]||{};d.projects[ws].hasTrustDialogAccepted=true});'
 
 # Copy skills you want
 cp -r skills/* ~/.claude-agent/.claude/skills/
@@ -433,6 +445,47 @@ The default `settings.json` ships with three hooks:
 
 For a locked-down production setup, see [templates/settings.production.json](templates/settings.production.json).
 
+### Permissions & Safety
+
+Claudex runs **`bypassPermissions`** by default — every tool call executes without a prompt. This is deliberate, not a footgun: an always-on agent driven over Telegram has **nobody at the terminal** to click "yes." Any prompting mode (`default`, `acceptEdits`, `plan`) would freeze the session waiting for input that never arrives. Bypass is what lets Claudex act on a message the instant it lands.
+
+The safety story for an unattended agent isn't "prompt the human" — it's:
+1. **A `deny` list that fires even in bypass mode** (your real guardrail), and
+2. **A dedicated, trusted, single-user host** that is not shared or internet-exposed.
+
+**Zero-click first start — two one-time gates.** `bypassPermissions` is only prompt-free after two acceptances are recorded. `scripts/bootstrap.sh` pre-seeds both, so a fresh install behaves like a long-running one (this is why the maintainer never clicks, and now you won't either):
+
+| Gate | File | Key |
+|---|---|---|
+| Accept bypass mode | `~/.claude/settings.json` | `skipDangerousModePermissionPrompt: true` |
+| Trust the workspace dir | `~/.claude.json` | `projects["<workspace>"].hasTrustDialogAccepted: true` |
+
+**Settings files:**
+
+| File | `defaultMode` | Use it when |
+|---|---|---|
+| [`templates/settings.json`](templates/settings.json) | `bypassPermissions` | **Default.** The maintainer's exact setup — fully autonomous, zero prompts. |
+| [`templates/settings.json.example`](templates/settings.json.example) | `bypassPermissions` | Same, **+ a `deny` safety net + inline docs** for every option. Recommended starting point. |
+| [`templates/settings.production.json`](templates/settings.production.json) | `bypassPermissions` | Bypass with a scoped `allow` + `deny` list. |
+
+**Rule precedence — `deny` → `ask` → `allow`, first match wins:**
+
+```json
+"permissions": {
+  "defaultMode": "bypassPermissions",          // run everything, no prompts (headless)
+  "allow": ["Bash(*)", "Read(*)", "Write(*)"],  // ignored under bypass; used if you switch to 'default'
+  "ask":   [],                                  // ignored under bypass
+  "deny":  ["Bash(rm -rf *)", "Bash(sudo *)", "Write(/etc/*)"]  // ALWAYS blocked, even in bypass
+}
+```
+
+- **`deny` always wins — even under `bypassPermissions`.** Because bypass ignores `allow`/`ask`, the `deny` list is the *only* guardrail that fires when the agent runs autonomously — so keep one. `rm -rf /` and `rm -rf ~` additionally hard-prompt as a circuit breaker.
+- **Running attended instead?** Set `defaultMode` to `default` (prompt on first use of each tool) or `acceptEdits` (auto-approve edits, prompt for other Bash); then the `allow`/`ask` lists govern what runs silently vs. prompts.
+- **Bash patterns match a prefix at a word boundary:** `Bash(ls *)` matches `ls -la` but not `lsof`. `Bash(cmd:*)` is a trailing-only alias for `Bash(cmd *)`.
+- **`defaultMode` values:** `default`, `acceptEdits`, `plan`, `dontAsk` (auto-deny anything not allowlisted), `auto` (auto-approve with safety checks — research preview), `bypassPermissions`.
+
+⚠️ Run bypass only on a **dedicated, trusted, single-user** machine — never on a shared, multi-user, or internet-exposed host. Full reference: [Claude Code permissions docs](https://code.claude.com/docs/en/permissions).
+
 ### Health Monitoring
 
 Track agent health metrics in SQLite — session counts, restart events, uptime:
@@ -520,7 +573,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | ** Skills auto-loading** | Skills auto-selected by description match. OpenClaw: manual scan of `<available_skills>` list. |
 | ** Lifecycle hooks** | Rich hook system (SessionStart, Stop, PostToolUse, etc.). OpenClaw: limited hook support. |
 | ** Scheduled tasks** | Desktop + Cloud scheduled tasks, `/loop` polling. OpenClaw: cron-only scheduling. |
-| ** Permission modes** | Granular: `default`, `plan`, `bypassPermissions` with per-tool allowlists. OpenClaw: binary policy. |
+| ** Permission modes** | Granular: `default`, `acceptEdits`, `plan`, `dontAsk`, `bypassPermissions` with per-tool allow/ask/deny lists. OpenClaw: binary policy. |
 | ** Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
 | ** No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
 | ** Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
@@ -705,9 +758,16 @@ export PATH="$HOME/.bun/bin:$PATH"  # add to your start script
 
 ### 5. `--dangerously-skip-permissions` Still Prompts on First Start
 
-**Problem:** Even with `bypassPermissions` in settings.json, the first session start requires an interactive "yes" confirmation.
+**Problem:** Even with `bypassPermissions` in settings.json, the first session start requires an interactive "yes" confirmation — twice: once to accept bypass mode, once to trust the workspace folder. Fatal for a headless agent with nobody at the terminal.
 
-**Workaround:** Start the first session interactively (via tmux), confirm the prompt, then subsequent auto-restarts work without prompting. The `--continue` flag resumes the existing session.
+**Fix:** `scripts/bootstrap.sh` now pre-seeds both acceptances, so a fresh install starts prompt-free:
+
+| Gate | File | Key |
+|---|---|---|
+| Accept bypass mode | `~/.claude/settings.json` | `skipDangerousModePermissionPrompt: true` |
+| Trust workspace dir | `~/.claude.json` | `projects["<workspace>"].hasTrustDialogAccepted: true` |
+
+If you set up manually (without bootstrap), write those two keys before the first launch — see the one-liner in the [Manual setup](#3-manual-setup-if-you-prefer) section. Then `--continue` resumes the session on every auto-restart. (Note: `--dangerously-skip-permissions` refuses to run as **root/sudo** outside a recognized sandbox — run as a normal user or use the dev-container config.)
 
 ### 6. Script Wrapping for PTY
 
