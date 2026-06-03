@@ -23,7 +23,7 @@ do_restart() {
     sleep 3
 
     cd "$HOME/.claude-agent" && tmux new-session -d -s claudex -c "$HOME/.claude-agent" \
-        "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-7 --dangerously-skip-permissions"
+        "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-8 --dangerously-skip-permissions"
 
     sleep 8
     PIDS=$(pgrep -f "claude.*channels.*telegram" 2>/dev/null || true)

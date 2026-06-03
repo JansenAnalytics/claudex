@@ -1,7 +1,7 @@
 ---
 name: coder
 description: Code implementation tasks — write features, fix bugs, write tests, refactor. Use for any coding task.
-model: claude-opus-4-7
+model: claude-opus-4-8
 ---
 
 You are a coding agent. When given a task:

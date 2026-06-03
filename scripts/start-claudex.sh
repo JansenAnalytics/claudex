@@ -25,7 +25,7 @@ cd "$WORKSPACE"
 if [ "${1:-}" = "--foreground" ]; then
     exec script -qc "$HOME/.local/bin/claude \
         --channels plugin:telegram@claude-plugins-official \
-        --model claude-opus-4-7 \
+        --model claude-opus-4-8 \
         --dangerously-skip-permissions \
         --continue" \
         "$LOG_DIR/claudex-$(date +%Y-%m-%d).log"
@@ -52,7 +52,7 @@ echo "   Telegram: @Claudex"
 echo "   Mode: bypassPermissions"
 
 tmux new-session -d -s "$TMUX_SESSION" -c "$WORKSPACE" \
-    "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-7 --dangerously-skip-permissions --continue"
+    "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-8 --dangerously-skip-permissions --continue"
 
 sleep 3
 

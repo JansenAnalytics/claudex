@@ -724,4 +724,15 @@ See [docs/inbox.md](inbox.md) for CLI usage and integration examples.
 
 ---
 
-*This document covers Claudex as of April 2026. Claude Code's capabilities are evolving rapidly — check the [Claude Code docs](https://docs.anthropic.com/en/docs/claude-code) for the latest on hooks, sub-agents, and MCP support.*
+## 14. Slash Commands & Plugins
+
+Beyond skills, sub-agents, and hooks, Claudex ships two more extension surfaces:
+
+- **Slash commands** (`commands/`) — user-triggered, named prompts (`/audit`, `/briefing`, `/recap`, `/remember`, `/project`, `/cron`, and the guard-railed `/ship`). A command is a fixed prompt the *user* fires by name; it runs in the current context and can itself load skills or spawn sub-agents. See [docs/commands-guide.md](commands-guide.md).
+- **Marketplace plugins** — installable, versioned bundles of commands/skills/agents from the official Claude Code plugin marketplace. See [docs/plugins-guide.md](plugins-guide.md) for the ones that pair well with Claudex.
+
+For choosing between a skill, a sub-agent, a slash command, and a hook, see the decision table in [docs/subagents.md](subagents.md). The MCP server registry (`mcp/`) — ready-to-use configs plus an installer — is documented in [docs/mcp-guide.md](mcp-guide.md).
+
+---
+
+*This document covers Claudex as of June 2026. Claude Code's capabilities are evolving rapidly — check the [Claude Code docs](https://docs.anthropic.com/en/docs/claude-code) for the latest on hooks, sub-agents, MCP, and plugins.*

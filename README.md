@@ -99,7 +99,7 @@ This repo documents the complete system architecture, provides templates for bui
 
 ### Prerequisites
 
-- **Claude Max subscription** ($100/mo) — provides Opus 4.6 with 1M context, zero per-token cost
+- **Claude Max subscription** ($100/mo) — provides Opus 4.8 with 1M context, zero per-token cost
 - **Linux machine** (WSL2, Ubuntu, Debian, etc.)
 - **Node.js 22+** and **Bun** (Bun required for the Telegram channel plugin runtime)
 
@@ -570,7 +570,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | Feature | Detail |
 |---|---|
 | ** Cost model** | Flat $100/mo (Max subscription) vs variable API billing ($30-100+/mo). No per-token surprises. Heavy users save significantly. |
-| ** Context window** | 1M tokens (Opus 4.6 via Max) vs ~200K typical API. Massive context for complex tasks. |
+| ** Context window** | 1M tokens (Opus 4.8 via Max) vs ~200K typical API. Massive context for complex tasks. |
 | ** Mobile control** | `claude.ai/code` Remote Control — manage from phone/browser. OpenClaw: Telegram only. |
 | ** Native sub-agents** | Built-in agent teams with shared task lists and direct communication. OpenClaw: `sessions_spawn` with manual polling. |
 | ** Skills auto-loading** | Skills auto-selected by description match. OpenClaw: manual scan of `<available_skills>` list. |

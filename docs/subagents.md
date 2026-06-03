@@ -2,7 +2,7 @@
 
 Claudex can delegate multi-step work to specialized subagents. Each runs in its **own context window** with a focused system prompt — useful when a task is big enough to pollute the main thread, or benefits from a narrow, opinionated persona. Agent definitions live in `$HOME/.claude-agent/.claude/agents/<name>.md` (frontmatter: `name`, `description`, `model`; body = the agent's system prompt).
 
-All 9 agents currently run on `claude-opus-4-7`.
+All 9 agents currently run on `claude-opus-4-8`.
 
 ## The 9 agents
 

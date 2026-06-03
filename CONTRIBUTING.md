@@ -7,10 +7,11 @@ Thanks for your interest in contributing!
 ### Skills
 The easiest way to contribute is adding new skills:
 
-1. Create a new directory under `examples/skills/<skill-name>/`
-2. Add a `SKILL.md` with YAML frontmatter (`name`, `description`) and instructions
-3. Test it with Claude Code in your own workspace
-4. Open a PR with a brief description of what the skill does
+1. Create a new directory under `skills/<skill-name>/`
+2. Add a `SKILL.md` with YAML frontmatter (`name`, `description`, `category`, `maturity`; optional `tags`) and instructions — see [docs/skill-anatomy.md](docs/skill-anatomy.md) for the schema
+3. Run `bash scripts/skill-audit.sh --skill <skill-name>` — it should report 0 errors
+4. Test it with Claude Code in your own workspace
+5. Open a PR with a brief description of what the skill does
 
 ### Documentation
 Improvements to docs are always welcome:
