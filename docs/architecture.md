@@ -17,6 +17,16 @@ Key properties:
 - **Sub-agent capable.** Specialized agents (researcher, coder, reviewer, etc.) handle parallel delegated work.
 - **Memory-persistent.** File-based memory system ensures continuity across restarts.
 - **Zero API cost.** Claude Max subscription covers all usage; no per-token billing surprises.
+- **Pluggable channel.** Telegram by default; **Matrix** for end-to-end-encrypted messaging (see below).
+
+### Communication channels
+
+The channel is selected via `CLAUDEX_CHANNEL` (or `data/channel`), resolved by `scripts/channel-config.sh`, which exports channel-specific paths/process-matches and the `channel_launch_cmd` / `channel_transport_healthy` / `channel_active_work` helpers. The lifecycle scripts (start/stop/status/watchdog/session-init) source it and stay channel-agnostic, so adding a channel does not change them.
+
+- **Telegram (default):** the official Claude Code channel plugin (Bun subprocess). Bot API — *not* end-to-end encrypted (Telegram's servers see plaintext).
+- **Matrix (E2EE):** for sensitive data. Two local processes: a thin Rust **`matrix-sidecar`** on Element's `matrix-rust-sdk` (vodozemac) that owns crypto, persistence, cross-signing, and **verified-devices-only** delivery, behind a localhost HTTP API; and **`scripts/matrix-bridge.py`** (Python stdlib) that owns the agent logic (fail-closed allowlist, per-room Claude sessions, watchdog integration). Crypto lives in the audited SDK; logic stays in Python. Full design: [rfcs/0001-matrix-channel.md](rfcs/0001-matrix-channel.md); setup + security model: [matrix-setup.md](matrix-setup.md).
+
+(The diagram and flows below show the Telegram path; the Matrix path is identical in shape — transport process + bridge + `claude` — with the sidecar in the transport role.)
 
 ---
 

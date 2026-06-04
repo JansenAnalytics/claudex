@@ -300,6 +300,17 @@ The Telegram channel plugin provides native two-way messaging:
 
 See [docs/telegram-setup.md](docs/telegram-setup.md) for the full setup guide.
 
+### Matrix Integration (end-to-end encrypted)
+
+For sensitive data, Claudex can use **Matrix** with end-to-end encryption instead of Telegram (whose Bot API is not E2EE). Select it at setup (`bootstrap.sh` → channel 2) or with `CLAUDEX_CHANNEL=matrix`.
+
+It's two local processes (the same shape as Telegram's plugin + Claude, but E2EE-aware):
+
+- **`matrix-sidecar/`** — a small Rust daemon on Element's audited [`matrix-rust-sdk`](https://github.com/matrix-org/matrix-rust-sdk) (vodozemac) that owns all cryptography, persistence, cross-signing, and **verified-devices-only** delivery, exposed over a localhost-only HTTP API.
+- **`scripts/matrix-bridge.py`** — a Python (stdlib-only) bridge: fail-closed allowlist, per-room Claude session, reply relay, watchdog integration. No third-party dependencies.
+
+The crypto stays in the one SDK that meets the bar; the logic stays in Python the team maintains. **Device verification is mandatory** — it's what makes a managed homeserver (matrix.org) safe before you self-host. See the design in [docs/rfcs/0001-matrix-channel.md](docs/rfcs/0001-matrix-channel.md) and the step-by-step (incl. the content/metadata/endpoint security model) in [docs/matrix-setup.md](docs/matrix-setup.md).
+
 ### Persistence
 
 Three layers keep the agent alive:
@@ -636,6 +647,8 @@ claudex/
 │   ├── architecture.md             #   System architecture + Mermaid diagrams
 │   ├── memory-search.md            #   Vector RAG system (setup, config, API)
 │   ├── telegram-setup.md           #   Telegram integration step-by-step
+│   ├── matrix-setup.md             #   Matrix (E2EE) integration step-by-step
+│   ├── rfcs/0001-matrix-channel.md #   RFC: encrypted Matrix channel design
 │   ├── persistence.md              #   3-layer persistence (tmux+systemd+cron)
 │   ├── automation.md               #   Hooks, scheduled tasks, /loop
 │   ├── skills-guide.md             #   Skill format, auto-selection, porting
