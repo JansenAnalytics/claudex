@@ -1,0 +1,3 @@
+# Generated Synapse state: config, signing keys, SQLite DB. Never commit
+# (contains server signing keys + a known shared secret + test data).
+data/

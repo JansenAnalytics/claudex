@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+jobs:
+  python:
+    name: python bridge + shell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bridge unit + integration tests
+        run: python3 -m unittest discover -s tests -t . -v
+      - name: Channel-config shell test
+        run: bash tests/channel-config.test.sh
+      - name: Lifecycle scripts syntax
+        run: for f in scripts/*.sh; do bash -n "$f"; done
+
+  sidecar:
+    name: matrix-sidecar (rust)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: matrix-sidecar
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: matrix-sidecar
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy (deny warnings)
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: Unit tests
+        run: cargo test --all-features
+      - name: Release build
+        run: cargo build --release
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+      - name: Dependency audit
+        # Strict gate: any new advisory (vuln OR warning) fails CI. The single
+        # triaged exception (unmaintained `derivative`, unused) is allowlisted in
+        # matrix-sidecar/.cargo/audit.toml with rationale.
+        run: cargo audit --deny warnings

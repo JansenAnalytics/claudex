@@ -1,0 +1,18 @@
+# Throwaway local Synapse for Claudex Matrix acceptance testing.
+#
+# ⚠️  LOCAL TEST SERVER ONLY. setup.sh enables OPEN registration and a KNOWN
+#     shared secret so accounts/devices can be created freely. It is bound to
+#     127.0.0.1 — never expose this to a network, and never put real data on it.
+#
+# Usage: ./setup.sh   (brings it up + registers accounts)   ·   ./teardown.sh
+services:
+  synapse:
+    image: matrixdotorg/synapse:latest
+    environment:
+      SYNAPSE_SERVER_NAME: localhost
+      SYNAPSE_REPORT_STATS: "no"
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:8008:8008" # localhost only
+    restart: "no"
