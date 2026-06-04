@@ -1,0 +1,6 @@
+{
+  "_comment": "Matrix access policy. Copy to ~/.claude/channels/matrix/access.json and edit. The bridge re-reads this file on every message, so changes take effect live. Fail-closed: missing/invalid file => nothing allowed.",
+  "policy": "allowlist",
+  "allowFrom": ["@you:matrix.org"],
+  "roomAllowFrom": []
+}

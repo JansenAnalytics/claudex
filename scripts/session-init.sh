@@ -1,5 +1,10 @@
 #!/bin/bash
-# Called by SessionStart hook — initializes session, resumes interrupted tasks
+# Called by SessionStart hook — initializes session, resumes interrupted tasks.
+# Headless per-message turns (e.g. the Matrix bridge's `claude -p`) set
+# CLAUDEX_SKIP_LIFECYCLE_HOOKS=1 so this heavy maintenance does NOT run per message
+# (memory reindex / log rotation / watchdog stamping / inbox). The agent's
+# CLAUDE.md, skills, and memory still load — only this maintenance hook is skipped.
+[ -n "${CLAUDEX_SKIP_LIFECYCLE_HOOKS:-}" ] && exit 0
 WORKSPACE="${CLAUDEX_WORKSPACE:-$HOME/.claude-agent}"
 LOGS_DIR="$WORKSPACE/logs"
 DATA_DIR="$WORKSPACE/data"
@@ -7,10 +12,17 @@ INTERRUPTED_FILE="$DATA_DIR/interrupted-task.json"
 
 mkdir -p "$LOGS_DIR" "$DATA_DIR"
 
+# Resolve the active channel's inbox path (defaults to Telegram if unconfigured).
+CH_INBOX="$HOME/.claude/channels/telegram/inbox"
+if [ -f "$WORKSPACE/scripts/channel-config.sh" ]; then
+    # shellcheck source=/dev/null
+    source "$WORKSPACE/scripts/channel-config.sh" 2>/dev/null || true
+fi
+
 # 1. Log session start + record watchdog session timestamp
 echo "[$(date '+%Y-%m-%d %H:%M')] Session started" >> "$LOGS_DIR/sessions.log"
 date +%s > "$DATA_DIR/watchdog_session_start"
-ls "$HOME/.claude/channels/telegram/inbox/" 2>/dev/null | wc -l | tr -d ' ' > "$DATA_DIR/watchdog_last_inbound_count"
+ls "$CH_INBOX/" 2>/dev/null | wc -l | tr -d ' ' > "$DATA_DIR/watchdog_last_inbound_count"
 # Record health event
 node --experimental-sqlite "$WORKSPACE/scripts/health-check.cjs" --record session_start 2>/dev/null || true
 

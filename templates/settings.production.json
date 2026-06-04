@@ -66,7 +66,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && git add -A 2>/dev/null || true"
+            "command": "[ -n \"$CLAUDEX_SKIP_LIFECYCLE_HOOKS\" ] && exit 0; cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && git add -A 2>/dev/null || true"
           }
         ]
       }

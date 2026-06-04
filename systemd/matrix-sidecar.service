@@ -1,0 +1,28 @@
+[Unit]
+# Runs the matrix-sidecar daemon — the E2EE transport the Claudex Matrix bridge
+# talks to. It owns all cryptography (matrix-rust-sdk / vodozemac), persistence,
+# cross-signing, and verified-only delivery, and exposes a localhost-only HTTP
+# API. Install as a *user* service:
+#   cp systemd/matrix-sidecar.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now matrix-sidecar
+#
+# Requires: a built matrix-sidecar binary and a logged-in session — see
+# docs/matrix-setup.md. Reads MATRIX_* (homeserver, access token, device id,
+# trusted keys, sidecar token/port) from ~/.claude-agent/.env.
+Description=matrix-sidecar (E2EE Matrix transport) for the Claudex Matrix channel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.claude-agent/.env
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.claude-agent/matrix-sidecar/target/release/matrix-sidecar serve
+Restart=always
+RestartSec=10
+# Homeservers rate-limit reconnect storms; give failures room to settle.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=default.target

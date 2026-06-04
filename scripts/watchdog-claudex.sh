@@ -1,13 +1,18 @@
 #!/bin/bash
-# Watchdog: check if Claudex is alive AND Telegram delivery is working
-# Run via cron every 5 minutes
+# Watchdog: keep Claudex alive AND verify the channel is actually delivering.
+# Run via cron every 5 minutes. Channel-aware (Telegram plugin or Matrix bridge).
 
 unset ANTHROPIC_API_KEY
 export PATH="$HOME/.bun/bin:$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:/usr/bin:/bin"
+export CLAUDEX_WORKSPACE="${CLAUDEX_WORKSPACE:-$HOME/.claude-agent}"
 
-LOG="$HOME/.claude-agent/logs/watchdog.log"
-DATA="$HOME/.claude-agent/data"
-INBOX="$HOME/.claude/channels/telegram/inbox"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/channel-config.sh" || { echo "❌ Failed to load channel config" >&2; exit 1; }
+
+LOG="$CLAUDEX_WORKSPACE/logs/watchdog.log"
+DATA="$CLAUDEX_WORKSPACE/data"
+INBOX="$CH_INBOX"
 PING_FILE="$DATA/watchdog_ping_pending"
 LAST_INBOUND_FILE="$DATA/watchdog_last_inbound_count"
 SESSION_START_FILE="$DATA/watchdog_session_start"
@@ -17,97 +22,91 @@ mkdir -p "$DATA" "$(dirname "$LOG")"
 # ─── Helper: restart Claudex ────────────────────────────────────────────────
 do_restart() {
     local reason="$1"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Restarting: $reason" >> "$LOG"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Restarting ($CH_NAME): $reason" >> "$LOG"
 
     tmux kill-session -t claudex 2>/dev/null || true
     sleep 3
 
-    cd "$HOME/.claude-agent" && tmux new-session -d -s claudex -c "$HOME/.claude-agent" \
-        "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-8 --dangerously-skip-permissions"
+    cd "$CLAUDEX_WORKSPACE" && tmux new-session -d -s claudex -c "$CLAUDEX_WORKSPACE" "$(channel_launch_cmd)"
 
     sleep 8
-    PIDS=$(pgrep -f "claude.*channels.*telegram" 2>/dev/null || true)
+    PIDS=$(pgrep -f "$CH_PROC_MATCH" 2>/dev/null || true)
     if [ -n "$PIDS" ]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Restarted (PID: $PIDS)" >> "$LOG"
-        node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --record restart 2>/dev/null || true
-        # Record new session start time
+        node --experimental-sqlite "$CLAUDEX_WORKSPACE/scripts/health-check.cjs" --record restart 2>/dev/null || true
         date +%s > "$SESSION_START_FILE"
-        # Clear pending ping
         rm -f "$PING_FILE"
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ Restart FAILED" >> "$LOG"
     fi
 }
 
-# ─── Check 1: Is the process alive? ─────────────────────────────────────────
-PIDS=$(pgrep -f "claude.*channels.*telegram" 2>/dev/null || true)
+# ─── Check 1: Is the resident process alive? ────────────────────────────────
+PIDS=$(pgrep -f "$CH_PROC_MATCH" 2>/dev/null || true)
 
 if [ -z "$PIDS" ]; then
     do_restart "process dead"
     exit 0
 fi
 
-node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --record watchdog_ok 2>/dev/null || true
+node --experimental-sqlite "$CLAUDEX_WORKSPACE/scripts/health-check.cjs" --record watchdog_ok 2>/dev/null || true
 
-# ─── Check 2: Session age — restart if > 4 hours (prevents plugin channel rot) ──
+# ─── Check 2: Session age — restart if > 72h (prevents channel rot) ─────────
 SESSION_START=$(cat "$SESSION_START_FILE" 2>/dev/null || echo "0")
 NOW=$(date +%s)
 SESSION_AGE=$(( NOW - SESSION_START ))
 MAX_SESSION_AGE=$(( 72 * 3600 ))  # 72 hours
 
 if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
-    do_restart "session age $(( SESSION_AGE / 3600 ))h exceeds 4h limit — proactive refresh"
+    do_restart "session age $(( SESSION_AGE / 3600 ))h exceeds 72h limit — proactive refresh"
     exit 0
 fi
 
-# ─── Check 3: Bun plugin network health ─────────────────────────────────────
-# The outbound channel can die silently even if the bun process is alive.
-# Verify the bun process has at least one established connection to Telegram API.
-# Check for active bun connections to Telegram API (149.154.x.x or 91.108.x.x)
-# The child bun process (server.ts) owns the sockets, not the parent — so match by IP, not PID.
+# ─── Check 3: Transport health ──────────────────────────────────────────────
+# The outbound link can die silently even if the resident process is alive.
+# (Only checked once a session has been up >1h to avoid startup races.)
 if [ "$SESSION_AGE" -gt 3600 ]; then
-    ACTIVE_CONNS=$(ss -tp 2>/dev/null | grep "bun" | grep -cE "149\.154\.|91\.108\." || true)
-    if [ "$ACTIVE_CONNS" -eq 0 ]; then
-        do_restart "bun telegram plugin has no active connections to Telegram API (session age: $(( SESSION_AGE / 3600 ))h)"
-        exit 0
+    if ! channel_transport_healthy; then
+        if [ "$CLAUDEX_CHANNEL" = "telegram" ]; then
+            do_restart "telegram plugin has no active connections to Telegram API (session age: $(( SESSION_AGE / 3600 ))h)"
+            exit 0
+        else
+            # The Matrix bridge reconnects to the sidecar on its own, and the sidecar
+            # is a separately-managed daemon — restarting the bridge would not fix it.
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  matrix-sidecar unreachable — bridge will auto-reconnect; not restarting" >> "$LOG"
+        fi
     fi
 fi
 
-# ─── Check 4: Telegram delivery health ──────────────────────────────────────
-# Count current inbox files
+# ─── Check 4: Delivery health ───────────────────────────────────────────────
+# A growing inbox backlog means inbound arrived but no reply was delivered.
 CURRENT_INBOUND=$(ls "$INBOX/" 2>/dev/null | wc -l | tr -d ' ')
 LAST_INBOUND=$(cat "$LAST_INBOUND_FILE" 2>/dev/null || echo "0")
 
 if [ "$CURRENT_INBOUND" -gt "$LAST_INBOUND" ]; then
-    # New inbound messages arrived since last check
+    # New inbound (or undelivered backlog) since last check.
     if [ -f "$PING_FILE" ]; then
-        # We already flagged this — check how long ago
         PING_AGE=$(( NOW - $(cat "$PING_FILE" 2>/dev/null || echo "$NOW") ))
         if [ "$PING_AGE" -gt 600 ]; then
-            # 10+ minutes passed — but check if Claudex is actively working first
-            PANE=$(tmux capture-pane -t claudex -p 2>/dev/null || true)
-            if echo "$PANE" | grep -q "✻\|Thinking\|Running\|Executing\|ms elapsed\|elapsed"; then
-                # Claudex is actively processing a task — do NOT restart
+            # 10+ minutes passed — but don't kill the agent mid-task.
+            if channel_active_work; then
                 echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ Delivery flag ${PING_AGE}s old but Claudex is actively working — skipping restart" >> "$LOG"
             else
-                # Idle at prompt with no response sent — genuinely stuck
-                do_restart "Telegram delivery stuck — idle for ${PING_AGE}s with undelivered inbound"
+                do_restart "$CH_NAME delivery stuck — idle for ${PING_AGE}s with undelivered inbound"
                 echo "$CURRENT_INBOUND" > "$LAST_INBOUND_FILE"
                 exit 0
             fi
         fi
-        # Still within grace period — wait
+        # Still within grace period — wait.
     else
-        # First time we see new inbound — set flag and wait one cycle
         echo "$NOW" > "$PING_FILE"
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  New inbound detected (${LAST_INBOUND}→${CURRENT_INBOUND}), monitoring delivery..." >> "$LOG"
     fi
 else
-    # No new inbound — clear any pending ping flag
+    # No new inbound (backlog cleared or steady) — clear any pending ping flag.
     rm -f "$PING_FILE"
 fi
 
-# Update inbound count
 echo "$CURRENT_INBOUND" > "$LAST_INBOUND_FILE"
 
 # ─── Hourly alive log ────────────────────────────────────────────────────────
@@ -115,5 +114,5 @@ MIN=$(date +%M)
 if [ "$MIN" = "00" ]; then
     AGE_H=$(( SESSION_AGE / 3600 ))
     AGE_M=$(( (SESSION_AGE % 3600) / 60 ))
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Claudex alive (PID: $PIDS, session age: ${AGE_H}h${AGE_M}m)" >> "$LOG"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Claudex alive ($CH_NAME, PID: $PIDS, session age: ${AGE_H}h${AGE_M}m)" >> "$LOG"
 fi

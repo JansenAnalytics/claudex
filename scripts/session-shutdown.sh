@@ -1,5 +1,7 @@
 #!/bin/bash
-# Called by Stop hook — saves interrupted state
+# Called by Stop hook — saves interrupted state. Skipped for headless per-message
+# turns (e.g. the Matrix bridge's `claude -p`) via CLAUDEX_SKIP_LIFECYCLE_HOOKS=1.
+[ -n "${CLAUDEX_SKIP_LIFECYCLE_HOOKS:-}" ] && exit 0
 WORKSPACE="${CLAUDEX_WORKSPACE:-$HOME/.claude-agent}"
 STATE_FILE="$WORKSPACE/data/interrupted-task.json"
 mkdir -p "$(dirname "$STATE_FILE")"
