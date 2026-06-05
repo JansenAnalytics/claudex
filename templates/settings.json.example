@@ -50,7 +50,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && git add -A 2>/dev/null || true"
+            "command": "bash $HOME/.claude-agent/.claude/hooks/auto-git-add.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/.claude/hooks/self-edit-gate.sh",
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/.claude/hooks/skill-usage-log.sh",
+            "timeout": 10
           }
         ]
       }
@@ -62,6 +77,15 @@
           {
             "type": "command",
             "command": "bash $HOME/.claude-agent/scripts/session-shutdown.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh",
+            "timeout": 15
           }
         ]
       }

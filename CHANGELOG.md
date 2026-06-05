@@ -4,6 +4,36 @@ Notable changes to the Claudex reference implementation. This documents a
 showcase/reference repo rather than a versioned package, so entries are grouped
 by date. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-06-05 — Self-improvement loops (deterministic, zero-marginal-cost)
+
+### Added
+- **Memory curation (Stop hook)** — `hooks/memory-curate.{cjs,sh}` reflect over the
+  session transcript tail at session end and persist *only durable facts* (preferences,
+  environment, corrections, conventions, milestones) to the dated daily note and the
+  structured `USER.md` profile. Append-only, deduped, size-capped; shells out to the
+  `claude` CLI on the Max subscription (zero metered API cost); never touches `CLAUDE.md`.
+  Runs detached so it never delays session exit.
+- **Structured user profile** — `USER.md` now uses a fixed five-section schema
+  (`stable_facts · preferences · working_patterns · recent_corrections · open_threads`)
+  under a hard ~500-token cap, with poisoning guards (evidence-required, date-tagged
+  provenance, dedupe, and contradiction→`recent_corrections` instead of overwrite). Loaded
+  every session by `session-init.sh`. See [templates/USER.md.example](templates/USER.md.example).
+- **`/whoami` skill** — read-only render of the profile with section counts, token-cap
+  check, and a prune nudge.
+- **Skill self-maintenance** — `hooks/self-edit-gate.sh` (PostToolUse `Write|Edit`)
+  advisorily audits self-edited `SKILL.md` files (frontmatter, ≤15 KB, secret scan);
+  `hooks/skill-usage-log.sh` (PostToolUse `Skill`) records skill usage to
+  `data/skill-usage.jsonl`, seeded by `scripts/skill-usage-backfill.sh`.
+- **`/budget` skill** — read-only context-window estimator that ranks the heaviest skill
+  descriptions and estimates total context weight; `--cost` for real spend.
+- **Comparison: Claudex vs Hermes Agent** (README) — sourced positioning vs Nous Research's
+  Hermes; refreshed the OpenClaw comparison to reflect the deterministic memory loop.
+
+### Changed
+- `settings.json` templates now wire the full hook set (self-edit-gate, skill-usage-log,
+  memory-curate) alongside the existing SessionStart/Stop hooks.
+- `docs/hooks-guide.md` documents the four self-improvement hooks and the live wiring.
+
 ## 2026-06-03 — Portability & extension-surface release
 
 ### Added

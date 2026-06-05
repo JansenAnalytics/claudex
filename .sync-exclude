@@ -35,3 +35,6 @@ research/
 # ─── Local auth / OAuth state ───────────────────────────────────────────────
 .claude/auth/
 .env
+
+# ─── Pre-mutation backups (settings/hooks/skills snapshots) ─────────────────
+.claude/backups/

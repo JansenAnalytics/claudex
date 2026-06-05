@@ -32,6 +32,20 @@ if [ -f "$DATA_DIR/inbox.json" ]; then
     fi
 fi
 
+# 2.5. Load the auto-curated user profile into context (Tier 2 item 4C).
+# USER.md is maintained by the Stop-hook distiller (memory-curate). Injecting it here
+# is what makes that curation actually reach the model — without this cat the profile
+# is written every session but never read. Guarded: only emit if present and non-empty.
+# Canonical path = the file memory-curate.cjs writes ($WORKSPACE/memory/USER.md).
+USER_PROFILE="$WORKSPACE/memory/USER.md"
+if [ -s "$USER_PROFILE" ]; then
+    echo ""
+    echo "===== USER PROFILE (auto-curated — memory/USER.md) ====="
+    cat "$USER_PROFILE"
+    echo "===== END USER PROFILE ====="
+    echo ""
+fi
+
 # 3. Rotate logs: gzip .log files older than 7 days, delete .log.gz older than 30 days
 find "$LOGS_DIR" -maxdepth 1 -name "*.log" -mtime +7 ! -name "sessions.log" -exec gzip -q {} \; 2>/dev/null
 find "$LOGS_DIR" -maxdepth 1 -name "*.log.gz" -mtime +30 -delete 2>/dev/null
@@ -43,5 +57,14 @@ if [ -n "$OPENAI_API_KEY" ] && [ -f "$MEMORY_SCRIPT" ]; then
         cat /tmp/memory-reindex-err.log
 fi
 
-# 5. Status line
-echo "✅ Session started | Logs rotated | Memory indexed"
+# 5. Verify v2 skill conventions are active
+# CLAUDE_SKILLS_DIR is set via settings.json env block; if missing, skills fall back to a default.
+# This is informational only — not a failure mode.
+if [ -z "${CLAUDE_SKILLS_DIR:-}" ]; then
+    CLAUDE_SKILLS_DIR_STATUS="(fallback)"
+else
+    CLAUDE_SKILLS_DIR_STATUS="set"
+fi
+
+# 6. Status line
+echo "✅ Session started | Logs rotated | Memory indexed | CLAUDE_SKILLS_DIR $CLAUDE_SKILLS_DIR_STATUS"

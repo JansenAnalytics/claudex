@@ -24,6 +24,27 @@ See [references/heuristics.md](references/heuristics.md) for the full decision f
 
 ---
 
+## Improve an Existing Skill (patch-on-friction)
+
+Creating skills is only half the loop — **maintaining** them matters just as much. Right
+after you **used** a skill this turn, run a quick friction check:
+
+1. **Missing steps** — did you have to do something the skill didn't mention?
+2. **Outdated / wrong** — a stale command, wrong path, or wrong flag?
+3. **Boilerplate** — did you hand-write something the skill could have provided?
+4. **Unclear** — did you misread an instruction that should be clearer?
+
+**2+ yes → patch it now.** Edit that skill's `SKILL.md` with the **smallest** diff that fixes
+it, add/refresh a `patched: YYYY-MM-DD` line in the frontmatter, and keep it to **one skill per
+turn** (don't go on a refactor spree mid-task). Don't wait to be asked — an unmaintained skill
+is a liability.
+
+The **self-edit gate** (a PostToolUse hook) automatically audits every `SKILL.md` you edit —
+frontmatter, ≤15 KB size, external-path leaks, and secrets — and warns you if a patch breaks
+something. So patch freely; the gate is your safety net.
+
+---
+
 ## Scaffold a New Skill
 
 ```bash
