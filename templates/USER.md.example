@@ -1,0 +1,27 @@
+# User Profile (auto-curated — review periodically)
+<!-- Schema: stable_facts | preferences | working_patterns | recent_corrections | open_threads.
+     Hard cap ~500 tokens. Auto-maintained by .claude/hooks/memory-curate.cjs (Stop hook);
+     loaded each session by scripts/session-init.sh; review/prune via the /whoami skill.
+
+     This is a generated, living file — distinct from CLAUDE.md (hand-written persona + rules).
+     CLAUDE.md = rules you give the agent (top-down, permanent).
+     USER.md   = things the agent learns about you (bottom-up, revisable).
+     The distiller never edits CLAUDE.md. -->
+
+## stable_facts
+<!-- identity, timezone, environment, tooling — rarely change -->
+- Name: <your name>. Timezone <Area/City>. Primary comms via <channel>.
+
+## preferences
+<!-- how you like work done -->
+- Prefers concise answers; action over asking permission when the path is clear.
+
+## working_patterns
+<!-- recurring workflows, cadences -->
+- Reviews changes via pull request; wants tests run before "done" is claimed.
+
+## recent_corrections
+<!-- explicit corrections / things that superseded an old belief — newest first, rolling (kept newest ~8) -->
+
+## open_threads
+<!-- in-flight work to resume — rolling (kept newest ~6) -->

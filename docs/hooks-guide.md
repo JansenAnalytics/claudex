@@ -139,12 +139,70 @@ no error is detected. To enable, add a separate all-tools matcher block:
 
 ---
 
+## 2b. Self-improvement hooks
+
+These four make the agent's *learning* deterministic — they fire on hooks, not "if
+the model remembers." They are observe-only / advisory and always exit 0. All model
+calls shell out to the `claude` CLI on the **Max OAuth subscription** (ANTHROPIC_API_KEY
+stripped) → **zero metered API cost**.
+
+### `memory-curate.cjs` (+ `memory-curate.sh`) — event: **Stop**
+
+After a session ends, a cheap Haiku-tier reflection reads the transcript tail and
+extracts **only durable facts** (preferences, environment, corrections, conventions,
+milestones) as JSON. Each fact routes deterministically: all → the dated daily note;
+user-facts → the structured `memory/USER.md` profile. Append-only, deduped (against
+existing memory before writing), size-capped, and it **never touches the hand-written
+`CLAUDE.md`**. `memory-curate.sh` is the thin Stop-hook wrapper (throttled) that calls
+the `.cjs`. The profile uses a fixed 5-section schema under a ~500-token cap with
+poisoning guards (evidence-required, provenance, contradiction→`recent_corrections`
+instead of overwrite). Loaded next session by `session-init.sh`; reviewed via `/whoami`.
+
+Wire it as a **second** Stop hook (next to `session-shutdown.sh`):
+
+```json
+{ "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh" }
+```
+
+### `self-edit-gate.sh` — event: **PostToolUse** (matcher `Write|Edit`)
+
+When the agent edits one of its **own** `.claude/skills/*/SKILL.md` files, this runs
+`skill-audit.sh` + a secret scan and **warns** (advisory; never blocks, never reverts)
+if the edit breaks frontmatter, exceeds 15 KB, or contains a secret-shaped value. Lets
+the agent patch its skills freely with a safety net. No-op for any other path.
+
+```json
+{ "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/self-edit-gate.sh", "timeout": 20 }
+```
+
+### `skill-usage-log.sh` — event: **PostToolUse** (matcher `Skill`)
+
+On each Skill-tool invocation, appends one JSONL line `{skill, ts, session}` to
+`data/skill-usage.jsonl` — the data foundation for catalog curation. Reads the skill
+name from `tool_input.skill`. `scripts/skill-usage-backfill.sh` seeds it from historical
+transcripts. (Captures *explicit* Skill-tool loads, not description-match auto-loads.)
+
+```json
+"PostToolUse": [
+  {
+    "matcher": "Skill",
+    "hooks": [
+      { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/skill-usage-log.sh", "timeout": 10 }
+    ]
+  }
+]
+```
+
+---
+
 ## 3. Wired state
 
-This is the intended `settings.json` `"hooks"` block after Phase 4 wiring. The
-inline git-add command is **replaced** by `auto-git-add.sh`; `snapshot-on-stop.sh`
-is added as a second Stop hook. `lint-on-write.sh` and `notify-on-error.sh` are
-documented above but **not** wired by default.
+This is the live `settings.json` `"hooks"` block, including the self-improvement
+hooks from §2b. The inline git-add command is **replaced** by `auto-git-add.sh`;
+`self-edit-gate.sh` rides the same `Write|Edit` matcher; a new `Skill` matcher runs
+`skill-usage-log.sh`; the Stop event runs shutdown + snapshot + memory-curate.
+`lint-on-write.sh` and `notify-on-error.sh` are documented above but **not** wired
+by default.
 
 ```json
 "hooks": {
@@ -160,7 +218,14 @@ documented above but **not** wired by default.
     {
       "matcher": "Write|Edit",
       "hooks": [
-        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/auto-git-add.sh" }
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/auto-git-add.sh" },
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/self-edit-gate.sh", "timeout": 20 }
+      ]
+    },
+    {
+      "matcher": "Skill",
+      "hooks": [
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/skill-usage-log.sh", "timeout": 10 }
       ]
     }
   ],
@@ -169,7 +234,8 @@ documented above but **not** wired by default.
       "matcher": "",
       "hooks": [
         { "type": "command", "command": "bash $HOME/.claude-agent/scripts/session-shutdown.sh" },
-        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh" }
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh" },
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh" }
       ]
     }
   ]
@@ -178,9 +244,10 @@ documented above but **not** wired by default.
 
 Summary of the wired flow:
 
-- **SessionStart** → `scripts/session-init.sh` (load context at start).
-- **PostToolUse `Write|Edit`** → `.claude/hooks/auto-git-add.sh` (stage edits).
-- **Stop** → `scripts/session-shutdown.sh`, then `.claude/hooks/snapshot-on-stop.sh`.
+- **SessionStart** → `scripts/session-init.sh` (load context + `USER.md` profile at start).
+- **PostToolUse `Write|Edit`** → `auto-git-add.sh` (stage edits), then `self-edit-gate.sh` (audit self-edited skills).
+- **PostToolUse `Skill`** → `skill-usage-log.sh` (record skill usage).
+- **Stop** → `session-shutdown.sh`, `snapshot-on-stop.sh`, then `memory-curate.sh` (reflect-and-persist).
 
 ---
 

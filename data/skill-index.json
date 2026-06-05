@@ -241,6 +241,26 @@
     "support_dirs": []
   },
   {
+    "name": "budget",
+    "description": "Estimate and rank what is consuming the context window — CLAUDE.md, MEMORY.md, USER.md, the 162 auto-loaded skill descriptions (ranked heaviest-first), and tool/MCP schemas. Use when asked about context bloat, token weight, \"what's eating my context\", which skills are heaviest, or with --cost for real spend.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "context-window",
+      "tokens",
+      "budget",
+      "bloat",
+      "skill-descriptions",
+      "cost"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
     "name": "calendar-manager",
     "description": "Read and manage Google Calendar events: list upcoming, create events, check availability, send reminders.",
     "category": "productivity",
@@ -2797,6 +2817,25 @@
       "headless",
       "full-page",
       "mobile-emulation"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": [
+      "scripts"
+    ]
+  },
+  {
+    "name": "whoami",
+    "description": "Show the auto-curated user profile (memory/USER.md) — who the user is, preferences, working patterns, recent corrections, and open threads — with last-updated, section counts, and a token-cap/prune check. Use when asked \"what do you know about me\", \"show my profile\", \"whoami\", or to review/prune the profile.",
+    "category": "meta",
+    "maturity": "beta",
+    "tags": [
+      "user-profile",
+      "memory",
+      "self-knowledge",
+      "review",
+      "curation"
     ],
     "external_deps": [],
     "private": false,

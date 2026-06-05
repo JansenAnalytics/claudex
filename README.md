@@ -35,10 +35,12 @@ This repo documents the complete system architecture, provides templates for bui
   - [Persistence](#persistence)
   - [Memory & RAG System](#memory--rag-system)
   - [Hooks & Automation](#hooks--automation)
+  - [Self-Improvement Loops](#self-improvement-loops)
   - [Health Monitoring](#health-monitoring)
   - [Task Inbox](#task-inbox)
   - [MCP Servers](#mcp-servers)
 - [Comparison: Claudex vs OpenClaw](#comparison-claudex-vs-openclaw)
+- [Comparison: Claudex vs Hermes Agent](#comparison-claudex-vs-hermes-agent)
 - [Directory Structure](#directory-structure)
 - [Debugging & Gotchas](#debugging--gotchas)
 - [Examples](#examples)
@@ -440,13 +442,28 @@ See [docs/automation.md](docs/automation.md) for scheduled tasks, `/loop`, and e
 
 ### Production Hook Setup
 
-The default `settings.json` ships with three hooks:
+The default `settings.json` wires these hooks:
 
-1. **SessionStart** → `session-init.sh` — logs start, checks for interrupted tasks, processes inbox, rotates logs, runs incremental memory reindex
-2. **PostToolUse** → auto-stages git changes after Write/Edit operations
-3. **Stop** → `session-shutdown.sh` — saves interrupted task state, records health event
+1. **SessionStart** → `session-init.sh` — logs start, checks for interrupted tasks, processes inbox, rotates logs, runs incremental memory reindex, **and loads the curated user profile (`USER.md`) into context**
+2. **PostToolUse `Write|Edit`** → auto-stages git changes **+ `self-edit-gate.sh`** (advisory audit of self-edited `SKILL.md` files)
+3. **PostToolUse `Skill`** → `skill-usage-log.sh` — records which skill was loaded, when (usage ledger)
+4. **Stop** → `session-shutdown.sh` (interrupted-task state, health event) **+ `memory-curate.sh`** (reflect-and-persist; see below)
 
 For a locked-down production setup, see [templates/settings.production.json](templates/settings.production.json).
+
+### Self-Improvement Loops
+
+Most "self-improving agent" features fire **only if the model remembers to invoke them** — a soft trigger that silently stops working. Claudex's improvement loops are **deterministic**: they fire on Claude Code hooks and schedules, so they happen whether or not the model thinks to. Three loops run automatically, all on the **flat-rate Max subscription with zero metered API cost** (they shell out to the `claude` CLI on OAuth credentials, never `api.anthropic.com`).
+
+**1. Memory curation (Stop hook → `memory-curate.cjs`).** When a session ends, a cheap Haiku-tier reflection reads the transcript tail and extracts *only durable facts* — preferences, environment facts, explicit corrections, conventions, completed milestones — as structured JSON. Each fact is routed deterministically: all facts to the dated daily note, user-facts into the structured `USER.md` profile. It is append-only, deduped (against existing memory before writing), size-capped, and **never touches the hand-written `CLAUDE.md`**.
+
+**2. Structured user profile (`USER.md`) + load.** A fixed five-section schema — `stable_facts · preferences · working_patterns · recent_corrections · open_threads` — kept under a hard **~500-token cap**. The curator (item 1) maintains it with poisoning guards: *evidence-required* (factless claims dropped), date-tagged provenance, dedupe, a hard token cap, and **contradiction handling** — a fact that conflicts with an existing belief is recorded as a *new* `recent_corrections` entry rather than silently overwriting the core. `session-init.sh` loads the profile every SessionStart, and the read-only **`/whoami`** skill renders it with section counts and a prune nudge. See [templates/USER.md.example](templates/USER.md.example).
+
+**3. Skill self-maintenance + usage tracking.**
+- **`self-edit-gate.sh`** (PostToolUse `Write|Edit`) — whenever the agent edits one of its own `SKILL.md` files, it auto-runs `skill-audit.sh` + a secret scan and *warns* (advisory; never blocks, never auto-reverts) if the edit breaks frontmatter, exceeds 15 KB, or contains a secret value. So the agent can patch its skills freely with a safety net.
+- **`skill-usage-log.sh`** (PostToolUse `Skill`) — appends one JSONL line per skill load to `data/skill-usage.jsonl`; `scripts/skill-usage-backfill.sh` seeds it from historical transcripts. This is the data foundation for catalog curation. (It captures *explicit* Skill-tool invocations, not description-match auto-loads.)
+
+**`/budget` — context-window visibility.** With 160+ auto-loaded skill descriptions, description sprawl is a plausible silent tax. The read-only `/budget` skill estimates and **ranks** the token weight of CLAUDE.md, MEMORY.md, USER.md, every skill description (exact ranking from `skill-index.json`), and tool/MCP schemas — so bloat is visible and prunable. Add `--cost` for real spend.
 
 ### Permissions & Safety
 
@@ -581,6 +598,10 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 | ** No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
 | ** Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
 | ** Health monitoring** | Built-in health metrics, uptime tracking, session counts. OpenClaw: manual monitoring only. |
+| ** Deterministic self-improvement** | Memory curation, skill-audit gating, and usage tracking fire on **hooks** (Stop, PostToolUse) — not "if the model remembers." OpenClaw's curation/learning is prompt-/heartbeat-driven. |
+| ** Auto-curated user profile** | A hook-distilled, structured `USER.md` (5 sections, ~500-token cap, contradiction-safe) loaded every session. OpenClaw: manual `USER.md` editing. |
+| ** Context budgeting** | `/budget` ranks the heaviest skill descriptions + estimates total context weight. OpenClaw: no equivalent. |
+| ** Skill self-maintenance** | `self-edit-gate` audits self-edited skills (frontmatter, size, secret scan) advisorily; `skill-usage-log` tracks real usage. OpenClaw: manual skill hygiene. |
 
 ### What OpenClaw Does Better
 
@@ -605,7 +626,7 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 |---|---|
 | **Telegram messaging** | Both native, both work well. OpenClaw slightly richer (reactions, buttons, polls). |
 | **Skills** | Both have skill systems. OpenClaw has 160 skills via ClawHub; Claudex can port them. |
-| **Memory & RAG** | Both have vector semantic search + FTS5 hybrid. OpenClaw: built-in `memory_search` tool. Claudex: custom RAG engine with cross-agent search. Both index session transcripts. |
+| **Memory & RAG (retrieval)** | Both have vector semantic search + FTS5 hybrid over indexed transcripts. OpenClaw: built-in `memory_search` tool. Claudex: custom RAG engine with cross-agent search. _Retrieval is roughly equivalent — but Claudex's **deterministic auto-curation + structured profile** (above) is an edge OpenClaw lacks._ |
 | **Sub-agents** | Both spawn sub-agents. OpenClaw: `sessions_spawn`. Claudex: built-in subagents. |
 | **GitHub integration** | Both use `gh` CLI. Claudex also supports MCP GitHub server. |
 | **File operations** | Both: Read/Write/Edit/Exec. Identical capability. |
@@ -620,6 +641,53 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 **Choose OpenClaw if:** You need multi-channel support (WhatsApp, Discord, Signal, etc.), paired device control, browser relay, or the full ClawHub skill ecosystem. Better for complex multi-surface deployments.
 
 **Use both:** They can coexist on the same machine — Claudex as the "always thinking" daemon with huge context, OpenClaw for its unique multi-channel and device capabilities. This is exactly what we do.
+
+---
+
+## Comparison: Claudex vs Hermes Agent
+
+[Hermes Agent](https://github.com/NousResearch/hermes-agent) (Nous Research) is the open-source agent that popularized the "self-improving agent" framing — autonomous skill creation, agent-curated memory, and a GEPA-based self-evolution engine. We studied it from primary sources (its repos, docs, and issues) and built Claudex's self-improvement loops deliberately, in response. Here's an honest, sourced comparison (Hermes **v0.15.2**, May 2026).
+
+The headline: **the capabilities Hermes is credited for, Claudex now matches or exceeds — and the one place Hermes genuinely led (deterministic, hook-driven learning) is exactly what Claudex's Tier 1/2 loops were built to close.**
+
+### Where Claudex matches or leads
+
+| Capability | Claudex | Hermes |
+|---|---|---|
+| **Deterministic learning loop** | Memory curation fires on the **Stop hook**; skill gating + usage tracking on **PostToolUse hooks** — runs every time. | "Agent-curated memory with periodic nudges" + a cron scheduler. The skill self-improvement is an always-on **prompt instruction**, not a post-task hook. |
+| **Cross-session memory** | FTS5 **+ vector RAG** (hybrid) over transcripts and memory files, with cross-agent search. | "FTS5 session search" for cross-session recall. Hybrid keyword + embeddings is a Claudex superset. |
+| **User profile** | Structured `USER.md` (5 sections), **~500-token cap**, evidence-required, contradiction-safe, loaded every session, reviewable via `/whoami`. | A `~500-token USER.md` the agent edits, plus optional Honcho "dialectic user modeling" (1 of 8 opt-in plugins, not default). Same budget; Claudex adds the schema + poisoning guards. |
+| **Skill self-maintenance** | `self-skill` (create) + a `self-edit-gate` hook (audit/size/secret scan on every self-edit) + `skill-usage-log` (real usage data) + `skill-audit`/`skill-index` tooling + categories. | "Skills self-improve during use" (a prompt paragraph). The proactive patch-on-friction loop is an open proposal; the GEPA self-evolution engine is a **separate, experimental repo**. |
+| **Context/cost visibility** | `/budget` ranks heaviest skill descriptions + estimates total context; `--cost` for spend. | A `/context` + `/usage` capability proposed in issues. |
+| **Built-in tools & cost** | Web search/fetch, media, browser (Playwright), TTS/image skills on the **flat-rate Claude Max** subscription — no per-tool bill. | "Tool Gateway" (Firecrawl/FAL/OpenAI-TTS/Browser-Use) routed through a **Nous Portal subscription** (BYO keys optional). |
+| **Identity / context files** | `CLAUDE.md` (hand-written persona + rules). | "Context Files" — the same idea. |
+
+### Hermes's genuine edges (where we deliberately differ)
+
+| Capability | Hermes | Why Claudex doesn't copy it |
+|---|---|---|
+| **GEPA prompt-evolution optimizer** | Wraps DSPy + GEPA (a real, strong optimizer — ICLR 2026 Oral, ~35× more sample-efficient than RL) to evolve `SKILL.md` from execution traces. | GEPA needs a ground-truth eval signal. Prose skills have **no pytest oracle**, so a self-evolution loop risks drifting a description toward "looks confident," not "works." We adopt Hermes's **safety-gate checklist** (audit, ≤15 KB, human review) but skip the autonomous rewrite engine. It remains a possible human-in-the-loop pilot. |
+| **Multi-model / OpenRouter (200+ models)** | Routes across many models per task. | Claudex is single-model on flat-rate Claude Max OAuth by design — a metered multi-model bill abandons the zero-API-cost premise. |
+| **Serverless / hibernation backends** | Modal/Daytona terminal backends. | Claudex is intentionally an always-on box (tmux + systemd + watchdog) for trade monitoring; hibernation fights that design. |
+
+### The de-hyped reality (sourced)
+
+We verified the load-bearing claims against primary sources, and kept this section honest rather than promotional:
+
+- **"Skills self-improve during use" / "autonomous skill creation"** resolve to an always-on system-prompt paragraph plus a skill-management tool — as soft a trigger as any prompt-driven approach. The proactive *patch-the-moment-you-notice* loop is an **open proposal** (issue #429), not shipped default behavior.
+- **GEPA self-evolution** lives in a separate repo (`hermes-agent-self-evolution`) that is **experimental, with no releases** — **only Phase 1 of 5** (SKILL.md) is implemented; tool-description, system-prompt, and code phases are planned. (Its own gates can reportedly pass on un-mutated data — issue #38.)
+- **Honcho "dialectic user modeling"** is **1 of 8 opt-in plugins**, not the default; Hermes's built-in user model is the ~500-token `USER.md` — the same primitive Claudex uses.
+- Headline marketing figures (e.g. "40% faster", large star counts) appear in **no primary source** and are excluded here.
+
+None of this is a knock on Hermes — the GEPA *research* is excellent and worth watching. The point is narrower: **Claudex already provides the practical, shipping version of the "self-improving agent" loop**, deterministically and at zero marginal cost.
+
+### Bottom line
+
+**Choose Claudex if** you want the self-improving-agent loop *shipping and deterministic today* — hook-driven memory curation, a structured auto-loaded user profile, skill-audit gating, and context budgeting — on a flat-rate subscription with built-in tools and no per-token or per-tool bill.
+
+**Watch Hermes if** you want to experiment with autonomous GEPA-based prompt evolution and multi-model routing, and don't mind early-stage, subscription-gated tooling.
+
+_Sources: [hermes-agent](https://github.com/NousResearch/hermes-agent) (README v0.15.2, `agent/prompt_builder.py`, docs, issues #429/#8506/#10617), [hermes-agent-self-evolution](https://github.com/NousResearch/hermes-agent-self-evolution) (PLAN, issue #38), [GEPA](https://arxiv.org/abs/2507.19457). Full internal analysis: 8-agent primary-source study, 2026-06-05._
 
 ---
 
