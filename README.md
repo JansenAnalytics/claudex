@@ -14,7 +14,7 @@ Claudex is an **autonomous AI agent** that runs as a persistent daemon on a Linu
 
 - 💬 **Connects to Telegram** — real-time two-way messaging, just like a human chat
 - 🧠 **Has memory** — CLAUDE.md for identity/rules + daily memory files for continuity across sessions
-- 🔧 **Has skills** — 160 portable skill modules for everything from weather to code review to system monitoring
+- 🔧 **Has skills** — 162 portable skill modules for everything from weather to code review to system monitoring
 - 🤖 **Spawns sub-agents** — delegate parallel work to specialized agents (researcher, coder, reviewer, etc.)
 - 🔄 **Self-heals** — watchdog cron + systemd auto-restart keeps it alive 24/7
 - 💰 **Zero API cost** — runs on Claude Max subscription ($100/mo flat), not per-token billing
@@ -70,7 +70,7 @@ This repo documents the complete system architecture, provides templates for bui
 │  │  └──────────┘  └────────┘                │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
-│  │  │  Telegram  │  │   160 Skills      │   │  │
+│  │  │  Telegram  │  │   162 Skills      │   │  │
 │  │  │  Channel   │  │  (.claude/skills/)│   │  │
 │  │  │  (plugin)  │  │                   │   │  │
 │  │  └─────┬──────┘  └───────────────────┘   │  │
@@ -251,7 +251,7 @@ curl -s "wttr.in/LOCATION?format=%l:+%c+%t+%h+%w"
 
 Claude Code auto-selects relevant skills based on the task description. Place skills in `.claude/skills/<name>/SKILL.md`.
 
-**This repo includes all 160 production-tested skills** covering:
+**This repo includes all 162 production-tested skills** covering:
 - 🌤️ Weather, web monitoring, research
 - 💻 GitHub workflow, code review, testing
 - 📊 Data analysis, market data, trading
@@ -463,7 +463,7 @@ Most "self-improving agent" features fire **only if the model remembers to invok
 - **`self-edit-gate.sh`** (PostToolUse `Write|Edit`) — whenever the agent edits one of its own `SKILL.md` files, it auto-runs `skill-audit.sh` + a secret scan and *warns* (advisory; never blocks, never auto-reverts) if the edit breaks frontmatter, exceeds 15 KB, or contains a secret value. So the agent can patch its skills freely with a safety net.
 - **`skill-usage-log.sh`** (PostToolUse `Skill`) — appends one JSONL line per skill load to `data/skill-usage.jsonl`; `scripts/skill-usage-backfill.sh` seeds it from historical transcripts. This is the data foundation for catalog curation. (It captures *explicit* Skill-tool invocations, not description-match auto-loads.)
 
-**`/budget` — context-window visibility.** With 160+ auto-loaded skill descriptions, description sprawl is a plausible silent tax. The read-only `/budget` skill estimates and **ranks** the token weight of CLAUDE.md, MEMORY.md, USER.md, every skill description (exact ranking from `skill-index.json`), and tool/MCP schemas — so bloat is visible and prunable. Add `--cost` for real spend.
+**`/budget` — context-window visibility.** With 162 auto-loaded skill descriptions, description sprawl is a plausible silent tax. The read-only `/budget` skill estimates and **ranks** the token weight of CLAUDE.md, MEMORY.md, USER.md, every skill description (exact ranking from `skill-index.json`), and tool/MCP schemas — so bloat is visible and prunable. Add `--cost` for real spend.
 
 ### Permissions & Safety
 
@@ -707,7 +707,7 @@ claudex/
 │   ├── persistence.md              #   3-layer persistence (tmux+systemd+cron)
 │   ├── automation.md               #   Hooks, scheduled tasks, /loop
 │   ├── skills-guide.md             #   Skill format, auto-selection, porting
-│   ├── skills-catalog.md           #   Full catalog of all 160 skills
+│   ├── skills-catalog.md           #   Full catalog of all 162 skills
 │   ├── subagents.md                #   Custom sub-agents and teams
 │   ├── claude-md-guide.md          #   Writing an effective CLAUDE.md
 │   ├── mcp-servers.md              #   MCP server configuration
@@ -717,12 +717,12 @@ claudex/
 │   ├── mcp-guide.md                #   MCP registry — configs + install
 │   ├── plugins-guide.md            #   Marketplace plugins that pair with Claudex
 │   └── skill-anatomy.md            #   SKILL.md schema — categories, maturity, tags
-├── skills/                         # 160 production-tested skill modules
+├── skills/                         # 162 production-tested skill modules
 │   ├── weather/SKILL.md
 │   ├── github-workflow/SKILL.md
 │   ├── memory-search/SKILL.md
 │   ├── watchdog/SKILL.md
-│   └── ... (160 total)
+│   └── ... (162 total)
 ├── agents/                         # Custom sub-agent definitions (9)
 │   ├── researcher.md
 │   ├── coder.md
@@ -774,7 +774,7 @@ claudex/
 ├── CLAUDE.md                       # Your agent's identity (customize this!)
 ├── .claude/
 │   ├── settings.json               # Permissions, hooks, env vars
-│   ├── skills/                     # 160 skill modules (copied from repo)
+│   ├── skills/                     # 162 skill modules (copied from repo)
 │   ├── agents/                     # 9 sub-agent definitions
 │   └── rules/                      # Safety + Telegram formatting rules
 ├── data/
