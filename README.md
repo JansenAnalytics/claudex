@@ -436,7 +436,7 @@ Hooks fire at lifecycle events:
 }
 ```
 
-⚠️ **Important format note:** Hooks use a `{ matcher, hooks: [{ type, command }] }` structure — NOT a flat `{ type, command }` at the top level. This was a debugging gotcha during our setup.
+⚠️ **Format note:** hooks use a `{ matcher, hooks: [{ type, command }] }` structure — a flat `{ type, command }` at the top level silently fails to fire. See [Debugging & Gotchas](#debugging--gotchas) for the symptom.
 
 See [docs/automation.md](docs/automation.md) for scheduled tasks, `/loop`, and event-driven patterns.
 
@@ -646,9 +646,9 @@ This system was built as an alternative to [OpenClaw](https://github.com/opencla
 
 ## Comparison: Claudex vs Hermes Agent
 
-[Hermes Agent](https://github.com/NousResearch/hermes-agent) (Nous Research) is the open-source agent that popularized the "self-improving agent" framing — autonomous skill creation, agent-curated memory, and a GEPA-based self-evolution engine. We studied it from primary sources (its repos, docs, and issues) and built Claudex's self-improvement loops deliberately, in response. Here's an honest, sourced comparison (Hermes **v0.15.2**, May 2026).
+[Hermes Agent](https://github.com/NousResearch/hermes-agent) (Nous Research) is the open-source agent that popularized the "self-improving agent" framing — autonomous skill creation, agent-curated memory, and a GEPA-based self-evolution engine. Claudex delivers the same outcomes deterministically. The comparison below is drawn from Hermes's own repos, docs, and issues (Hermes **v0.15.2**, May 2026).
 
-The headline: **the capabilities Hermes is credited for, Claudex now matches or exceeds — and the one place Hermes genuinely led (deterministic, hook-driven learning) is exactly what Claudex's Tier 1/2 loops were built to close.**
+The headline: **the capabilities Hermes is credited for, Claudex matches or exceeds — including the one place Hermes genuinely led, deterministic hook-driven learning, which Claudex's self-improvement loops now provide.**
 
 ### Where Claudex matches or leads
 
@@ -672,7 +672,7 @@ The headline: **the capabilities Hermes is credited for, Claudex now matches or 
 
 ### The de-hyped reality (sourced)
 
-We verified the load-bearing claims against primary sources, and kept this section honest rather than promotional:
+These claims are drawn from Hermes's primary sources, not its marketing:
 
 - **"Skills self-improve during use" / "autonomous skill creation"** resolve to an always-on system-prompt paragraph plus a skill-management tool — as soft a trigger as any prompt-driven approach. The proactive *patch-the-moment-you-notice* loop is an **open proposal** (issue #429), not shipped default behavior.
 - **GEPA self-evolution** lives in a separate repo (`hermes-agent-self-evolution`) that is **experimental, with no releases** — **only Phase 1 of 5** (SKILL.md) is implemented; tool-description, system-prompt, and code phases are planned. (Its own gates can reportedly pass on un-mutated data — issue #38.)
@@ -797,7 +797,7 @@ claudex/
 
 ## Debugging & Gotchas
 
-Real issues we encountered during setup, and their fixes:
+Common issues and their fixes:
 
 ### 1. ANTHROPIC_API_KEY Conflicts with OAuth
 
