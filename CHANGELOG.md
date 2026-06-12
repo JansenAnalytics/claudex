@@ -4,6 +4,29 @@ Notable changes to the Claudex reference implementation. This documents a
 showcase/reference repo rather than a versioned package, so entries are grouped
 by date. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-06-12 — Memory curation: Stop hook → isolated cron pipeline
+
+### Changed
+- **Memory curation now runs from cron** (`17 */2 * * *` → `scripts/memory-curate-cron.sh`
+  → `scripts/memory-curate.cjs --scan`), replacing the Stop-hook design. Stop fires after
+  *every turn* of a channel-driven session, and a hook-spawned `claude -p` loads any
+  user-level channel plugin — whose poller displaces the live session's connection
+  (one `getUpdates` consumer per bot token). The cron spawn is **plugin-isolated**
+  (`--setting-sources project --strict-mcp-config`, neutral cwd, sandboxed channel state,
+  stripped channel/API tokens) and still runs on OAuth credentials at zero metered cost.
+- **Byte-offset transcript tracking** — each session file is curated incrementally and
+  exactly once (no gaps, no double-processing); failed windows are retried, not skipped.
+- **Profile lifecycle** — open threads auto-resolve when later transcripts show the work
+  finished, and expire after 30 days; an already-known digest of `CLAUDE.md` stops the
+  profile from re-recording facts that are loaded every session anyway; trade-call/market
+  chatter is explicitly excluded; daily notes consolidate to one auto-curated section per day.
+- **Failure visibility** — three consecutive model failures append a warning to the daily
+  note (fail-open, never fail-silent).
+- **Watchdog** — channel-health gate lowered from 1 h to 10 min for faster poller recovery.
+- `hooks/memory-curate.cjs` moved to `scripts/memory-curate.cjs`; `hooks/memory-curate.sh`
+  is now a deprecation tombstone. Settings templates no longer wire curation into Stop, and
+  `bootstrap.sh` installs the curation cron.
+
 ## 2026-06-05 — Self-improvement loops (deterministic, zero-marginal-cost)
 
 ### Added

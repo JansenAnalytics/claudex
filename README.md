@@ -447,7 +447,7 @@ The default `settings.json` wires these hooks:
 1. **SessionStart** → `session-init.sh` — logs start, checks for interrupted tasks, processes inbox, rotates logs, runs incremental memory reindex, **and loads the curated user profile (`USER.md`) into context**
 2. **PostToolUse `Write|Edit`** → auto-stages git changes **+ `self-edit-gate.sh`** (advisory audit of self-edited `SKILL.md` files)
 3. **PostToolUse `Skill`** → `skill-usage-log.sh` — records which skill was loaded, when (usage ledger)
-4. **Stop** → `session-shutdown.sh` (interrupted-task state, health event) **+ `memory-curate.sh`** (reflect-and-persist; see below)
+4. **Stop** → `session-shutdown.sh` (interrupted-task state, health event). Memory curation runs on a **cron schedule**, not a Stop hook — see below.
 
 For a locked-down production setup, see [templates/settings.production.json](templates/settings.production.json).
 
@@ -455,9 +455,11 @@ For a locked-down production setup, see [templates/settings.production.json](tem
 
 Most "self-improving agent" features fire **only if the model remembers to invoke them** — a soft trigger that silently stops working. Claudex's improvement loops are **deterministic**: they fire on Claude Code hooks and schedules, so they happen whether or not the model thinks to. Three loops run automatically, all on the **flat-rate Max subscription with zero metered API cost** (they shell out to the `claude` CLI on OAuth credentials, never `api.anthropic.com`).
 
-**1. Memory curation (Stop hook → `memory-curate.cjs`).** When a session ends, a cheap Haiku-tier reflection reads the transcript tail and extracts *only durable facts* — preferences, environment facts, explicit corrections, conventions, completed milestones — as structured JSON. Each fact is routed deterministically: all facts to the dated daily note, user-facts into the structured `USER.md` profile. It is append-only, deduped (against existing memory before writing), size-capped, and **never touches the hand-written `CLAUDE.md`**.
+**1. Memory curation (cron → `memory-curate.cjs --scan`).** Every two hours, a cheap Haiku-tier reflection reads **new transcript content** — tracked per session file by byte offset, so every message is curated exactly once (no gaps, no double-processing; failed windows are retried, not skipped) — and extracts *only durable facts* — preferences, environment facts, explicit corrections, conventions, completed milestones — as structured JSON. Each fact is routed deterministically: all facts to the dated daily note (one consolidated section per day), user-facts into the structured `USER.md` profile. It is append-only, deduped (against existing memory before writing), size-capped, and **never touches the hand-written `CLAUDE.md`**. An already-known digest of `CLAUDE.md` reserves the profile budget for genuinely new signal, and repeated model failures surface as a warning in the daily note — fail-open, never fail-silent.
 
-**2. Structured user profile (`USER.md`) + load.** A fixed five-section schema — `stable_facts · preferences · working_patterns · recent_corrections · open_threads` — kept under a hard **~500-token cap**. The curator (item 1) maintains it with poisoning guards: *evidence-required* (factless claims dropped), date-tagged provenance, dedupe, a hard token cap, and **contradiction handling** — a fact that conflicts with an existing belief is recorded as a *new* `recent_corrections` entry rather than silently overwriting the core. `session-init.sh` loads the profile every SessionStart, and the read-only **`/whoami`** skill renders it with section counts and a prune nudge. See [templates/USER.md.example](templates/USER.md.example).
+> **Why cron and not a Stop hook?** Stop fires after *every turn* of a channel-driven session, and a `claude -p` spawned from a hook loads any user-level channel plugin — whose poller then displaces the live session's connection (Telegram allows one `getUpdates` consumer per bot token). The cron spawn is therefore **plugin-isolated** — `--setting-sources project --strict-mcp-config`, a fresh neutral cwd, sandboxed channel state, stripped channel/API tokens — and still runs on OAuth credentials at zero metered cost. Design details: [docs/hooks-guide.md](docs/hooks-guide.md).
+
+**2. Structured user profile (`USER.md`) + load.** A fixed five-section schema — `stable_facts · preferences · working_patterns · recent_corrections · open_threads` — kept under a hard **~500-token cap**. The curator (item 1) maintains it with poisoning guards: *evidence-required* (factless claims dropped), date-tagged provenance, dedupe, a hard token cap, and **contradiction handling** — a fact that conflicts with an existing belief is recorded as a *new* `recent_corrections` entry rather than silently overwriting the core. Open threads have a lifecycle: they resolve automatically when later transcripts show the work finished, and expire after 30 days. `session-init.sh` loads the profile every SessionStart, and the read-only **`/whoami`** skill renders it with section counts and a prune nudge. See [templates/USER.md.example](templates/USER.md.example).
 
 **3. Skill self-maintenance + usage tracking.**
 - **`self-edit-gate.sh`** (PostToolUse `Write|Edit`) — whenever the agent edits one of its own `SKILL.md` files, it auto-runs `skill-audit.sh` + a secret scan and *warns* (advisory; never blocks, never auto-reverts) if the edit breaks frontmatter, exceeds 15 KB, or contains a secret value. So the agent can patch its skills freely with a safety net.
@@ -654,7 +656,7 @@ The headline: **the capabilities Hermes is credited for, Claudex matches or exce
 
 | Capability | Claudex | Hermes |
 |---|---|---|
-| **Deterministic learning loop** | Memory curation fires on the **Stop hook**; skill gating + usage tracking on **PostToolUse hooks** — runs every time. | "Agent-curated memory with periodic nudges" + a cron scheduler. The skill self-improvement is an always-on **prompt instruction**, not a post-task hook. |
+| **Deterministic learning loop** | Memory curation runs on a **2-hourly cron** with byte-offset transcript tracking — every message curated exactly once; skill gating + usage tracking on **PostToolUse hooks** — runs every time. | "Agent-curated memory with periodic nudges" + a cron scheduler. The skill self-improvement is an always-on **prompt instruction**, not a post-task hook. |
 | **Cross-session memory** | FTS5 **+ vector RAG** (hybrid) over transcripts and memory files, with cross-agent search. | "FTS5 session search" for cross-session recall. Hybrid keyword + embeddings is a Claudex superset. |
 | **User profile** | Structured `USER.md` (5 sections), **~500-token cap**, evidence-required, contradiction-safe, loaded every session, reviewable via `/whoami`. | A `~500-token USER.md` the agent edits, plus optional Honcho "dialectic user modeling" (1 of 8 opt-in plugins, not default). Same budget; Claudex adds the schema + poisoning guards. |
 | **Skill self-maintenance** | `self-skill` (create) + a `self-edit-gate` hook (audit/size/secret scan on every self-edit) + `skill-usage-log` (real usage data) + `skill-audit`/`skill-index` tooling + categories. | "Skills self-improve during use" (a prompt paragraph). The proactive patch-on-friction loop is an open proposal; the GEPA self-evolution engine is a **separate, experimental repo**. |
@@ -683,7 +685,7 @@ None of this is a knock on Hermes — the GEPA *research* is excellent and worth
 
 ### Bottom line
 
-**Choose Claudex if** you want the self-improving-agent loop *shipping and deterministic today* — hook-driven memory curation, a structured auto-loaded user profile, skill-audit gating, and context budgeting — on a flat-rate subscription with built-in tools and no per-token or per-tool bill.
+**Choose Claudex if** you want the self-improving-agent loop *shipping and deterministic today* — scheduled memory curation with exactly-once transcript coverage, a structured auto-loaded user profile, skill-audit gating, and context budgeting — on a flat-rate subscription with built-in tools and no per-token or per-tool bill.
 
 **Watch Hermes if** you want to experiment with autonomous GEPA-based prompt evolution and multi-model routing, and don't mind early-stage, subscription-gated tooling.
 
@@ -750,6 +752,8 @@ claudex/
 │   ├── bootstrap.sh                #   Automated setup script
 │   ├── memory-search.cjs           #   Vector RAG search engine (multi-provider)
 │   ├── memory-reindex.sh           #   Cron-based incremental reindexing
+│   ├── memory-curate.cjs           #   Durable-fact distiller (cron; byte-offset transcripts)
+│   ├── memory-curate-cron.sh       #   2-hourly cron wrapper (plugin-isolated claude -p)
 │   ├── health-check.cjs            #   Health metrics recorder and reporter
 │   ├── inbox.cjs                   #   Task inbox — add, list, consume tasks
 │   ├── session-init.sh             #   SessionStart hook — inbox check, reindex, log rotate

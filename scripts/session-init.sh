@@ -33,7 +33,7 @@ if [ -f "$DATA_DIR/inbox.json" ]; then
 fi
 
 # 2.5. Load the auto-curated user profile into context (Tier 2 item 4C).
-# USER.md is maintained by the Stop-hook distiller (memory-curate). Injecting it here
+# USER.md is maintained by the cron distiller (scripts/memory-curate.cjs --scan, 2-hourly). Injecting it here
 # is what makes that curation actually reach the model — without this cat the profile
 # is written every session but never read. Guarded: only emit if present and non-empty.
 # Canonical path = the file memory-curate.cjs writes ($WORKSPACE/memory/USER.md).

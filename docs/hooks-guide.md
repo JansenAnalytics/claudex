@@ -146,23 +146,29 @@ the model remembers." They are observe-only / advisory and always exit 0. All mo
 calls shell out to the `claude` CLI on the **Max OAuth subscription** (ANTHROPIC_API_KEY
 stripped) → **zero metered API cost**.
 
-### `memory-curate.cjs` (+ `memory-curate.sh`) — event: **Stop**
+### `memory-curate.cjs` — **CRON, not a hook** (Stop-hook design deprecated 2026-06-12)
 
-After a session ends, a cheap Haiku-tier reflection reads the transcript tail and
-extracts **only durable facts** (preferences, environment, corrections, conventions,
-milestones) as JSON. Each fact routes deterministically: all → the dated daily note;
-user-facts → the structured `memory/USER.md` profile. Append-only, deduped (against
-existing memory before writing), size-capped, and it **never touches the hand-written
-`CLAUDE.md`**. `memory-curate.sh` is the thin Stop-hook wrapper (throttled) that calls
-the `.cjs`. The profile uses a fixed 5-section schema under a ~500-token cap with
-poisoning guards (evidence-required, provenance, contradiction→`recent_corrections`
-instead of overwrite). Loaded next session by `session-init.sh`; reviewed via `/whoami`.
+A cheap Haiku-tier reflection reads **new transcript content** (tracked per file by byte
+offset — each message seen exactly once) and extracts **only durable facts** (preferences,
+environment, corrections, conventions, milestones) as JSON. Each fact routes
+deterministically: all → the dated daily note (one consolidated 🧠 section per day);
+user-facts → the structured `memory/USER.md` profile. Append-only, deduped, size-capped,
+and it **never touches the hand-written `CLAUDE.md`**. The profile uses a fixed 5-section
+schema under a ~500-token cap with poisoning guards (evidence-required, provenance,
+contradiction→`recent_corrections` instead of overwrite, open-thread resolve + 30-day
+expiry). Loaded next session by `session-init.sh`; reviewed via `/whoami`.
 
-Wire it as a **second** Stop hook (next to `session-shutdown.sh`):
+**Why not a Stop hook:** Stop fires every turn in channel mode, and any `claude -p` spawn
+loads the user-level telegram plugin, whose `server.ts` SIGTERMs the `bot.pid` holder —
+every curate run killed the live Telegram channel (removed twice before the root cause
+was found). The cron spawn is therefore plugin-isolated: `--setting-sources project
+--strict-mcp-config`, fresh mkdtemp cwd, sandboxed `TELEGRAM_STATE_DIR`, stripped
+`TELEGRAM_BOT_TOKEN` / `ANTHROPIC_API_KEY` (Max OAuth → zero metered cost). Details in
+the `.cjs` header and `memory/2026-06-12.md`.
 
-```json
-{ "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh" }
-```
+Runs from crontab — `17 */2 * * *` → `scripts/memory-curate-cron.sh` (3 consecutive model
+failures surface as a ⚠ line in the daily note). The old `.claude/hooks/memory-curate.sh`
+is a deprecation tombstone: **never re-wire it into Stop**.
 
 ### `self-edit-gate.sh` — event: **PostToolUse** (matcher `Write|Edit`)
 
@@ -200,7 +206,8 @@ transcripts. (Captures *explicit* Skill-tool loads, not description-match auto-l
 This is the live `settings.json` `"hooks"` block, including the self-improvement
 hooks from §2b. The inline git-add command is **replaced** by `auto-git-add.sh`;
 `self-edit-gate.sh` rides the same `Write|Edit` matcher; a new `Skill` matcher runs
-`skill-usage-log.sh`; the Stop event runs shutdown + snapshot + memory-curate.
+`skill-usage-log.sh`; the Stop event runs shutdown + snapshot (memory curation moved
+to cron 2026-06-12 — see its section above).
 `lint-on-write.sh` and `notify-on-error.sh` are documented above but **not** wired
 by default.
 
@@ -234,8 +241,7 @@ by default.
       "matcher": "",
       "hooks": [
         { "type": "command", "command": "bash $HOME/.claude-agent/scripts/session-shutdown.sh" },
-        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh" },
-        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh" }
+        { "type": "command", "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh" }
       ]
     }
   ]
@@ -247,7 +253,7 @@ Summary of the wired flow:
 - **SessionStart** → `scripts/session-init.sh` (load context + `USER.md` profile at start).
 - **PostToolUse `Write|Edit`** → `auto-git-add.sh` (stage edits), then `self-edit-gate.sh` (audit self-edited skills).
 - **PostToolUse `Skill`** → `skill-usage-log.sh` (record skill usage).
-- **Stop** → `session-shutdown.sh`, `snapshot-on-stop.sh`, then `memory-curate.sh` (reflect-and-persist).
+- **Stop** → `session-shutdown.sh`, `snapshot-on-stop.sh`. (Memory curation runs from cron — never from Stop.)
 
 ---
 

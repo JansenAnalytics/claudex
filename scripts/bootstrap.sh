@@ -282,6 +282,16 @@ else
     echo "  ✅ Memory reindex cron installed (every 30 minutes)"
 fi
 
+# Memory curation cron (every 2 h at :17 — NEVER wire this into a Stop hook;
+# a hook-spawned `claude -p` loads the channel plugin and kills the live poller)
+CURATE_CRON="17 */2 * * * /bin/bash $WORKSPACE/scripts/memory-curate-cron.sh"
+if crontab -l 2>/dev/null | grep -q "memory-curate-cron"; then
+    echo "  ⚠️  Curation cron already exists — skipping"
+else
+    (crontab -l 2>/dev/null; echo "$CURATE_CRON") | crontab -
+    echo "  ✅ Memory curation cron installed (every 2 hours)"
+fi
+
 echo ""
 echo "  ℹ️  Memory search supports OpenAI, Ollama, or TF-IDF embeddings."
 echo "     See docs/memory-search.md for configuration options."

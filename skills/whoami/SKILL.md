@@ -10,7 +10,8 @@ external_deps: []
 # whoami
 
 Renders the **auto-curated user profile** — the structured `memory/USER.md` that the
-memory-curate Stop hook maintains and that `session-init.sh` loads into every session.
+memory-curate cron job (`scripts/memory-curate-cron.sh`, every 2 h) maintains and that
+`session-init.sh` loads into every session.
 
 This is the read-only review surface for the profile (Tier 2 item 4C). It does not edit
 anything — it shows the profile, how big it is against the ~500-token cap, and where it

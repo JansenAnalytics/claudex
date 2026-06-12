@@ -12,7 +12,7 @@ CAP_TOK=500
 
 if [ ! -s "$USER_MD" ]; then
     echo "No user profile yet ($USER_MD is missing/empty)."
-    echo "It is auto-created by the memory-curate Stop hook as facts accumulate."
+    echo "It is auto-created by the memory-curate cron job as facts accumulate."
     exit 0
 fi
 

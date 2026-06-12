@@ -1,6 +1,6 @@
 # User Profile (auto-curated — review periodically)
 <!-- Schema: stable_facts | preferences | working_patterns | recent_corrections | open_threads.
-     Hard cap ~500 tokens. Auto-maintained by .claude/hooks/memory-curate.cjs (Stop hook);
+     Hard cap ~500 tokens. Auto-maintained by scripts/memory-curate.cjs (2-hourly cron);
      loaded each session by scripts/session-init.sh; review/prune via the /whoami skill.
 
      This is a generated, living file — distinct from CLAUDE.md (hand-written persona + rules).

@@ -63,11 +63,6 @@
           {
             "type": "command",
             "command": "bash $HOME/.claude-agent/.claude/hooks/snapshot-on-stop.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude-agent/.claude/hooks/memory-curate.sh",
-            "timeout": 15
           }
         ]
       }

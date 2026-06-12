@@ -65,7 +65,9 @@ fi
 # Verify the bun process has at least one established connection to Telegram API.
 # Check for active bun connections to Telegram API (149.154.x.x or 91.108.x.x)
 # The child bun process (server.ts) owns the sockets, not the parent — so match by IP, not PID.
-if [ "$SESSION_AGE" -gt 3600 ]; then
+# Gate at 10 min (was 1h): long enough for bun to establish its long-poll after a
+# restart, short enough that a killed poller is caught within ~15 min, not ~65.
+if [ "$SESSION_AGE" -gt 600 ]; then
     ACTIVE_CONNS=$(ss -tp 2>/dev/null | grep "bun" | grep -cE "149\.154\.|91\.108\." || true)
     if [ "$ACTIVE_CONNS" -eq 0 ]; then
         do_restart "bun telegram plugin has no active connections to Telegram API (session age: $(( SESSION_AGE / 3600 ))h)"
