@@ -4,6 +4,34 @@ Notable changes to the Claudex reference implementation. This documents a
 showcase/reference repo rather than a versioned package, so entries are grouped
 by date. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-06-14 — Positioning rewrite, curation/restart hardening, skill-description cleanup
+
+### Changed
+- **README positioning** — the per-competitor comparison tables (Claudex vs OpenClaw, Claudex
+  vs Hermes Agent) are replaced by a single **"Where Claudex Fits"** section that states what
+  Claudex is, what it deliberately is not, and when to choose it — no feature-by-feature
+  scorekeeping against other projects.
+- **Watchdog restart** now passes `--continue`, so cron and proactive restarts resume the prior
+  conversation instead of cold-starting; the stale "4h" session-age strings now match the actual
+  72h constant.
+- **`scripts/memory-curate.cjs`** parses the model's JSON array with a three-tier extractor
+  (whole-output parse → greedy span → string-aware balanced scan), so a prose-wrapped response
+  no longer discards an entire curation cycle's facts.
+- **`scripts/skill-audit.sh`** now errors on low-quality descriptions (`[TODO]` placeholders,
+  leaked shell/path lines, name-restating "X Skill" titles, truncated fragments), so the
+  `self-edit-gate` catches them instead of letting them ship.
+
+### Removed
+- **The Hermes Agent comparison** — it asserted version, repo, and issue specifics that could not
+  be verified against a real project; removed in full rather than left as unsourced positioning.
+- **`research-pipeline` skill** — an unimplemented `[TODO]` scaffold that overlapped
+  `deep-research`; dropped from the catalog.
+
+### Fixed
+- Rewrote 19 skill descriptions that were title-only, a leaked shell line, a `cd` path, or a
+  truncated fragment into "what it does + when to use it"; regenerated the public skill index and
+  catalog (161 skills).
+
 ## 2026-06-12 — Memory curation: Stop hook → isolated cron pipeline
 
 ### Changed
@@ -49,8 +77,9 @@ by date. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
   `data/skill-usage.jsonl`, seeded by `scripts/skill-usage-backfill.sh`.
 - **`/budget` skill** — read-only context-window estimator that ranks the heaviest skill
   descriptions and estimates total context weight; `--cost` for real spend.
-- **Comparison: Claudex vs Hermes Agent** (README) — sourced positioning vs Nous Research's
-  Hermes; refreshed the OpenClaw comparison to reflect the deterministic memory loop.
+- **Comparison sections** (README) — refreshed the OpenClaw comparison to reflect the
+  deterministic memory loop. _(Superseded 2026-06-14: the comparison tables were replaced by the
+  "Where Claudex Fits" section.)_
 
 ### Changed
 - `settings.json` templates now wire the full hook set (self-edit-gate, skill-usage-log,

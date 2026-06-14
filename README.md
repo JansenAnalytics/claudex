@@ -14,7 +14,7 @@ Claudex is an **autonomous AI agent** that runs as a persistent daemon on a Linu
 
 - 💬 **Connects to Telegram** — real-time two-way messaging, just like a human chat
 - 🧠 **Has memory** — CLAUDE.md for identity/rules + daily memory files for continuity across sessions
-- 🔧 **Has skills** — 162 portable skill modules for everything from weather to code review to system monitoring
+- 🔧 **Has skills** — 161 portable skill modules for everything from weather to code review to system monitoring
 - 🤖 **Spawns sub-agents** — delegate parallel work to specialized agents (researcher, coder, reviewer, etc.)
 - 🔄 **Self-heals** — watchdog cron + systemd auto-restart keeps it alive 24/7
 - 💰 **Zero API cost** — runs on Claude Max subscription ($100/mo flat), not per-token billing
@@ -39,8 +39,7 @@ This repo documents the complete system architecture, provides templates for bui
   - [Health Monitoring](#health-monitoring)
   - [Task Inbox](#task-inbox)
   - [MCP Servers](#mcp-servers)
-- [Comparison: Claudex vs OpenClaw](#comparison-claudex-vs-openclaw)
-- [Comparison: Claudex vs Hermes Agent](#comparison-claudex-vs-hermes-agent)
+- [Where Claudex Fits](#where-claudex-fits)
 - [Directory Structure](#directory-structure)
 - [Debugging & Gotchas](#debugging--gotchas)
 - [Examples](#examples)
@@ -70,7 +69,7 @@ This repo documents the complete system architecture, provides templates for bui
 │  │  └──────────┘  └────────┘                │  │
 │  │                                          │  │
 │  │  ┌────────────┐  ┌───────────────────┐   │  │
-│  │  │  Telegram  │  │   162 Skills      │   │  │
+│  │  │  Telegram  │  │   161 Skills      │   │  │
 │  │  │  Channel   │  │  (.claude/skills/)│   │  │
 │  │  │  (plugin)  │  │                   │   │  │
 │  │  └─────┬──────┘  └───────────────────┘   │  │
@@ -251,7 +250,7 @@ curl -s "wttr.in/LOCATION?format=%l:+%c+%t+%h+%w"
 
 Claude Code auto-selects relevant skills based on the task description. Place skills in `.claude/skills/<name>/SKILL.md`.
 
-**This repo includes all 162 production-tested skills** covering:
+**This repo includes all 161 production-tested skills** covering:
 - 🌤️ Weather, web monitoring, research
 - 💻 GitHub workflow, code review, testing
 - 📊 Data analysis, market data, trading
@@ -465,7 +464,7 @@ Most "self-improving agent" features fire **only if the model remembers to invok
 - **`self-edit-gate.sh`** (PostToolUse `Write|Edit`) — whenever the agent edits one of its own `SKILL.md` files, it auto-runs `skill-audit.sh` + a secret scan and *warns* (advisory; never blocks, never auto-reverts) if the edit breaks frontmatter, exceeds 15 KB, or contains a secret value. So the agent can patch its skills freely with a safety net.
 - **`skill-usage-log.sh`** (PostToolUse `Skill`) — appends one JSONL line per skill load to `data/skill-usage.jsonl`; `scripts/skill-usage-backfill.sh` seeds it from historical transcripts. This is the data foundation for catalog curation. (It captures *explicit* Skill-tool invocations, not description-match auto-loads.)
 
-**`/budget` — context-window visibility.** With 162 auto-loaded skill descriptions, description sprawl is a plausible silent tax. The read-only `/budget` skill estimates and **ranks** the token weight of CLAUDE.md, MEMORY.md, USER.md, every skill description (exact ranking from `skill-index.json`), and tool/MCP schemas — so bloat is visible and prunable. Add `--cost` for real spend.
+**`/budget` — context-window visibility.** With 161 auto-loaded skill descriptions, description sprawl is a plausible silent tax. The read-only `/budget` skill estimates and **ranks** the token weight of CLAUDE.md, MEMORY.md, USER.md, every skill description (exact ranking from `skill-index.json`), and tool/MCP schemas — so bloat is visible and prunable. Add `--cost` for real spend.
 
 ### Permissions & Safety
 
@@ -580,116 +579,24 @@ See [docs/mcp-servers.md](docs/mcp-servers.md) for recommended servers and confi
 
 ---
 
-## Comparison: Claudex vs OpenClaw
+## Where Claudex Fits
 
-This system was built as an alternative to [OpenClaw](https://github.com/openclaw/openclaw), replicating its autonomous agent capabilities using Claude Code. Here's an honest comparison:
+Claudex is a **single-user, always-on Claude Code daemon** — one agent, one operator, one dedicated Linux box, driven over Telegram on a flat-rate Claude Max subscription. It is deliberately narrow, and that focus is the point. What it does well:
 
-### What Claudex Does Better
+- **Stays up on its own.** Three independent layers keep the agent alive — a tmux session, a systemd user service for boot and crash recovery, and a watchdog cron that runs every five minutes to catch what the others miss (a dead process, a dead Telegram connection, a stuck reply). It also refreshes the session every 72 hours to head off plugin channel rot, and restarts resume the prior conversation instead of cold-starting.
+- **Improves itself deterministically.** Memory curation runs on a schedule — a 2-hourly cron that reads each transcript exactly once by byte offset — while skill auditing and usage logging fire on `PostToolUse` hooks. These are wired into the harness and run every time, not "if the model remembers."
+- **Remembers across sessions.** A hybrid retrieval engine combines SQLite FTS5 keyword search with vector embeddings (OpenAI by default, a local Ollama model or a zero-dependency fallback otherwise) over transcripts and memory files, alongside a structured, auto-curated `USER.md` profile that loads into every session.
+- **Costs a flat rate.** The agent, its sub-agents, and every restart run on a Claude Max subscription over OAuth — no per-token Anthropic bill. (Embeddings optionally spend a few cents of OpenAI per month; everything else is free to run.)
 
-| Feature | Detail |
-|---|---|
-| ** Cost model** | Flat $100/mo (Max subscription) vs variable API billing ($30-100+/mo). No per-token surprises. Heavy users save significantly. |
-| ** Context window** | 1M tokens (Opus 4.8 via Max) vs ~200K typical API. Massive context for complex tasks. |
-| ** Mobile control** | `claude.ai/code` Remote Control — manage from phone/browser. OpenClaw: Telegram only. |
-| ** Native sub-agents** | Built-in agent teams with shared task lists and direct communication. OpenClaw: `sessions_spawn` with manual polling. |
-| ** Skills auto-loading** | Skills auto-selected by description match. OpenClaw: manual scan of `<available_skills>` list. |
-| ** Lifecycle hooks** | Rich hook system (SessionStart, Stop, PostToolUse, etc.). OpenClaw: limited hook support. |
-| ** Scheduled tasks** | Desktop + Cloud scheduled tasks, `/loop` polling. OpenClaw: cron-only scheduling. |
-| ** Permission modes** | Granular: `default`, `acceptEdits`, `plan`, `dontAsk`, `bypassPermissions` with per-tool allow/ask/deny lists. OpenClaw: binary policy. |
-| ** Agent Teams** | Multi-agent coordination with shared context (experimental). OpenClaw: independent sub-agent sessions. |
-| ** No infrastructure** | No gateway daemon, no config files, no port management. Just `claude` + workspace. |
-| ** Cross-agent RAG** | Built-in cross-agent semantic search — query what Kite, Poe, or Argus know. OpenClaw: requires manual symlinks. |
-| ** Health monitoring** | Built-in health metrics, uptime tracking, session counts. OpenClaw: manual monitoring only. |
-| ** Deterministic self-improvement** | Memory curation, skill-audit gating, and usage tracking fire on **hooks** (Stop, PostToolUse) — not "if the model remembers." OpenClaw's curation/learning is prompt-/heartbeat-driven. |
-| ** Auto-curated user profile** | A hook-distilled, structured `USER.md` (5 sections, ~500-token cap, contradiction-safe) loaded every session. OpenClaw: manual `USER.md` editing. |
-| ** Context budgeting** | `/budget` ranks the heaviest skill descriptions + estimates total context weight. OpenClaw: no equivalent. |
-| ** Skill self-maintenance** | `self-edit-gate` audits self-edited skills (frontmatter, size, secret scan) advisorily; `skill-usage-log` tracks real usage. OpenClaw: manual skill hygiene. |
+What Claudex is **not**, by design:
 
-### What OpenClaw Does Better
+- **Not a multi-channel gateway** — it is Telegram-first, not a WhatsApp / Discord / Signal / Slack hub.
+- **Not a multi-device controller** — no paired phones, cameras, or live browser relay.
+- **Not a skill marketplace** — skills are plain files you copy and edit, not installs from a registry.
+- **Not a multi-model router** — it runs a single model on a flat-rate subscription on purpose.
+- **Not a self-evolution research platform** — skills improve through audited, human-reviewable edits, not an autonomous prompt-rewriting optimizer.
 
-| Feature | Detail |
-|---|---|
-| **📡 Multi-channel** | Telegram, Discord, WhatsApp, Signal, Slack, iMessage, IRC, Google Chat — all native. Claudex: Telegram + Discord + iMessage only (via plugins). |
-| ** Paired nodes** | Camera/screen/location control on phones and other devices. Claudex: no equivalent. |
-| ** Browser control** | Dual mode: headless Playwright + live Chrome relay via extension. Claudex: Bash + Playwright only (no live browser relay). |
-| ** Canvas** | Render HTML/React UIs inline in chat. Claudex: no equivalent. |
-| ** ClawHub** | Skill marketplace with `clawhub install/publish`. Claudex: manual skill management only. |
-| ** TTS** | Built-in `tts` tool + ElevenLabs integration. Claudex: needs MCP server or manual setup. |
-| ** Heartbeat system** | Native heartbeat polling with `HEARTBEAT.md`. Claudex: approximated via scheduled tasks. |
-| ** Always-on guarantee** | Gateway daemon designed for 24/7 uptime. Claudex: sessions can timeout, need restart infrastructure. |
-| ** Image analysis** | Native `image` tool with vision model. Claudex: via Bash + API or MCP. |
-| ** Message tool** | Rich `message` tool with reactions, polls, buttons, effects. Claudex: basic send/receive. |
-| ** Session management** | `sessions_list`, `sessions_send`, `sessions_history` for cross-session communication. Claudex: independent sessions only. |
-| ** Secret management** | Built-in secret/token handling. Claudex: env vars + manual management. |
-
-### What's Roughly Equivalent
-
-| Feature | Notes |
-|---|---|
-| **Telegram messaging** | Both native, both work well. OpenClaw slightly richer (reactions, buttons, polls). |
-| **Skills** | Both have skill systems. OpenClaw has 160 skills via ClawHub; Claudex can port them. |
-| **Memory & RAG (retrieval)** | Both have vector semantic search + FTS5 hybrid over indexed transcripts. OpenClaw: built-in `memory_search` tool. Claudex: custom RAG engine with cross-agent search. _Retrieval is roughly equivalent — but Claudex's **deterministic auto-curation + structured profile** (above) is an edge OpenClaw lacks._ |
-| **Sub-agents** | Both spawn sub-agents. OpenClaw: `sessions_spawn`. Claudex: built-in subagents. |
-| **GitHub integration** | Both use `gh` CLI. Claudex also supports MCP GitHub server. |
-| **File operations** | Both: Read/Write/Edit/Exec. Identical capability. |
-| **Web search** | Both supported. OpenClaw: built-in Brave API. Claudex: MCP or Bash. |
-| **Systemd persistence** | Both use systemd. Claudex additionally has tmux + watchdog layers. |
-| **Task queuing** | Both can queue tasks. Claudex: inbox.json + cron. OpenClaw: HEARTBEAT.md + cron. |
-
-### Bottom Line
-
-**Choose Claudex if:** You want zero API cost, maximum context window (1M tokens), simple setup (no gateway/config), and you primarily use Telegram. Great for single-user autonomous agents.
-
-**Choose OpenClaw if:** You need multi-channel support (WhatsApp, Discord, Signal, etc.), paired device control, browser relay, or the full ClawHub skill ecosystem. Better for complex multi-surface deployments.
-
-**Use both:** They can coexist on the same machine — Claudex as the "always thinking" daemon with huge context, OpenClaw for its unique multi-channel and device capabilities. This is exactly what we do.
-
----
-
-## Comparison: Claudex vs Hermes Agent
-
-[Hermes Agent](https://github.com/NousResearch/hermes-agent) (Nous Research) is the open-source agent that popularized the "self-improving agent" framing — autonomous skill creation, agent-curated memory, and a GEPA-based self-evolution engine. Claudex delivers the same outcomes deterministically. The comparison below is drawn from Hermes's own repos, docs, and issues (Hermes **v0.15.2**, May 2026).
-
-The headline: **the capabilities Hermes is credited for, Claudex matches or exceeds — including the one place Hermes genuinely led, deterministic hook-driven learning, which Claudex's self-improvement loops now provide.**
-
-### Where Claudex matches or leads
-
-| Capability | Claudex | Hermes |
-|---|---|---|
-| **Deterministic learning loop** | Memory curation runs on a **2-hourly cron** with byte-offset transcript tracking — every message curated exactly once; skill gating + usage tracking on **PostToolUse hooks** — runs every time. | "Agent-curated memory with periodic nudges" + a cron scheduler. The skill self-improvement is an always-on **prompt instruction**, not a post-task hook. |
-| **Cross-session memory** | FTS5 **+ vector RAG** (hybrid) over transcripts and memory files, with cross-agent search. | "FTS5 session search" for cross-session recall. Hybrid keyword + embeddings is a Claudex superset. |
-| **User profile** | Structured `USER.md` (5 sections), **~500-token cap**, evidence-required, contradiction-safe, loaded every session, reviewable via `/whoami`. | A `~500-token USER.md` the agent edits, plus optional Honcho "dialectic user modeling" (1 of 8 opt-in plugins, not default). Same budget; Claudex adds the schema + poisoning guards. |
-| **Skill self-maintenance** | `self-skill` (create) + a `self-edit-gate` hook (audit/size/secret scan on every self-edit) + `skill-usage-log` (real usage data) + `skill-audit`/`skill-index` tooling + categories. | "Skills self-improve during use" (a prompt paragraph). The proactive patch-on-friction loop is an open proposal; the GEPA self-evolution engine is a **separate, experimental repo**. |
-| **Context/cost visibility** | `/budget` ranks heaviest skill descriptions + estimates total context; `--cost` for spend. | A `/context` + `/usage` capability proposed in issues. |
-| **Built-in tools & cost** | Web search/fetch, media, browser (Playwright), TTS/image skills on the **flat-rate Claude Max** subscription — no per-tool bill. | "Tool Gateway" (Firecrawl/FAL/OpenAI-TTS/Browser-Use) routed through a **Nous Portal subscription** (BYO keys optional). |
-| **Identity / context files** | `CLAUDE.md` (hand-written persona + rules). | "Context Files" — the same idea. |
-
-### Hermes's genuine edges (where we deliberately differ)
-
-| Capability | Hermes | Why Claudex doesn't copy it |
-|---|---|---|
-| **GEPA prompt-evolution optimizer** | Wraps DSPy + GEPA (a real, strong optimizer — ICLR 2026 Oral, ~35× more sample-efficient than RL) to evolve `SKILL.md` from execution traces. | GEPA needs a ground-truth eval signal. Prose skills have **no pytest oracle**, so a self-evolution loop risks drifting a description toward "looks confident," not "works." We adopt Hermes's **safety-gate checklist** (audit, ≤15 KB, human review) but skip the autonomous rewrite engine. It remains a possible human-in-the-loop pilot. |
-| **Multi-model / OpenRouter (200+ models)** | Routes across many models per task. | Claudex is single-model on flat-rate Claude Max OAuth by design — a metered multi-model bill abandons the zero-API-cost premise. |
-| **Serverless / hibernation backends** | Modal/Daytona terminal backends. | Claudex is intentionally an always-on box (tmux + systemd + watchdog) for trade monitoring; hibernation fights that design. |
-
-### The de-hyped reality (sourced)
-
-These claims are drawn from Hermes's primary sources, not its marketing:
-
-- **"Skills self-improve during use" / "autonomous skill creation"** resolve to an always-on system-prompt paragraph plus a skill-management tool — as soft a trigger as any prompt-driven approach. The proactive *patch-the-moment-you-notice* loop is an **open proposal** (issue #429), not shipped default behavior.
-- **GEPA self-evolution** lives in a separate repo (`hermes-agent-self-evolution`) that is **experimental, with no releases** — **only Phase 1 of 5** (SKILL.md) is implemented; tool-description, system-prompt, and code phases are planned. (Its own gates can reportedly pass on un-mutated data — issue #38.)
-- **Honcho "dialectic user modeling"** is **1 of 8 opt-in plugins**, not the default; Hermes's built-in user model is the ~500-token `USER.md` — the same primitive Claudex uses.
-- Headline marketing figures (e.g. "40% faster", large star counts) appear in **no primary source** and are excluded here.
-
-None of this is a knock on Hermes — the GEPA *research* is excellent and worth watching. The point is narrower: **Claudex already provides the practical, shipping version of the "self-improving agent" loop**, deterministically and at zero marginal cost.
-
-### Bottom line
-
-**Choose Claudex if** you want the self-improving-agent loop *shipping and deterministic today* — scheduled memory curation with exactly-once transcript coverage, a structured auto-loaded user profile, skill-audit gating, and context budgeting — on a flat-rate subscription with built-in tools and no per-token or per-tool bill.
-
-**Watch Hermes if** you want to experiment with autonomous GEPA-based prompt evolution and multi-model routing, and don't mind early-stage, subscription-gated tooling.
-
-_Sources: [hermes-agent](https://github.com/NousResearch/hermes-agent) (README v0.15.2, `agent/prompt_builder.py`, docs, issues #429/#8506/#10617), [hermes-agent-self-evolution](https://github.com/NousResearch/hermes-agent-self-evolution) (PLAN, issue #38), [GEPA](https://arxiv.org/abs/2507.19457). Full internal analysis: 8-agent primary-source study, 2026-06-05._
+Claudex began as an effort to reproduce the capabilities of a purpose-built autonomous messaging agent — [OpenClaw](https://github.com/openclaw/openclaw), which inspired this project — using only Claude Code's native features (hooks, sub-agents, skills, MCP) instead of a custom gateway. If you need broad multi-channel reach, device control, or a skill marketplace, a dedicated gateway like OpenClaw is the better tool, and the two run happily on the same machine. If you want a deterministic, flat-rate, always-on single agent that lives in the Claude Code ecosystem and owns its own box, that is exactly what Claudex is for.
 
 ---
 
@@ -709,7 +616,7 @@ claudex/
 │   ├── persistence.md              #   3-layer persistence (tmux+systemd+cron)
 │   ├── automation.md               #   Hooks, scheduled tasks, /loop
 │   ├── skills-guide.md             #   Skill format, auto-selection, porting
-│   ├── skills-catalog.md           #   Full catalog of all 162 skills
+│   ├── skills-catalog.md           #   Full catalog of all 161 skills
 │   ├── subagents.md                #   Custom sub-agents and teams
 │   ├── claude-md-guide.md          #   Writing an effective CLAUDE.md
 │   ├── mcp-servers.md              #   MCP server configuration
@@ -719,12 +626,12 @@ claudex/
 │   ├── mcp-guide.md                #   MCP registry — configs + install
 │   ├── plugins-guide.md            #   Marketplace plugins that pair with Claudex
 │   └── skill-anatomy.md            #   SKILL.md schema — categories, maturity, tags
-├── skills/                         # 162 production-tested skill modules
+├── skills/                         # 161 production-tested skill modules
 │   ├── weather/SKILL.md
 │   ├── github-workflow/SKILL.md
 │   ├── memory-search/SKILL.md
 │   ├── watchdog/SKILL.md
-│   └── ... (162 total)
+│   └── ... (161 total)
 ├── agents/                         # Custom sub-agent definitions (9)
 │   ├── researcher.md
 │   ├── coder.md
@@ -778,7 +685,7 @@ claudex/
 ├── CLAUDE.md                       # Your agent's identity (customize this!)
 ├── .claude/
 │   ├── settings.json               # Permissions, hooks, env vars
-│   ├── skills/                     # 162 skill modules (copied from repo)
+│   ├── skills/                     # 161 skill modules (copied from repo)
 │   ├── agents/                     # 9 sub-agent definitions
 │   └── rules/                      # Safety + Telegram formatting rules
 ├── data/
