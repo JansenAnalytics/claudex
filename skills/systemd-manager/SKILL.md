@@ -1,6 +1,6 @@
 ---
 name: systemd-manager
-description: Systemd Manager Skill
+description: "Create and manage systemd services, timers, and socket units. Use when creating background services or daemons, setting up scheduled timers, debugging failed units, viewing unit logs, or managing service dependencies."
 category: system
 maturity: stable
 tags: [systemd, timers, journalctl, unit-files, daemons]

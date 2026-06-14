@@ -1,5 +1,5 @@
 ---
-description: "cd /path/to/sector-rotation"
+description: "Track equity sector rotation — collect sector ETF data and compute relative-strength heatmaps, sector leaders, and market cycle phase. Use when analyzing sector rotation, relative strength across sectors, or where we are in the market cycle."
 name: sector-rotation
 category: trading-finance
 maturity: stable

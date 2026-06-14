@@ -1,6 +1,6 @@
 ---
 name: adr-manager
-description: ADR Manager Skill
+description: "Record and retrieve Architecture Decision Records — log a decision's context, options, rationale, and tradeoffs, then list/search them. Use when making a non-trivial design or architecture decision, choosing between tools/approaches, or asked 'why did we do it this way?'"
 category: writing
 maturity: beta
 tags: [adr, decision-records, architecture-decisions, documentation]

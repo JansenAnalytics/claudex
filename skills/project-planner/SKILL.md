@@ -1,6 +1,6 @@
 ---
 name: project-planner
-description: Project Planner Skill
+description: "Decompose a project into tasks with dependencies, critical path, and tracking before execution. Use at the start of every significant project before spawning sub-agents or writing code; also for project status, task failures, or changes affecting other tasks."
 category: productivity
 maturity: stable
 tags: [task-planning, dependency-graph, subtasks, impact-analysis, orchestration]

@@ -1,6 +1,6 @@
 ---
 name: task-queue
-description: Skill: task-queue
+description: "Persistent JSON-backed job queue for scheduling shell commands without raw cron — supports one-shot (run at a time) and recurring (cron schedule) tasks. Use when asked to schedule or run a job at/every some interval, list or cancel queued tasks, or check task status."
 category: productivity
 maturity: stable
 tags: [task-queue, scheduling, cron, pipelines, job-runner]

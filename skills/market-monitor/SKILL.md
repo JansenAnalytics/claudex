@@ -1,6 +1,6 @@
 ---
 name: market-monitor
-description: Market Monitor Skill
+description: "Watch any URL for meaningful changes — price moves, new releases (semver), hiring signals, content diffs, keyword appear/disappear — and alert. Use when tracking competitors, releases, or job postings, or detecting content changes on a web page."
 category: research
 maturity: stable
 tags: [url-monitoring, content-diff, release-watch, hiring-signal, cron]

@@ -1,5 +1,5 @@
 ---
-description: "SKILL_DIR=\"$(dirname \"$(realpath \"$0\")\")/..\"  # resolve from scripts/"
+description: "Collect macro market and economic-calendar data (yfinance + FairEconomy API) into a SQLite DB and generate a formatted macro briefing for Telegram. Use when producing a macro/markets briefing or collecting macro market data."
 name: macro-briefing
 category: trading-finance
 maturity: stable

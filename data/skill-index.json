@@ -35,7 +35,7 @@
   },
   {
     "name": "adr-manager",
-    "description": "ADR Manager Skill",
+    "description": "Record and retrieve Architecture Decision Records — log a decision's context, options, rationale, and tradeoffs, then list/search them. Use when making a non-trivial design or architecture decision, choosing between tools/approaches, or asked 'why did we do it this way?'",
     "category": "writing",
     "maturity": "beta",
     "tags": [
@@ -698,7 +698,7 @@
   },
   {
     "name": "draft-queue",
-    "description": "Draft Queue Skill",
+    "description": "Queue an external action (Telegram message, shell command, GitHub comment, PR merge, file write) for the user's explicit approval before it runs. Use when you want to take an outward-facing or irreversible action that needs sign-off first.",
     "category": "writing",
     "maturity": "beta",
     "tags": [
@@ -1099,7 +1099,7 @@
   },
   {
     "name": "hypothesis-tester",
-    "description": "Hypothesis Tester Skill",
+    "description": "Run a structured multi-position debate over an analytical question, spawning sub-agents to argue each option and counter confirmation bias. Use when comparing options or tradeoffs — 'which is better', 'should we', 'what's the risk', 'evaluate', 'compare options'.",
     "category": "research",
     "maturity": "stable",
     "tags": [
@@ -1153,7 +1153,7 @@
   },
   {
     "name": "knowledge-base",
-    "description": "Knowledge Base Skill",
+    "description": "Ingest documents (URLs, local files, PDFs) into a searchable local knowledge base and query stored knowledge. Use when ingesting or storing documents, searching previously stored knowledge, or building research context.",
     "category": "writing",
     "maturity": "beta",
     "tags": [
@@ -1245,7 +1245,7 @@
   },
   {
     "name": "macro-briefing",
-    "description": "SKILL_DIR=\\\"$(dirname \\\"$(realpath \\\"$0\\\")\\\")/..\\\"  # resolve from scripts/",
+    "description": "Collect macro market and economic-calendar data (yfinance + FairEconomy API) into a SQLite DB and generate a formatted macro briefing for Telegram. Use when producing a macro/markets briefing or collecting macro market data.",
     "category": "trading-finance",
     "maturity": "stable",
     "tags": [
@@ -1283,7 +1283,7 @@
   },
   {
     "name": "market-monitor",
-    "description": "Market Monitor Skill",
+    "description": "Watch any URL for meaningful changes — price moves, new releases (semver), hiring signals, content diffs, keyword appear/disappear — and alert. Use when tracking competitors, releases, or job postings, or detecting content changes on a web page.",
     "category": "research",
     "maturity": "stable",
     "tags": [
@@ -1425,7 +1425,7 @@
   },
   {
     "name": "model-router",
-    "description": "Model Router Skill",
+    "description": "Classify a task and pick the right Claude model tier (haiku/sonnet/opus) before significant work. Use every time before spawning a sub-agent or starting substantial work, to right-size the model to the task.",
     "category": "meta",
     "maturity": "stable",
     "tags": [
@@ -1508,7 +1508,7 @@
   },
   {
     "name": "nginx-caddy",
-    "description": "Nginx & Caddy Skill",
+    "description": "Configure Nginx or Caddy as a reverse proxy with SSL/TLS. Use when setting up reverse proxies, Let's Encrypt certificates, routing domains to backend services, load balancing, or serving static files.",
     "category": "system",
     "maturity": "stable",
     "tags": [
@@ -1755,7 +1755,7 @@
   },
   {
     "name": "pipeline-runner",
-    "description": "Execute multi-step pipelines defined in JSON with:",
+    "description": "Execute multi-step pipelines defined in JSON — sequential and parallel stages, dependency chains, conditionals, retries with backoff, per-step timeouts, variable passing, and run history. Use when running or orchestrating a multi-step JSON-defined pipeline.",
     "category": "development",
     "maturity": "stable",
     "tags": [
@@ -1792,7 +1792,7 @@
   },
   {
     "name": "pr-monitor",
-    "description": "PR / CI Monitor Skill",
+    "description": "Monitor GitHub repo health — CI failures on main, PRs awaiting review over 24h, PRs with failing checks, stale PRs — and alert. Use when checking repo/PR/CI health, investigating why an alert fired, or adding a repo to watch.",
     "category": "development",
     "maturity": "stable",
     "tags": [
@@ -1809,7 +1809,7 @@
   },
   {
     "name": "project-brief",
-    "description": "Project Brief Skill",
+    "description": "Create and maintain one-page project briefs (goal, success criteria, constraints, stack, status, next actions). Use when starting a new project, updating a project's status, or asked 'what's the status of X?'",
     "category": "productivity",
     "maturity": "stable",
     "tags": [
@@ -1843,7 +1843,7 @@
   },
   {
     "name": "project-planner",
-    "description": "Project Planner Skill",
+    "description": "Decompose a project into tasks with dependencies, critical path, and tracking before execution. Use at the start of every significant project before spawning sub-agents or writing code; also for project status, task failures, or changes affecting other tasks.",
     "category": "productivity",
     "maturity": "stable",
     "tags": [
@@ -1944,25 +1944,8 @@
     "support_dirs": []
   },
   {
-    "name": "research-pipeline",
-    "description": "[TODO: 1-2 sentences explaining what this skill enables]",
-    "category": "research",
-    "maturity": "experimental",
-    "tags": [
-      "research",
-      "pipeline",
-      "template-stub",
-      "synthesis",
-      "multi-source"
-    ],
-    "external_deps": [],
-    "private": false,
-    "has_install": false,
-    "support_dirs": []
-  },
-  {
     "name": "research-reporter",
-    "description": "Research Reporter Skill",
+    "description": "Collect research findings (source, URL, content, confidence, tags) across sources and compile them into a structured report. Use when doing multi-source research and you want findings saved as a structured, citable report.",
     "category": "research",
     "maturity": "stable",
     "tags": [
@@ -2016,7 +1999,7 @@
   },
   {
     "name": "rss-digest",
-    "description": "RSS Digest Skill",
+    "description": "Subscribe to RSS/Atom feeds with keyword filters and run digests delivered to Telegram. Use when subscribing to feeds, checking which feeds run, running a digest manually, or adjusting feed keywords.",
     "category": "research",
     "maturity": "stable",
     "tags": [
@@ -2124,7 +2107,7 @@
   },
   {
     "name": "sector-rotation",
-    "description": "cd /path/to/sector-rotation",
+    "description": "Track equity sector rotation — collect sector ETF data and compute relative-strength heatmaps, sector leaders, and market cycle phase. Use when analyzing sector rotation, relative strength across sectors, or where we are in the market cycle.",
     "category": "trading-finance",
     "maturity": "stable",
     "tags": [
@@ -2371,7 +2354,7 @@
   },
   {
     "name": "source-scorer",
-    "description": "Source Credibility Scorer Skill",
+    "description": "Score the credibility of a web source by domain tier, content signals, and claim support; handles single or batch URLs. Use when judging whether a source is trustworthy, comparing sources, or validating research findings.",
     "category": "research",
     "maturity": "stable",
     "tags": [
@@ -2473,7 +2456,7 @@
   },
   {
     "name": "systemd-manager",
-    "description": "Systemd Manager Skill",
+    "description": "Create and manage systemd services, timers, and socket units. Use when creating background services or daemons, setting up scheduled timers, debugging failed units, viewing unit logs, or managing service dependencies.",
     "category": "system",
     "maturity": "stable",
     "tags": [
@@ -2490,7 +2473,7 @@
   },
   {
     "name": "task-queue",
-    "description": "Skill: task-queue",
+    "description": "Persistent JSON-backed job queue for scheduling shell commands without raw cron — supports one-shot (run at a time) and recurring (cron schedule) tasks. Use when asked to schedule or run a job at/every some interval, list or cancel queued tasks, or check task status.",
     "category": "productivity",
     "maturity": "stable",
     "tags": [
@@ -2686,7 +2669,7 @@
   },
   {
     "name": "vuln-scanner",
-    "description": "Vulnerability Scanner Skill",
+    "description": "Scan project dependencies for known security vulnerabilities (npm-audit style) across your projects and alert. Use when checking projects for vulnerabilities, after adding a new npm project, or reviewing the last scan results.",
     "category": "security",
     "maturity": "beta",
     "tags": [

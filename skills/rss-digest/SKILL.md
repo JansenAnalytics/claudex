@@ -1,6 +1,6 @@
 ---
 name: rss-digest
-description: RSS Digest Skill
+description: "Subscribe to RSS/Atom feeds with keyword filters and run digests delivered to Telegram. Use when subscribing to feeds, checking which feeds run, running a digest manually, or adjusting feed keywords."
 category: research
 maturity: stable
 tags: [rss, feeds, keywords, digest, cron]

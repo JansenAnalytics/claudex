@@ -23,7 +23,7 @@ do_restart() {
     sleep 3
 
     cd "$HOME/.claude-agent" && tmux new-session -d -s claudex -c "$HOME/.claude-agent" \
-        "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-8 --dangerously-skip-permissions"
+        "$HOME/.local/bin/claude --channels plugin:telegram@claude-plugins-official --model claude-opus-4-8 --dangerously-skip-permissions --continue"
 
     sleep 8
     PIDS=$(pgrep -f "claude.*channels.*telegram" 2>/dev/null || true)
@@ -49,14 +49,14 @@ fi
 
 node --experimental-sqlite "$HOME/.claude-agent/scripts/health-check.cjs" --record watchdog_ok 2>/dev/null || true
 
-# ─── Check 2: Session age — restart if > 4 hours (prevents plugin channel rot) ──
+# ─── Check 2: Session age — restart if > 72 hours (prevents plugin channel rot) ──
 SESSION_START=$(cat "$SESSION_START_FILE" 2>/dev/null || echo "0")
 NOW=$(date +%s)
 SESSION_AGE=$(( NOW - SESSION_START ))
 MAX_SESSION_AGE=$(( 72 * 3600 ))  # 72 hours
 
 if [ "$SESSION_AGE" -gt "$MAX_SESSION_AGE" ]; then
-    do_restart "session age $(( SESSION_AGE / 3600 ))h exceeds 4h limit — proactive refresh"
+    do_restart "session age $(( SESSION_AGE / 3600 ))h exceeds 72h limit — proactive refresh"
     exit 0
 fi
 

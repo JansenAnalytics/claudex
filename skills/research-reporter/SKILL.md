@@ -1,6 +1,6 @@
 ---
 name: research-reporter
-description: Research Reporter Skill
+description: "Collect research findings (source, URL, content, confidence, tags) across sources and compile them into a structured report. Use when doing multi-source research and you want findings saved as a structured, citable report."
 category: research
 maturity: stable
 tags: [findings, confidence-scoring, report-compilation, sessions, multi-source]

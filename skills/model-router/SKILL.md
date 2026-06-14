@@ -1,6 +1,6 @@
 ---
 name: model-router
-description: Model Router Skill
+description: "Classify a task and pick the right Claude model tier (haiku/sonnet/opus) before significant work. Use every time before spawning a sub-agent or starting substantial work, to right-size the model to the task."
 category: meta
 maturity: stable
 tags: [model-routing, tier-selection, cost, classifier, subagents]

@@ -1,5 +1,5 @@
 ---
-description: "Execute multi-step pipelines defined in JSON with:"
+description: "Execute multi-step pipelines defined in JSON — sequential and parallel stages, dependency chains, conditionals, retries with backoff, per-step timeouts, variable passing, and run history. Use when running or orchestrating a multi-step JSON-defined pipeline."
 name: pipeline-runner
 triggers:
   - run pipeline

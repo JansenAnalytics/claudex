@@ -1,6 +1,6 @@
 ---
 name: project-brief
-description: Project Brief Skill
+description: "Create and maintain one-page project briefs (goal, success criteria, constraints, stack, status, next actions). Use when starting a new project, updating a project's status, or asked 'what's the status of X?'"
 category: productivity
 maturity: stable
 tags: [project-status, brief, goals, blockers, tracking]

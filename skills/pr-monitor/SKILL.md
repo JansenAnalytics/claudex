@@ -1,6 +1,6 @@
 ---
 name: pr-monitor
-description: PR / CI Monitor Skill
+description: "Monitor GitHub repo health — CI failures on main, PRs awaiting review over 24h, PRs with failing checks, stale PRs — and alert. Use when checking repo/PR/CI health, investigating why an alert fired, or adding a repo to watch."
 category: development
 maturity: stable
 tags: [github, ci-monitoring, pull-requests, cron, alerts]

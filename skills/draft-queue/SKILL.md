@@ -1,6 +1,6 @@
 ---
 name: draft-queue
-description: Draft Queue Skill
+description: "Queue an external action (Telegram message, shell command, GitHub comment, PR merge, file write) for the user's explicit approval before it runs. Use when you want to take an outward-facing or irreversible action that needs sign-off first."
 category: writing
 maturity: beta
 tags: [approval-queue, drafts, json-payload, telegram-action]

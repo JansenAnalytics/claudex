@@ -148,6 +148,47 @@ function knownFactsDigest() {
   } catch { return ''; }
 }
 
+// ── robust JSON-array extraction from model stdout ───────────────────────────
+// `claude -p` with an emphatic "Return ONLY a JSON array" prompt normally emits a
+// bare array, but a model can still wrap it in prose containing stray brackets
+// ("[see below]", markdown links, ```json fences). A single greedy
+// /\[[\s\S]*\]/ + JSON.parse then throws and the whole cycle's facts are lost.
+// Three tiers, each strictly additive over the last — every output that parsed
+// before still parses, and prose-wrapped output is now rescued:
+//   1. whole (trimmed) output is the array            — clean, common case
+//   2. greedy first-'[' .. last-']' span              — LEGACY behavior, kept
+//   3. string-aware balanced scan, trying each '['    — rescues prose+brackets
+// Returns the parsed array, or null if nothing valid was found.
+function extractJsonArray(text) {
+  if (!text) return null;
+  const t = text.trim();
+  // Tier 1
+  try { const a = JSON.parse(t); if (Array.isArray(a)) return a; } catch {}
+  // Tier 2 (legacy)
+  const greedy = t.match(/\[[\s\S]*\]/);
+  if (greedy) { try { const a = JSON.parse(greedy[0]); if (Array.isArray(a)) return a; } catch {} }
+  // Tier 3: try each '[' as a candidate start; return the first balanced span
+  // that parses to an array. String/escape-aware so ']' inside a value is ignored.
+  for (let s = t.indexOf('['); s !== -1; s = t.indexOf('[', s + 1)) {
+    let depth = 0, inStr = false, esc = false;
+    for (let i = s; i < t.length; i++) {
+      const c = t[i];
+      if (inStr) {
+        if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') inStr = false;
+      } else if (c === '"') inStr = true;
+      else if (c === '[') depth++;
+      else if (c === ']') {
+        depth--;
+        if (depth === 0) {
+          try { const a = JSON.parse(t.slice(s, i + 1)); if (Array.isArray(a)) return a; } catch {}
+          break; // this candidate's balanced span didn't parse — advance to the next '['
+        }
+      }
+    }
+  }
+  return null;
+}
+
 // ── model reflection ─────────────────────────────────────────────────────────
 // Returns { ok: true, facts: [...] } or { ok: false, err } — callers must NOT
 // advance offsets on ok:false (the window will be retried next run).
@@ -207,10 +248,16 @@ ${tail}`;
       const err = `exit ${r.status}: ${(r.stderr || '').trim().slice(0, 200)}`;
       log('claude -p', err); return { ok: false, err };
     }
-    const m = (r.stdout || '').match(/\[[\s\S]*\]/);
-    if (!m) return { ok: true, facts: [] };  // model answered, found nothing → genuine no-facts
-    const arr = JSON.parse(m[0]);
-    return { ok: true, facts: Array.isArray(arr) ? arr.slice(0, MAX_FACTS) : [] };
+    const arr = extractJsonArray(r.stdout || '');
+    if (arr) return { ok: true, facts: arr.slice(0, MAX_FACTS) };
+    // Nothing parsed. Mirror legacy semantics exactly: a present-but-broken
+    // [...] span is a failure (offset won't advance, retried next run); output
+    // with no array-like span at all is a genuine "model found nothing".
+    if (/\[[\s\S]*\]/.test(r.stdout || '')) {
+      log('reflect: model output had a [...] span but no valid JSON array could be parsed');
+      return { ok: false, err: 'unparseable JSON array in model output' };
+    }
+    return { ok: true, facts: [] };  // model answered, found nothing → genuine no-facts
   } catch (e) { log('reflect failed:', e.message); return { ok: false, err: e.message }; }
 }
 

@@ -1,6 +1,6 @@
 ---
 name: nginx-caddy
-description: Nginx & Caddy Skill
+description: "Configure Nginx or Caddy as a reverse proxy with SSL/TLS. Use when setting up reverse proxies, Let's Encrypt certificates, routing domains to backend services, load balancing, or serving static files."
 category: system
 maturity: stable
 tags: [reverse-proxy, ssl, certbot, load-balancing, caddyfile]

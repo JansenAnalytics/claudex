@@ -1,6 +1,6 @@
 ---
 name: hypothesis-tester
-description: Hypothesis Tester Skill
+description: "Run a structured multi-position debate over an analytical question, spawning sub-agents to argue each option and counter confirmation bias. Use when comparing options or tradeoffs — 'which is better', 'should we', 'what's the risk', 'evaluate', 'compare options'."
 category: research
 maturity: stable
 tags: [debate, tradeoff-analysis, subagents, synthesis, decision-support]

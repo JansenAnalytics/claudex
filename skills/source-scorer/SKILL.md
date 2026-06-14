@@ -1,6 +1,6 @@
 ---
 name: source-scorer
-description: Source Credibility Scorer Skill
+description: "Score the credibility of a web source by domain tier, content signals, and claim support; handles single or batch URLs. Use when judging whether a source is trustworthy, comparing sources, or validating research findings."
 category: research
 maturity: stable
 tags: [credibility, source-scoring, domain-tier, verification, cli]

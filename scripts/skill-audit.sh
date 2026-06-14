@@ -148,6 +148,31 @@ audit_skill() {
     fi
     AUDIT_DESCRIPTION="$fm_desc"
 
+    # Description QUALITY — the description is the ONLY text the auto-selector sees,
+    # so a placeholder, a leaked shell/path line, a name-restating "X Skill" title,
+    # or a truncated fragment makes the skill effectively un-auto-selectable. These
+    # are errors (the self-edit-gate only escalates on errors), so future garbage is
+    # caught instead of silently shipping. Quote-tolerant; mirrors the patterns that
+    # produced the 2026-06 description cleanup.
+    if [[ -n "$fm_desc" ]]; then
+        local dq name_norm desc_norm
+        dq="${fm_desc#\"}"; dq="${dq%\"}"
+        dq="$(printf '%s' "$dq" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+        name_norm="$(printf '%s' "$name" | tr 'A-Z' 'a-z' | tr -d ' _-')"
+        desc_norm="$(printf '%s' "$dq" | tr 'A-Z' 'a-z' | tr -d ' _-')"
+        if printf '%s' "$dq" | grep -qiE '\[TODO'; then
+            AUDIT_ERRORS="${AUDIT_ERRORS:+$AUDIT_ERRORS$'\n'}description is an unfilled [TODO] placeholder"
+        elif printf '%s' "$dq" | grep -qE '^(cd |SKILL_DIR|export |#!|\$\()'; then
+            AUDIT_ERRORS="${AUDIT_ERRORS:+$AUDIT_ERRORS$'\n'}description looks like a leaked shell/path line, not prose"
+        elif printf '%s' "$dq" | grep -qiE '^skill:[[:space:]]' || printf '%s' "$dq" | grep -qiE '^[a-z0-9 ._&/-]+ skill$'; then
+            AUDIT_ERRORS="${AUDIT_ERRORS:+$AUDIT_ERRORS$'\n'}description is title-only (just restates the name) — state what it does + when to use it"
+        elif [[ -n "$desc_norm" && "$name_norm" == "$desc_norm" ]]; then
+            AUDIT_ERRORS="${AUDIT_ERRORS:+$AUDIT_ERRORS$'\n'}description equals the skill name — state what it does + when to use it"
+        elif printf '%s' "$dq" | grep -qE ':$'; then
+            AUDIT_ERRORS="${AUDIT_ERRORS:+$AUDIT_ERRORS$'\n'}description ends with ':' (truncated) — complete the sentence"
+        fi
+    fi
+
     # New optional fields
     AUDIT_CATEGORY="$(read_field "$skill_file" category)"
     AUDIT_MATURITY="$(read_field "$skill_file" maturity)"

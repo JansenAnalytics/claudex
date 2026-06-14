@@ -1,6 +1,6 @@
 ---
 name: vuln-scanner
-description: Vulnerability Scanner Skill
+description: "Scan project dependencies for known security vulnerabilities (npm-audit style) across your projects and alert. Use when checking projects for vulnerabilities, after adding a new npm project, or reviewing the last scan results."
 category: security
 maturity: beta
 tags: [vulnerability-scanning, npm-audit, cve, cron, alerts]

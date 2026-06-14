@@ -1,6 +1,6 @@
 ---
 name: knowledge-base
-description: Knowledge Base Skill
+description: "Ingest documents (URLs, local files, PDFs) into a searchable local knowledge base and query stored knowledge. Use when ingesting or storing documents, searching previously stored knowledge, or building research context."
 category: writing
 maturity: beta
 tags: [ingestion, sqlite-fts5, bm25, pdf, search]
