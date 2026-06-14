@@ -594,7 +594,7 @@ What Claudex is **not**, by design:
 - **Not a multi-device controller** — no paired phones, cameras, or live browser relay.
 - **Not a skill marketplace** — skills are plain files you copy and edit, not installs from a registry.
 - **Not a multi-model router** — it runs a single model on a flat-rate subscription on purpose.
-- **Not a self-evolution research platform** — skills improve through audited, human-reviewable edits, not an autonomous prompt-rewriting optimizer.
+- **Not an autonomous prompt-optimizer** — Claudex genuinely self-improves (memory curation, skill auditing, usage tracking, and patch-on-friction skill edits; see [Self-Improvement Loops](#self-improvement-loops)), but through deterministic, audited, human-reviewable changes — not a hands-off search loop (GEPA/DSPy-style) that rewrites its own prompts against an eval metric. Prose skills have no ground-truth oracle, so an unsupervised rewrite loop would optimize for "looks confident," not "works."
 
 Claudex began as an effort to reproduce the capabilities of a purpose-built autonomous messaging agent — [OpenClaw](https://github.com/openclaw/openclaw), which inspired this project — using only Claude Code's native features (hooks, sub-agents, skills, MCP) instead of a custom gateway. If you need broad multi-channel reach, device control, or a skill marketplace, a dedicated gateway like OpenClaw is the better tool, and the two run happily on the same machine. If you want a deterministic, flat-rate, always-on single agent that lives in the Claude Code ecosystem and owns its own box, that is exactly what Claudex is for.
 
