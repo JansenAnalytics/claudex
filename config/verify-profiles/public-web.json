@@ -1,0 +1,13 @@
+{
+  "name": "public-web",
+  "description": "Code exposed to untrusted external/user input (web endpoints, parsers of third-party data, anything internet-facing). FULL threat model — do NOT suppress security/DoS findings here.",
+  "provenance": "Input may come from anonymous external users or third-party systems.",
+  "trust": "Untrusted and potentially adversarial.",
+  "threat_model": "Assume hostile input: injection (SQL/XSS/SSRF/command), auth bypass, resource exhaustion, and unbounded/large payloads are ALL in scope and reachable. Flag them as blocking when they affect the goal.",
+  "scale": "Unbounded — inputs can be large and crafted; algorithmic-complexity/DoS IS a real reachable threat here.",
+  "non_goals": [],
+  "invariants": [
+    "Do not recommend a change that loses valid data, but DO recommend bounded/streaming handling for untrusted large input"
+  ],
+  "exclusions": []
+}

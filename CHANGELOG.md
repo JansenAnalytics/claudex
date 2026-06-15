@@ -4,6 +4,22 @@ Notable changes to the Claudex reference implementation. This documents a
 showcase/reference repo rather than a versioned package, so entries are grouped
 by date. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-06-15 — Cross-model verification gate (verifier)
+
+### Added
+- **`verifier` skill + engine** — a double-model verification gate that runs a fresh Anthropic
+  (Claude) review *and* an independent OpenAI/Azure critic against an explicit goal and acceptance
+  criteria, then reconciles the two before a "done" claim is allowed. Invocable on demand via `/verify`.
+- **`scripts/verifier/verify.cjs`** — the independent (Layer B) critic: a zero-dependency Node engine
+  that calls a non-Anthropic model (OpenAI by default, Azure Foundry by config) over `/chat/completions`
+  or the Codex CLI and returns one schema-validated verdict (`scripts/verifier/verdict.schema.json`).
+- **Context profiles (`config/verify-profiles/`)** — `default`, `curation-helper`, `trading`, and
+  `public-web` supply provenance, trust, threat model, scale, non-goals, and invariants, so the engine
+  classifies each finding as **blocking** or **advisory** from structured fields rather than prose —
+  which keeps it from over-flagging theoretical, unreachable issues.
+- **`config/verifier.json`** — provider/model/backend selection (OpenAI ↔ Azure Foundry swap), per-tier
+  model routing, and a monthly spend ceiling enforced through an append-only ledger.
+
 ## 2026-06-14 — Positioning rewrite, curation/restart hardening, skill-description cleanup
 
 ### Changed

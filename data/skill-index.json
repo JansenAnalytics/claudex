@@ -2600,6 +2600,27 @@
     "support_dirs": []
   },
   {
+    "name": "verifier",
+    "description": "Double-model verification gate before declaring a build/research/refactor \"done\". Runs a fresh Anthropic (Claude) review AND an independent OpenAI/Azure critic against the stated goal + criteria, then reconciles. Use before announcing completion of medium/major builds, refactors, major fixes, research deliverables, frontend work, or trade-decision rigor — and on demand via /verify. Skip for small Q&A and trivial edits.",
+    "category": "development",
+    "maturity": "beta",
+    "tags": [
+      "verification",
+      "cross-model",
+      "quality-gate",
+      "code-review",
+      "research-review",
+      "karpathy-method",
+      "openai",
+      "azure",
+      "codex"
+    ],
+    "external_deps": [],
+    "private": false,
+    "has_install": false,
+    "support_dirs": []
+  },
+  {
     "name": "video-frames",
     "description": "Extract frames or short clips from videos using ffmpeg.",
     "category": "media",

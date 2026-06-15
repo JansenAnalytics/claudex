@@ -1,0 +1,20 @@
+{
+  "name": "curation-helper",
+  "description": "Helpers that parse/transform our OWN model output (e.g. memory-curate.cjs parsing a Haiku reply). Input is trusted and size-bounded. Correctness > theoretical performance.",
+  "provenance": "Our own `claude -p` model reply (e.g. Haiku/Sonnet 'return ONLY a JSON array'), produced by us.",
+  "trust": "Trusted. NOT attacker-controlled, NOT arbitrary untrusted stdout.",
+  "threat_model": "No adversary supplies this input. There is no DoS/exhaustion threat because the producer is our own bounded model call.",
+  "scale": "Small: a few KB per call (bounded model output, max a handful of items).",
+  "non_goals": [
+    "Handling arbitrary untrusted multi-MB input",
+    "Worst-case algorithmic-complexity hardening against pathological adversarial input"
+  ],
+  "invariants": [
+    "MUST NOT drop or lose a valid result to satisfy a performance/complexity concern",
+    "Correctness on realistic inputs takes precedence over theoretical worst-case time"
+  ],
+  "exclusions": [
+    "O(n^2)/algorithmic-complexity and DoS concerns — ADVISORY only; reachable='no' because the input is our own bounded trusted reply",
+    "Any fix that caps/aborts processing in a way that could drop a valid result — treat as violating an invariant"
+  ]
+}
