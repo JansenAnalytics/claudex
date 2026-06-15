@@ -1,0 +1,18 @@
+{
+  "name": "default",
+  "description": "Generic internal code/work. Conservative: assume semi-trusted internal inputs, normal scale. Use when no more specific profile fits.",
+  "provenance": "Internal code or content produced within this workspace.",
+  "trust": "Semi-trusted: not adversarial, but may contain mistakes.",
+  "threat_model": "Not exposed to untrusted external input by default. If the artifact clearly handles external/user input, treat that input as untrusted and DO flag injection/validation issues with a concrete reachable trigger.",
+  "scale": "Normal interactive/CLI scale unless the artifact says otherwise.",
+  "non_goals": [
+    "Defending against adversarial inputs that cannot reach this code path"
+  ],
+  "invariants": [
+    "Do not recommend any change that loses or corrupts valid data to satisfy a non-functional concern"
+  ],
+  "exclusions": [
+    "Denial of Service / algorithmic-complexity / CPU or memory exhaustion — advisory unless you name a concrete reachable trigger at real scale",
+    "Generic input-validation hardening without a proven reachable impact"
+  ]
+}

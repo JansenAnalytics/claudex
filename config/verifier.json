@@ -1,0 +1,42 @@
+{
+  "_comment": "Cross-Model Verifier (CMV) config. Layer B (independent non-Anthropic critic). See research/2026-06-14-cross-model-verifier-spec.md. Secrets live in .env (api_key_env names the var), NEVER here.",
+
+  "provider": "openai",
+  "backend": "api",
+  "model": "gpt-5.5",
+  "temperature": 0,
+  "max_output_tokens": 2000,
+
+  "monthly_budget_usd": 200,
+  "on_budget_exceeded": "refuse",
+
+  "_tier_note": "Default is gpt-5.5 (verifier quality > cost; ~$0.012/verification, fires only on medium/major work). gpt-5.4 / -mini / -nano remain available via --model for cheap high-volume pre-filtering; codex for deep code review.",
+  "tiers": {
+    "prefilter": { "backend": "api",   "model": "gpt-5.4-mini" },
+    "medium":    { "backend": "api",   "model": "gpt-5.5" },
+    "major":     { "backend": "api",   "model": "gpt-5.5" },
+    "code":      { "backend": "codex", "model": "gpt-5.3-codex" }
+  },
+
+  "providers": {
+    "openai": {
+      "base_url": "https://api.openai.com/v1",
+      "api_key_env": "OPENAI_API_KEY"
+    },
+    "azure-foundry": {
+      "base_url": "https://REPLACE-RESOURCE.openai.azure.com/openai/v1",
+      "api_key_env": "AZURE_OPENAI_API_KEY",
+      "model": "REPLACE-DEPLOYMENT-NAME",
+      "_note": "Azure v1 GA: model MUST be the deployment name. base_url MUST end with /openai/v1. Fill in once the user provides resource + deployment."
+    }
+  },
+
+  "pricing_per_1m": {
+    "gpt-5.4":        { "in": 2.50, "out": 15.00 },
+    "gpt-5.4-mini":   { "in": 0.75, "out": 4.50 },
+    "gpt-5.4-nano":   { "in": 0.20, "out": 1.25 },
+    "gpt-5.5":        { "in": 5.00, "out": 30.00 },
+    "gpt-5.3-codex":  { "in": 1.75, "out": 14.00 },
+    "_default":       { "in": 2.50, "out": 15.00 }
+  }
+}

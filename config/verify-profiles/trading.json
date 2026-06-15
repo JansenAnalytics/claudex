@@ -1,0 +1,18 @@
+{
+  "name": "trading",
+  "description": "Trading / financial logic (prop-hedge etc.). Correctness, numerical accuracy, and risk handling are paramount; silent wrong numbers are the worst outcome.",
+  "provenance": "Market data, trade parameters, and strategy logic in the prop-hedge system.",
+  "trust": "Data feeds are semi-trusted (can be malformed/stale); strategy logic is ours.",
+  "threat_model": "Primary risk is CORRECTNESS, not adversarial input: wrong sign, off-by-one on position sizing, unit/precision errors, stale data treated as fresh, unhandled NaN/zero. Flag these as blocking.",
+  "scale": "Normal; latency matters for live decisions but correctness dominates.",
+  "non_goals": [
+    "Defending against adversarial external attackers (this is internal trading code)"
+  ],
+  "invariants": [
+    "Never silently produce or act on an unverified/wrong number",
+    "Do not recommend changes that mask errors (e.g. swallowing exceptions, defaulting bad data to zero) — surface them"
+  ],
+  "exclusions": [
+    "Generic web-security hardening (injection/XSS) unless the code actually handles external untrusted input"
+  ]
+}

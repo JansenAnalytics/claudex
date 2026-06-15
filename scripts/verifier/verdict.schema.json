@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "score_vs_goal", "criteria", "findings", "summary"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "warn", "fail"],
+      "description": "The MODEL's own call; the engine recomputes the authoritative verdict from each finding's tier (see below). pass = meets goal + criteria; warn = meets goal with advisory issues; fail = a blocking finding exists."
+    },
+    "score_vs_goal": {
+      "type": "integer",
+      "description": "0-100. How well the artifact achieves the STATED GOAL in the GIVEN CONTEXT (not abstract/generic quality)."
+    },
+    "criteria": {
+      "type": "array",
+      "description": "One entry per evaluation criterion supplied by the caller.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "met", "note"],
+        "properties": {
+          "name": { "type": "string" },
+          "met": { "type": "boolean" },
+          "note": { "type": "string", "description": "Evidence-backed reason it is or isn't met, IN CONTEXT." }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "description": "Detect with high recall, then classify each finding with the gate fields below. Empty array if none.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "title", "trigger", "reachable", "applies_in_context", "blocks_goal", "violates_invariant", "tier", "evidence", "fix"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["high", "med", "low"] },
+          "title": { "type": "string" },
+          "trigger": { "type": "string", "description": "The SPECIFIC input/condition that triggers this problem. If purely theoretical with no concrete trigger, write 'none'." },
+          "reachable": { "type": "string", "enum": ["yes", "no", "uncertain"], "description": "Given the stated CONTEXT (input provenance/trust/scale/threat model), can the trigger actually occur HERE? Excluded-class concerns (DoS, algorithmic complexity, CPU/memory exhaustion, generic input validation) are 'no' unless you can name a concrete reachable trigger in this deployment." },
+          "applies_in_context": { "type": "boolean", "description": "Does this matter for the artifact's STATED GOAL in the GIVEN CONTEXT (not in the abstract)?" },
+          "blocks_goal": { "type": "boolean", "description": "Does this actually prevent the artifact from achieving the stated goal / a criterion?" },
+          "violates_invariant": { "type": "boolean", "description": "true if the ONLY fix you can see would violate a stated INVARIANT/non-goal. If true, do NOT put that fix in `fix` — describe the tension instead." },
+          "tier": { "type": "string", "enum": ["blocking", "advisory"], "description": "blocking ONLY if applies_in_context AND blocks_goal AND reachable!='no'. Everything else is advisory. (The engine re-derives this; set it honestly.)" },
+          "evidence": { "type": "string", "description": "Exact quote/line/loc proving the finding — no hand-waving." },
+          "fix": { "type": "string", "description": "Specific, actionable remedy. ADVISORY. Empty string if none, or if any fix would violate a stated invariant." }
+        }
+      }
+    },
+    "summary": { "type": "string", "description": "2-4 sentences: does it meet the goal in context, and the single most important BLOCKING issue (if any)." }
+  }
+}
