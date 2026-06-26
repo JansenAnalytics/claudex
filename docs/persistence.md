@@ -12,6 +12,10 @@ Three separate failure modes need to be handled:
 
 Each layer below handles one of these. You need all three.
 
+> **Running Claudex interactively** instead of as a 24/7 daemon — in a terminal or IDE, often over SSH? See
+> [interactive-use.md](interactive-use.md) for the attended setup and how to keep a hands-on session alive
+> across SSH drops and laptop sleep.
+
 ---
 
 ## Layer 1: tmux Session

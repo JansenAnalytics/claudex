@@ -614,6 +614,7 @@ claudex/
 │   ├── memory-search.md            #   Vector RAG system (setup, config, API)
 │   ├── telegram-setup.md           #   Telegram integration step-by-step
 │   ├── persistence.md              #   3-layer persistence (tmux+systemd+cron)
+│   ├── interactive-use.md          #   Interactive/IDE use + session persistence
 │   ├── automation.md               #   Hooks, scheduled tasks, /loop
 │   ├── skills-guide.md             #   Skill format, auto-selection, porting
 │   ├── skills-catalog.md           #   Full catalog of all 161 skills
